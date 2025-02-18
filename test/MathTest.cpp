@@ -64,3 +64,33 @@ TEST(partialLength, StraightLine)
     for(int row {}; row < result.rows(); ++row)
         EXPECT_NEAR(result(row), groundTruth(row), 1e-10);
 }
+
+/**
+ * @brief Test correct index from increasing sequence with positive elements.
+ *
+ */
+TEST(first, IncreasingSequencePositive)
+{
+    Eigen::Array<double, 5, 1> input { -3, -1, 3, 5, 6 }; // increasing input sequence
+
+    int result { FrenetTransform::first(input) }; // get first index
+
+    int groundTruth { 2 }; // ground truth index
+
+    EXPECT_EQ(result, groundTruth);
+}
+
+/**
+ * @brief Test negative index from sequence with no positive element.
+ *
+ */
+TEST(first, IncreasingSequenceNegative)
+{
+    Eigen::Array<double, 5, 1> input { -3, -1, -2, -6, -2 }; // negative input sequence
+
+    int result { FrenetTransform::first(input) }; // get negative index
+
+    int groundTruth { -1 }; // ground truth index
+
+    EXPECT_EQ(result, groundTruth);
+}
