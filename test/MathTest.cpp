@@ -51,18 +51,16 @@ TEST(diff, Matrix52)
  */
 TEST(partialLength, StraightLine)
 {
-    Eigen::Array<double, 5, 1> x {0.0, 1.0, 2.0, 3.0, 4.0};
-    Eigen::Array<double, 5, 1> y {0.0, 0.0, 0.0, 0.0, 0.0};
+    Eigen::Array<double, 5, 1> x {0.0, 1.0, 2.0, 3.0, 4.0}; // input in x-direction
+    Eigen::Array<double, 5, 1> y {0.0, 0.0, 0.0, 0.0, 0.0}; // input in y-direction
 
-    Eigen::Array<double, 5, 1> result {FrenetTransform::partialLength(x, y)};
-    EXPECT_EQ(result.rows(), x.rows());
+    Eigen::Array<double, 5, 1> result {FrenetTransform::partialLength(x, y)}; // partial length result
 
-    Eigen::Array<double, 5, 1> groundTruth {0.0, 1.0, 2.0, 3.0, 4.0};
+    EXPECT_EQ(result.rows(), x.rows()); // test equality of input and result rows
 
-    int cNumber {};
-    for(auto number : result)
-    {
-        EXPECT_NEAR(number, groundTruth(cNumber), 0.000001);
-        ++cNumber;
-    }
+    Eigen::Array<double, 5, 1> groundTruth {0.0, 1.0, 2.0, 3.0, 4.0}; // ground truth result
+
+    // test for equality between ground truth and result
+    for(int row {}; row < result.rows(); ++row)
+        EXPECT_NEAR(result(row), groundTruth(row), 1e-10);
 }
