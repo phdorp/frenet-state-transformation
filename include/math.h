@@ -20,8 +20,15 @@ namespace FrenetTransform
     template <typename T>
     T diff(const Eigen::ArrayBase<T>& numbers)
     {
-        T result {};
-        result(Eigen::seq(1,result.rows()-1)) = numbers(Eigen::seq(1,numbers.rows()-1)) - numbers(Eigen::seq(0,numbers.rows()-2));
+        const auto colsAll {Eigen::seq(0, numbers.cols() - 1)}; // sequence over all column indices
+        const auto rowsExLast {Eigen::seq(0, numbers.rows()-2)}; // sequence over all row indices except last one
+        const auto rowsExFirst {Eigen::seq(1, numbers.rows()-1)}; // sequence over all row indices except first one
+
+        T result {}; // result array
+
+        // perform differences
+        result(rowsExFirst, colsAll) = numbers(rowsExFirst, colsAll) - numbers(rowsExLast, colsAll);
+
         return result;
     }
 
