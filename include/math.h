@@ -43,14 +43,14 @@ namespace FrenetTransform
     template <int T>
     ArrayT1<T> partialLength(const ArrayT1<T>& x, const ArrayT1<T>& y)
     {
-        ArrayT1<T> length { };
-        length = FrenetTransform::diff(x).pow(2) + FrenetTransform::diff(y).pow(2);
-        length = length.sqrt();
+        ArrayT1<T> result {FrenetTransform::diff(x).pow(2) + FrenetTransform::diff(y).pow(2)}; // sum of squared distances
+        result = result.sqrt(); // determine root of sum of squared distances
 
-        for(int cNumber {}; cNumber < length.rows() - 1; ++cNumber)
-            length(cNumber+1) += length(cNumber);
+        // accumulate distances
+        for(int cNumber {}; cNumber < result.rows() - 1; ++cNumber)
+            result(cNumber+1) += result(cNumber);
 
-        return length;
+        return result;
     }
 };
 
