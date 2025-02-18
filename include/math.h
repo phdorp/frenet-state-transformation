@@ -52,6 +52,25 @@ namespace FrenetTransform
 
         return result;
     }
+
+    /**
+     * @brief Provide index of minimum positive element in an ordered sequence.
+     *
+     * @tparam T rows of input vector.
+     * @param sequence input to search.
+     * @return int index of minimum positive element. -1 if no positive element.
+     */
+    template <int T>
+    int first(const ArrayT1<T>& sequence)
+    {
+        for(int index {}; index < sequence.rows(); ++index)
+        {
+            if(sequence(index) >=0)
+                return index;
+        }
+
+        return -1;
+    }
 };
 
 #endif
