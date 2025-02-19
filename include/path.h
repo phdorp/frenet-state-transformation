@@ -7,95 +7,93 @@
 namespace FrenetTransform
 {
     /**
-     * @brief Path representation as polyline.
+     * @brief Path base class.
      *
-     * Represents a 2-dimensional path as a polyline.
-     * Provide path properties based on finite differences at query points.
      * The properties include orientation, curvature, cuvature change, normal and tangential.
-     *
-     * @tparam T determines the number points along the path.
      */
-    template <int T>
     class Path
     {
     public:
-        using MatrixT2 = Eigen::Matrix<double, T, 2>;
+        virtual ~Path() = default;
 
-        Path() = delete;
-
-        /**
-         * @brief Construct a new Path object from Cartesian x- and y-positions.
-         *
-         * @param points points along the path in Cartesian frame.
-         */
-        Path(const MatrixT2& points);
+        struct Points
+        {
+            Eigen::ArrayXd x {};
+            Eigen::ArrayXd y {};
+        };
 
         /**
          * @brief Determines points at the given path lengths.
          *
-         * @tparam N number of query lengths.
          * @param lengths lengths along the path.
          * @return points at given path lengths.
          */
-        template <int N>
-        Eigen::Matrix<double, N, 2> operator()(const Eigen::Matrix<double, N, 1>& lengths);
+        virtual Points operator()(const Eigen::ArrayXd& lengths) const = 0;
 
         /**
          * @brief Determines tangent vectors at the given path lengths.
          *
-         * @tparam N number of query lengths.
          * @param lengths lengths along the path.
          * @return tangent vectors.
          */
-        template <int N>
-        Eigen::Matrix<double, N, 2> tangent(const Eigen::Matrix<double, N, 1>& lengths);
+        Eigen::MatrixX2d tangent(const Eigen::MatrixXd& lengths);
 
         /**
          * @brief Determines normal vectors at the given path lengths.
          *
-         * @tparam N number of query lengths.
          * @param lengths lengths along the path.
          * @return normal vectors.
          */
-        template <int N>
-        Eigen::Matrix<double, N, 2> normal(const Eigen::Matrix<double, N, 1>& lengths);
+        Eigen::MatrixX2d normal(const Eigen::MatrixXd& lengths);
 
         /**
          * @brief Determines path angle at the given path lengths.
          *
-         * @tparam N number of query lengths.
          * @param lengths lengths along the path.
          * @return path angles.
          */
-        template <int N>
-        Eigen::Matrix<double, N, 1> angle0(const Eigen::Matrix<double, N, 1>& lengths);
+        Eigen::MatrixXd angle0(const Eigen::MatrixXd& lengths);
 
         /**
          * @brief Determines path curvature at the given path lengths.
          *
-         * @tparam N number of query lengths.
          * @param lengths lengths along the path.
          * @return path curvatures.
          */
-        template <int N>
-        Eigen::Matrix<double, N, 1> angle1(const Eigen::Matrix<double, N, 1>& lengths);
+        Eigen::MatrixXd angle1(const Eigen::MatrixXd& lengths);
 
         /**
          * @brief Determines path curvature derivative at the given path lengths.
          *
-         * @tparam N number of query lengths.
          * @param lengths lengths along the path.
          * @return path curvatures.
          */
-        template <int N>
-        Eigen::Matrix<double, N, 1> angle2(const Eigen::Matrix<double, N, 1>& lengths);
+        Eigen::MatrixXd angle2(const Eigen::MatrixXd& lengths);
 
-private:
+    private:
         /**
-         * @brief Stores gradients from order 1 to 3.
+         * @brief Determines 1st order gradient at the given path lengths.
          *
+         * @param lengths lengths along the path.
+         * @return 1st order gradient at given path lengths.
          */
-        std::array<const MatrixT2>, 3> m_gradients {};
+        // virtual Eigen::MatrixX2d gradient1(const Eigen::MatrixXd& lengths) = 0;
+
+        /**
+         * @brief Determines 2nd order gradient at the given path lengths.
+         *
+         * @param lengths lengths along the path.
+         * @return 2nd order gradient at given path lengths.
+         */
+        // virtual Eigen::MatrixX2d gradient2(const Eigen::MatrixXd& lengths) = 0;
+
+        /**
+         * @brief Determines 3rd order gradient at the given path lengths.
+         *
+         * @param lengths lengths along the path.
+         * @return 3rd order gradient at given path lengths.
+         */
+        // virtual Eigen::MatrixX2d gradient3(const Eigen::MatrixXd& lengths) = 0;
     };
 };
 
