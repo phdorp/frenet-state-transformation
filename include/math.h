@@ -60,8 +60,8 @@ namespace FrenetTransform
      * @param sequence input to search.
      * @return int index of minimum positive element. -1 if no positive element.
      */
-    template <int T>
-    int first(const ArrayT1<T>& sequence)
+    template <typename T>
+    int first(const Eigen::ArrayBase<T>& sequence)
     {
         for(int index {}; index < sequence.rows(); ++index)
         {
