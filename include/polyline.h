@@ -44,7 +44,7 @@ namespace FrenetTransform
             const Eigen::ArrayXi indicesLengths { indices(lengths) };
 
             // relative position along the linear segment
-            const auto pathLengthsdiff { FrenetTransform::diff(m_lengths) };
+            const auto pathLengthsdiff { FrenetTransform::diffBackward(m_lengths) };
             const auto relativePos { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths + 1) };
 
             // absolute position along path

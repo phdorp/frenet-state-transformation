@@ -4,14 +4,14 @@
 #include <gtest/gtest.h>
 
 /**
- * @brief Test function diff with vector of length 5.
+ * @brief Test function diffBackward with vector of length 5.
  *
  */
-TEST(diff, Vector5)
+TEST(diffBackward, Vector5)
 {
     Eigen::Array<double, 5, 1> input {1, 2, 5, 1, 3}; // input vector
 
-    auto result {FrenetTransform::diff(input)}; // function result
+    auto result {FrenetTransform::diffBackward(input)}; // function result
 
     EXPECT_EQ(result.rows(), input.rows()); // test equality of input and result rows
 
@@ -22,14 +22,14 @@ TEST(diff, Vector5)
         EXPECT_NEAR(result(index), groundTruth(index), 1.0e-10);
 }
 
-TEST(diff, Matrix52)
+TEST(diffBackward, Matrix52)
 {
     // input matrix
     Eigen::Array<double, 5, 2> input {};
     input.col(0) << 1, 2, 5, 1, 3;
     input.col(1) << 2, 2, 5, 1, 3;
 
-    auto result {FrenetTransform::diff(input)}; // function result
+    auto result {FrenetTransform::diffBackward(input)}; // function result
 
     EXPECT_EQ(result.rows(), input.rows()); // test equality of input and result rows
     EXPECT_EQ(result.cols(), input.cols()); // test equality of input and result columns

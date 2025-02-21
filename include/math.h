@@ -18,7 +18,7 @@ namespace FrenetTransform
      * @return T array of row-wise differences.
      */
     template <typename T>
-    T diff(const Eigen::ArrayBase<T>& numbers)
+    T diffBackward(const Eigen::ArrayBase<T>& numbers)
     {
         const auto colsAll {Eigen::seq(0, numbers.cols() - 1)}; // sequence over all column indices
         const auto rowsExLast {Eigen::seq(0, numbers.rows()-2)}; // sequence over all row indices except last one
@@ -43,7 +43,7 @@ namespace FrenetTransform
     template <int T>
     ArrayT1<T> partialLength(const ArrayT1<T>& x, const ArrayT1<T>& y)
     {
-        ArrayT1<T> result {FrenetTransform::diff(x).pow(2) + FrenetTransform::diff(y).pow(2)}; // sum of squared distances
+        ArrayT1<T> result {FrenetTransform::diffBackward(x).pow(2) + FrenetTransform::diffBackward(y).pow(2)}; // sum of squared distances
         result = result.sqrt(); // determine root of sum of squared distances
 
         // accumulate distances
