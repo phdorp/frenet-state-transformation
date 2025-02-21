@@ -68,6 +68,32 @@ TEST(diffForward, Matrix52)
             EXPECT_NEAR(result(row, col), groundTruth(row, col), 1.0e-10);
 }
 
+TEST(gradient, Matrix52)
+{
+    // dependent matrix
+    Eigen::Array<double, 5, 2> depents {};
+    depents.col(0) << 1.0, 2.0, 5.0, 1.0, 3.0;
+    depents.col(1) << 2.0, 2.0, 5.0, 1.0, 3.0;
+
+    // independent vector
+    Eigen::Array<double, 5, 1> indepents { 1.0, 2.0, 3.0, 5.0, 0.0};
+
+    auto result {FrenetTransform::gradient(depents, indepents)}; // function result
+
+    EXPECT_EQ(result.rows(), depents.rows()); // test equality of input and result rows
+    EXPECT_EQ(result.cols(), depents.cols()); // test equality of input and result columns
+
+    // ground truth result
+    Eigen::Array<double, 5, 2> groundTruth {};
+    groundTruth.col(0) << 1.0, 3.0, -2.0, 2.0 / -5.0, 0.0;
+    groundTruth.col(1) << 0.0, 3.0, -2.0, 2.0 / -5.0, 0.0;
+
+    // test for equality between ground truth and result
+    for(int row {}; row < result.rows(); ++row)
+        for(int col {}; col < result.cols(); ++col)
+            EXPECT_NEAR(result(row, col), groundTruth(row, col), 1.0e-10);
+}
+
 /**
  * @brief Test partial length with straigth line.
  *
