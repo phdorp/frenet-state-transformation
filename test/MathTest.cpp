@@ -85,8 +85,8 @@ TEST(gradient, Matrix52)
 
     // ground truth result
     Eigen::Array<double, 5, 2> groundTruth {};
-    groundTruth.col(0) << 1.0, 3.0, -2.0, 2.0 / -5.0, 0.0;
-    groundTruth.col(1) << 0.0, 3.0, -2.0, 2.0 / -5.0, 0.0;
+    groundTruth.col(0) << 0.0, 1.0, 3.0, -2.0, 2.0 / -5.0;
+    groundTruth.col(1) << 0.0, 0.0, 3.0, -2.0, 2.0 / -5.0;
 
     // test for equality between ground truth and result
     for(int row {}; row < result.rows(); ++row)

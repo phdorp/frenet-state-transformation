@@ -111,8 +111,8 @@ namespace FrenetTransform
     template <int rows, int cols>
     Eigen::Array<double, rows, cols> gradient(const Eigen::Array<double, rows, cols>& depents, const Eigen::Array<double, rows, 1>& indepents)
     {
-        const Eigen::Array<double, rows, cols> diffDepents { diffForward(depents) }; // finite differences dependent variables
-        const Eigen::Array<double, rows, 1> diffIndepents { diffForward(indepents) }; // finite differences independent variables
+        const Eigen::Array<double, rows, cols> diffDepents { diffBackward(depents) }; // finite differences dependent variables
+        const Eigen::Array<double, rows, 1> diffIndepents { diffBackward(indepents) }; // finite differences independent variables
 
         Eigen::Array<double, rows, cols> result {}; // instantiate result array
 
