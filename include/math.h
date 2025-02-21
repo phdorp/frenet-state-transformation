@@ -35,6 +35,8 @@ namespace FrenetTransform
     /**
      * @brief Perform row-wise forward differences on the input array.
      *
+     * Somehow induces wrong results on repeated use in TEST_F preparation.
+     *
      * Due to forward differences, the first row of the return array is zero.
      *
      * @tparam T array type.
