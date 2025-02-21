@@ -32,10 +32,8 @@ namespace FrenetTransform
          * @param y coordinates in y-direction.
          */
         Polyline(const ArrayT1& x, const ArrayT1& y)
-            : m_x { x }
-            , m_y { y }
-            , m_lengths { FrenetTransform::partialLength(x, y) }
         {
+            setPoints(x, y);
         }
 
         Points operator()(const Eigen::ArrayXd& lengths) const override
@@ -48,29 +46,30 @@ namespace FrenetTransform
             const auto relativePos { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths + 1) };
 
             // absolute position along path
-            const auto x { m_x(indicesLengths + 1) * relativePos + m_x(indicesLengths) * (1 - relativePos) };
-            const auto y { m_y(indicesLengths + 1) * relativePos + m_y(indicesLengths) * (1 - relativePos) };
+            const auto x { m_x[0](indicesLengths + 1) * relativePos + m_x[0](indicesLengths) * (1 - relativePos) };
+            const auto y { m_y[0](indicesLengths + 1) * relativePos + m_y[0](indicesLengths) * (1 - relativePos) };
 
             return { x, y };
         }
 
         void setPoints(const ArrayT1& x, const ArrayT1& y)
         {
-            m_x = x;
-            m_y = y;
+            m_x[0] = x;
+            m_y[0] = y;
             m_lengths = FrenetTransform::partialLength(x, y);
+            for(unsigned int orderGrad { 1 }; orderGrad < s_numGrad; ++orderGrad)
+            {
+                m_x[orderGrad] = FrenetTransform::gradient(m_x[orderGrad - 1], m_lengths);
+                m_y[orderGrad] = FrenetTransform::gradient(m_y[orderGrad - 1], m_lengths);
+            }
         }
 
     private:
-        ArrayT1 m_x {}; /*<< coordinates in x-direction*/
-        ArrayT1 m_y {}; /*<< coordinates in y-direction*/
+        static constexpr int s_numGrad { 3 };
+        std::array<ArrayT1, s_numGrad> m_x {}; /*<< coordinates and gradients in x-direction*/
+        ArrayT1 xGrad {};
+        std::array<ArrayT1, s_numGrad> m_y {}; /*<< coordinates and gradients in y-direction*/
         ArrayT1 m_lengths {}; /*<< partial lengths along polyline*/
-
-        /**
-         * @brief Stores gradients from order 1 to 3.
-         *
-         */
-        std::array<const MatrixT2, 3> m_gradients {};
 
         /**
          * @brief Determines 1st order gradient at the given path lengths.
