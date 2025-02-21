@@ -45,6 +45,29 @@ TEST(diffBackward, Matrix52)
             EXPECT_NEAR(result(row, col), groundTruth(row, col), 1.0e-10);
 }
 
+TEST(diffForward, Matrix52)
+{
+    // input matrix
+    Eigen::Array<double, 5, 2> input {};
+    input.col(0) << 1, 2, 5, 1, 3;
+    input.col(1) << 2, 2, 5, 1, 3;
+
+    auto result {FrenetTransform::diffForward(input)}; // function result
+
+    EXPECT_EQ(result.rows(), input.rows()); // test equality of input and result rows
+    EXPECT_EQ(result.cols(), input.cols()); // test equality of input and result columns
+
+    // ground truth result
+    Eigen::Array<double, 5, 2> groundTruth {};
+    groundTruth.col(0) << 1, 3, -4, 2, 0;
+    groundTruth.col(1) << 0, 3, -4, 2, 0;
+
+    // test for equality between ground truth and result
+    for(int row {}; row < result.rows(); ++row)
+        for(int col {}; col < result.cols(); ++col)
+            EXPECT_NEAR(result(row, col), groundTruth(row, col), 1.0e-10);
+}
+
 /**
  * @brief Test partial length with straigth line.
  *
