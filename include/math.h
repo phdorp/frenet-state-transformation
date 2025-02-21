@@ -33,6 +33,31 @@ namespace FrenetTransform
     }
 
     /**
+     * @brief Perform row-wise forward differences on the input array.
+     *
+     * Due to forward differences, the first row of the return array is zero.
+     *
+     * @tparam T array type.
+     * @param numbers input array.
+     * @return T array of row-wise differences.
+     */
+    template <typename T>
+    T diffForward(const Eigen::ArrayBase<T>& numbers)
+    {
+        T result { diffBackward(numbers) }; // get backward differences
+
+        const auto colsAll {Eigen::seq(0, numbers.cols() - 1)}; // sequence over all column indices
+        const auto rowsExLast {Eigen::seq(0, numbers.rows() - 2)}; // sequence over all row indices except last one
+        const auto rowsExFirst {Eigen::seq(1, numbers.rows() - 1)}; // sequence over all row indices except first one
+
+        // shift numbers by one element to vector beginning
+        result(rowsExLast, colsAll) = result(rowsExFirst, colsAll);
+        result(numbers.rows() - 1, colsAll) = 0.0;
+
+        return result;
+    }
+
+    /**
      * @brief Provide cumulative lengths input given points.
      *
      * @tparam T row of input vector.
@@ -71,6 +96,9 @@ namespace FrenetTransform
 
         return -1;
     }
+
+    // template <typename T>
+    // T
 };
 
 #endif
