@@ -97,8 +97,35 @@ namespace FrenetTransform
         return -1;
     }
 
-    // template <typename T>
-    // T
+    /**
+     * @brief Determine gradient from finite differences.
+     *
+     * @tparam rows number of samples.
+     * @tparam cols number of dependent variables.
+     * @param depents dependent variables.
+     * @param indepents independent variables.
+     * @return Eigen::Array<double, rows, cols> finite difference gradient.
+     */
+    template <int rows, int cols>
+    Eigen::Array<double, rows, cols> gradient(const Eigen::Array<double, rows, cols>& depents, const Eigen::Array<double, rows, 1>& indepents)
+    {
+        const Eigen::Array<double, rows, cols> diffDepents { diffForward(depents) }; // finite differences dependent variables
+        const Eigen::Array<double, rows, 1> diffIndepents { diffForward(indepents) }; // finite differences independent variables
+
+        Eigen::Array<double, rows, cols> result {}; // instantiate result array
+
+        // perform column-wise normalization of dependent differences
+        for(int col {}; col < cols; ++col)
+            result(Eigen::all, col) = diffDepents(Eigen::all, col) / diffIndepents;
+
+        // results from 0 / 0 are set to 0
+        for(int row {}; row < rows; ++row)
+            if(std::abs(diffIndepents(row)) < 1e-10)
+                for(int col {}; col < cols; ++col)
+                    result(row, col) = std::abs(diffDepents(row, col)) < 1e-10 ? 0 : result(row, col);
+
+        return result;
+    }
 };
 
 #endif
