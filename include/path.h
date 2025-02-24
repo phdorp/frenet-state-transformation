@@ -74,7 +74,7 @@ namespace FrenetTransform
                 else if(tangents.x(iLength) < 0 && tangents.y(iLength) < 0)
                     result(iLength) -= M_PI;
             }
-            
+
             return result;
         }
 
@@ -84,7 +84,13 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return path curvatures.
          */
-        Eigen::MatrixXd angle1(const Eigen::MatrixXd& lengths);
+        Eigen::ArrayXd angle1(const Eigen::ArrayXd& lengths) const
+        {
+            const auto grad1 { gradient1(lengths) };
+            const auto grad2 { gradient2(lengths) };
+            const auto grad1Abs { (grad1.x.square() + grad1.y.square()).sqrt() };
+            return -(grad1.y * grad2.x - grad1.x * grad2.y) / grad1Abs.pow(3);
+        }
 
         /**
          * @brief Determines path curvature derivative at the given path lengths.
@@ -92,7 +98,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return path curvatures.
          */
-        Eigen::MatrixXd angle2(const Eigen::MatrixXd& lengths);
+        Eigen::MatrixXd angle2(const Eigen::MatrixXd& lengths) const;
 
     private:
         /**
