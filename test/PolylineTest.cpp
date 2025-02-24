@@ -56,6 +56,46 @@ TEST_F(PolylineTest, GetPointsCircle)
     }
 }
 
+TEST_F(PolylineTest, GetTangentsCircle)
+{
+    Eigen::ArrayXd input { {M_PI/8, M_PI/4} };
+    input *= m_radius * 2;
+
+    const auto result { m_circle.tangent(input) };
+
+    const FrenetTransform::Path::Points groundTruth
+    {
+        {{-std::sqrt(50) / 10, -1.0}},
+        {{ std::sqrt(50) / 10,  0.0}}
+    };
+
+    for(int index {}; index < input.rows(); ++index)
+    {
+        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-2);
+        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-2);
+    }
+}
+
+TEST_F(PolylineTest, GetNormalsCircle)
+{
+    Eigen::ArrayXd input { {M_PI/8, M_PI/4} };
+    input *= m_radius * 2;
+
+    const auto result { m_circle.normal(input) };
+
+    const FrenetTransform::Path::Points groundTruth
+    {
+        {{std::sqrt(50) / 10, 0.0}},
+        {{std::sqrt(50) / 10, 1.0}}
+    };
+
+    for(int index {}; index < input.rows(); ++index)
+    {
+        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-2);
+        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-2);
+    }
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
