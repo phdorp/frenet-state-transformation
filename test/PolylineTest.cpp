@@ -96,6 +96,21 @@ TEST_F(PolylineTest, GetNormalsCircle)
     }
 }
 
+TEST_F(PolylineTest, GetAnglesCircle)
+{
+    Eigen::ArrayXd input { {M_PI / 2, M_PI, M_PI + M_PI / 4, M_PI + M_PI / 2} };
+    input *= m_radius;
+
+    const auto result { m_circle.angle0(input) };
+
+    const Eigen::ArrayXd groundTruth {{0.0, M_PI / 2, 3 * M_PI / 4, -M_PI}};
+
+    for(int index {}; index < input.rows(); ++index)
+    {
+        EXPECT_NEAR(groundTruth(index), result(index), 1e-2);
+    }
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
