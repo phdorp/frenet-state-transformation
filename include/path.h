@@ -3,6 +3,7 @@
 
 #include <eigen3/Eigen/Core>
 #include <array>
+#include <math.h>
 
 namespace FrenetTransform
 {
@@ -56,7 +57,26 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return path angles.
          */
-        Eigen::MatrixXd angle0(const Eigen::MatrixXd& lengths);
+        Eigen::ArrayXd angle0(const Eigen::ArrayXd& lengths) const
+        {
+            const Points tangents { tangent(lengths) };
+
+            Eigen::ArrayXd result (lengths.size());
+            for(int iLength {}; iLength < lengths.size(); ++iLength)
+            {
+                if(std::abs(tangents.x(iLength)) < 0.5)
+                    result(iLength) = M_PI / 2 - std::atan(tangents.x(iLength) / tangents.y(iLength));
+                else
+                    result(iLength) = std::atan(tangents.y(iLength) / tangents.x(iLength));
+
+                if(tangents.x(iLength) < 0 && tangents.y(iLength) > 0)
+                    result(iLength) += M_PI;
+                else if(tangents.x(iLength) < 0 && tangents.y(iLength) < 0)
+                    result(iLength) -= M_PI;
+            }
+            
+            return result;
+        }
 
         /**
          * @brief Determines path curvature at the given path lengths.
