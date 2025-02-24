@@ -98,7 +98,18 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return path curvatures.
          */
-        Eigen::MatrixXd angle2(const Eigen::MatrixXd& lengths) const;
+        Eigen::ArrayXd angle2(const Eigen::ArrayXd& lengths) const
+        {
+            const auto grad1 { gradient1(lengths) };
+            const auto grad1Abs { (grad1.x.square() + grad1.y.square()).sqrt() };
+
+            const auto grad2 { gradient2(lengths) };
+            const auto grad3 { gradient3(lengths) };
+
+            return (grad1.x * grad3.y - grad3.x * grad1.y) / grad1Abs.pow(3)
+                - (grad1.x * grad2.x + grad1.y * grad2.y) * (grad1.x * grad2.y - grad2.x * grad1.y)
+                / grad1Abs.pow(5);
+        }
 
     private:
         /**
