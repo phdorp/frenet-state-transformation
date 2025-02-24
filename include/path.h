@@ -36,7 +36,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return tangent vectors.
          */
-        Points tangent(const Eigen::MatrixXd& lengths) const { return gradient1(lengths); }
+        Points tangent(const Eigen::ArrayXd& lengths) const { return gradient1(lengths); }
 
         /**
          * @brief Determines normal vectors at the given path lengths.
@@ -44,7 +44,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return normal vectors.
          */
-        Points normal(const Eigen::MatrixXd& lengths) const
+        Points normal(const Eigen::ArrayXd& lengths) const
         {
             const Points tangents { tangent(lengths) };
             return { tangents.y, -tangents.x };
