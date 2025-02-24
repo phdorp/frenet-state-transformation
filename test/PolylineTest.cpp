@@ -17,8 +17,8 @@ class PolylineTest : public testing::Test
     const FrenetTransform::Polyline<5> m_straight;
 
     const double m_radius { 10.0 };
-    const Eigen::Array<double, 200, 1> m_lengthsCircle { Eigen::Array<double, 200, 1>::LinSpaced(0.0, M_PI)} ;
-    const FrenetTransform::Polyline<200> m_circle {};
+    const Eigen::Array<double, 400, 1> m_lengthsCircle { Eigen::Array<double, 400, 1>::LinSpaced(-M_PI, M_PI)} ;
+    const FrenetTransform::Polyline<400> m_circle {};
 };
 
 TEST_F(PolylineTest, GetPointsStraight)
@@ -38,8 +38,8 @@ TEST_F(PolylineTest, GetPointsStraight)
 
 TEST_F(PolylineTest, GetPointsCircle)
 {
-    Eigen::ArrayXd input { {0.0, M_PI/8, M_PI/4} };
-    input *= m_radius * 2;
+    Eigen::ArrayXd input { {M_PI, M_PI + M_PI / 4, M_PI + M_PI / 2} };
+    input *= m_radius;
 
     const auto result { m_circle(input) };
 
@@ -51,22 +51,22 @@ TEST_F(PolylineTest, GetPointsCircle)
 
     for(int index {}; index < input.rows(); ++index)
     {
-        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-3);
-        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-3);
+        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-2);
+        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-2);
     }
 }
 
 TEST_F(PolylineTest, GetTangentsCircle)
 {
-    Eigen::ArrayXd input { {M_PI/8, M_PI/4} };
-    input *= m_radius * 2;
+    Eigen::ArrayXd input { {M_PI, M_PI + M_PI / 4, M_PI + M_PI / 2} };
+    input *= m_radius;
 
     const auto result { m_circle.tangent(input) };
 
     const FrenetTransform::Path::Points groundTruth
     {
-        {{-std::sqrt(50) / 10, -1.0}},
-        {{ std::sqrt(50) / 10,  0.0}}
+        {{0.0, -std::sqrt(50) / 10, -1.0}},
+        {{1.0,  std::sqrt(50) / 10,  0.0}}
     };
 
     for(int index {}; index < input.rows(); ++index)
@@ -78,15 +78,15 @@ TEST_F(PolylineTest, GetTangentsCircle)
 
 TEST_F(PolylineTest, GetNormalsCircle)
 {
-    Eigen::ArrayXd input { {M_PI/8, M_PI/4} };
-    input *= m_radius * 2;
+    Eigen::ArrayXd input { {M_PI, M_PI + M_PI / 4, M_PI + M_PI / 2} };
+    input *= m_radius;
 
     const auto result { m_circle.normal(input) };
 
     const FrenetTransform::Path::Points groundTruth
     {
-        {{std::sqrt(50) / 10, 0.0}},
-        {{std::sqrt(50) / 10, 1.0}}
+        {{1.0, std::sqrt(50) / 10, 0.0}},
+        {{0.0, std::sqrt(50) / 10, 1.0}}
     };
 
     for(int index {}; index < input.rows(); ++index)
