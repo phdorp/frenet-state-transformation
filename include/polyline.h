@@ -65,9 +65,8 @@ namespace FrenetTransform
         }
 
     private:
-        static constexpr int s_numGrad { 3 };
+        static constexpr int s_numGrad { 4 };
         std::array<ArrayT1, s_numGrad> m_x {}; /*<< coordinates and gradients in x-direction*/
-        ArrayT1 xGrad {};
         std::array<ArrayT1, s_numGrad> m_y {}; /*<< coordinates and gradients in y-direction*/
         ArrayT1 m_lengths {}; /*<< partial lengths along polyline*/
 
@@ -77,7 +76,11 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 1st order gradient at given path lengths.
          */
-        // Eigen::MatrixX2d gradient1 (const Eigen::MatrixXd& lengths) override;
+        Points gradient1 (const Eigen::MatrixXd& lengths) const override
+        {
+            const auto indicesGrad { indices(lengths) };
+            return { m_x[1](indicesGrad), m_y[1](indicesGrad) };
+        }
 
         /**
          * @brief Determines 2nd order gradient at the given path lengths.
@@ -85,7 +88,11 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 2nd order gradient at given path lengths.
          */
-        // Eigen::MatrixX2d gradient2 (const Eigen::MatrixXd& lengths) override;
+        Points gradient2 (const Eigen::MatrixXd& lengths) const override
+        {
+            const auto indicesGrad { indices(lengths) + 1 };
+            return { m_x[2](indicesGrad), m_y[2](indicesGrad) };
+        }
 
         /**
          * @brief Determines 3rd order gradient at the given path lengths.
@@ -93,7 +100,11 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 3rd order gradient at given path lengths.
          */
-        // Eigen::MatrixX2d gradient3 (const Eigen::MatrixXd& lengths) override;
+        Points gradient3 (const Eigen::MatrixXd& lengths) const override
+        {
+            const auto indicesGrad { indices(lengths) + 1 };
+            return { m_x[3](indicesGrad), m_y[3](indicesGrad) };
+        }
 
         /**
          * @brief Determines indices of polyline segment corresponding to the given path lengths.

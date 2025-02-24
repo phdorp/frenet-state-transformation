@@ -77,7 +77,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 1st order gradient at given path lengths.
          */
-        // virtual Eigen::MatrixX2d gradient1(const Eigen::MatrixXd& lengths) = 0;
+        virtual Points gradient1(const Eigen::MatrixXd& lengths) const = 0;
 
         /**
          * @brief Determines 2nd order gradient at the given path lengths.
@@ -85,7 +85,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 2nd order gradient at given path lengths.
          */
-        // virtual Eigen::MatrixX2d gradient2(const Eigen::MatrixXd& lengths) = 0;
+        virtual Points gradient2(const Eigen::MatrixXd& lengths) const = 0;
 
         /**
          * @brief Determines 3rd order gradient at the given path lengths.
@@ -93,7 +93,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 3rd order gradient at given path lengths.
          */
-        // virtual Eigen::MatrixX2d gradient3(const Eigen::MatrixXd& lengths) = 0;
+        virtual Points gradient3(const Eigen::MatrixXd& lengths) const = 0;
     };
 };
 
