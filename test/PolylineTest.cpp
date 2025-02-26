@@ -17,8 +17,8 @@ class PolylineTest : public testing::Test
     const FrenetTransform::Polyline<5> m_straight;
 
     const double m_radius { 10.0 };
-    const Eigen::Array<double, 400, 1> m_lengthsCircle { Eigen::Array<double, 400, 1>::LinSpaced(-M_PI, M_PI)} ;
-    const FrenetTransform::Polyline<400> m_circle {};
+    const Eigen::Array<double, 1079, 1> m_lengthsCircle { Eigen::Array<double, 1079, 1>::LinSpaced(-M_PI, M_PI)} ;
+    const FrenetTransform::Polyline<1079> m_circle {};
 };
 
 TEST_F(PolylineTest, GetPointsStraight)
@@ -103,7 +103,7 @@ TEST_F(PolylineTest, GetAnglesCircle)
 
     const auto result { m_circle.angle0(input) };
 
-    const Eigen::ArrayXd groundTruth {{0.0, M_PI / 2, 3 * M_PI / 4, -M_PI}};
+    const Eigen::ArrayXd groundTruth {{0.0, M_PI / 2, 3 * M_PI / 4, 0.0}};
 
     for(int index {}; index < input.rows(); ++index)
     {
