@@ -1,6 +1,8 @@
 #ifndef POLYLINE_H
 #define POLYLINE_H
 
+#include <math.h>
+
 #include "path.h"
 #include "math.h"
 
@@ -49,13 +51,56 @@ namespace FrenetTransform
             return { x, y };
         }
 
+        /**
+         * @brief Determines next points to the query points.
+         *
+         * @param points query points.
+         * @return Points next to query points.
+         */
+        Points nextPoints(const Points& points) const override
+        {
+            const auto nPoints { points.x.rows() };
+            Eigen::ArrayXd xNext (nPoints);
+            Eigen::ArrayXd yNext (nPoints);
+            Eigen::ArrayXd distsSq { Eigen::ArrayXd (nPoints) - 1.0 };
+
+            for(int cPoints {}; cPoints < nPoints; ++cPoints)
+            {
+                double distSq { -1.0 };
+
+                for(int cThis {}; cThis < T; ++cThis)
+                {
+                    const double xDiffPnt { m_x[0].data()[cThis] - points.x(cPoints) };
+                    const double yDiffPnt { m_y[0].data()[cThis] - points.y(cPoints) };
+                    const double param { (xDiffPnt * m_xDiff(cThis) + yDiffPnt * m_yDiff(cThis))
+                        / (std::pow(m_xDiff(cThis), 2) + std::pow(m_yDiff(cThis), 2)) };
+
+                    if(param >= 0.0 && param <= 1.0)
+                    {
+                        const double xCand { m_x[0].data()[cThis - 1] * param + (1 - param) * m_x[0].data()[cThis] };
+                        const double yCand { m_y[0].data()[cThis - 1] * param + (1 - param) * m_y[0].data()[cThis] };
+                        const double distSqCand { std::pow(xCand - points.x(cPoints), 2) + std::pow(yCand - points.y(cPoints), 2) };
+
+                        if(distSq < 0.0 || distSq > distSqCand)
+                        {
+                            xNext(cPoints) = xCand;
+                            yNext(cPoints) = yCand;
+                            distSq = distSqCand;
+                        }
+                    }
+                }
+            }
+
+            return { xNext, yNext };
+        }
+
         void setPoints(const ArrayT1& x, const ArrayT1& y)
         {
             m_x[0] = x;
-m_xDiff = FrenetTransform::diffBackward(x);
+            m_xDiff = FrenetTransform::diffBackward(x);
 
             m_y[0] = y;
-m_yDiff = FrenetTransform::diffBackward(y);
+            m_yDiff = FrenetTransform::diffBackward(y);
 
             m_lengths = FrenetTransform::partialLength(x, y);
 
@@ -68,7 +113,7 @@ m_yDiff = FrenetTransform::diffBackward(y);
 
     private:
         static constexpr int s_numGrad { 4 };
-ArrayT1 m_xDiff {};
+        ArrayT1 m_xDiff {};
         ArrayT1 m_yDiff {};
         std::array<ArrayT1, s_numGrad> m_x {}; /*<< coordinates and gradients in x-direction*/
         std::array<ArrayT1, s_numGrad> m_y {}; /*<< coordinates and gradients in y-direction*/

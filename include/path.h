@@ -52,6 +52,14 @@ namespace FrenetTransform
         }
 
         /**
+         * @brief Determines next points to the query points.
+         *
+         * @param points query points.
+         * @return Points next to query points.
+         */
+        virtual Points nextPoints(const Points& points) const = 0;
+
+        /**
          * @brief Determines path angle at the given path lengths.
          *
          * @param lengths lengths along the path.
