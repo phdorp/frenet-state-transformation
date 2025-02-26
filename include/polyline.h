@@ -52,8 +52,13 @@ namespace FrenetTransform
         void setPoints(const ArrayT1& x, const ArrayT1& y)
         {
             m_x[0] = x;
+m_xDiff = FrenetTransform::diffBackward(x);
+
             m_y[0] = y;
+m_yDiff = FrenetTransform::diffBackward(y);
+
             m_lengths = FrenetTransform::partialLength(x, y);
+
             for(unsigned int orderGrad { 1 }; orderGrad < s_numGrad; ++orderGrad)
             {
                 m_x[orderGrad] = FrenetTransform::gradient(m_x[orderGrad - 1], m_lengths);
@@ -63,6 +68,8 @@ namespace FrenetTransform
 
     private:
         static constexpr int s_numGrad { 4 };
+ArrayT1 m_xDiff {};
+        ArrayT1 m_yDiff {};
         std::array<ArrayT1, s_numGrad> m_x {}; /*<< coordinates and gradients in x-direction*/
         std::array<ArrayT1, s_numGrad> m_y {}; /*<< coordinates and gradients in y-direction*/
         ArrayT1 m_lengths {}; /*<< partial lengths along polyline*/
