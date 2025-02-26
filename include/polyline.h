@@ -31,10 +31,7 @@ namespace FrenetTransform
          * @param x coordinates in x-direction.
          * @param y coordinates in y-direction.
          */
-        Polyline(const ArrayT1& x, const ArrayT1& y)
-        {
-            setPoints(x, y);
-        }
+        Polyline(const ArrayT1& x, const ArrayT1& y) { setPoints(x, y); }
 
         Points operator()(const Eigen::ArrayXd& lengths) const override
         {
