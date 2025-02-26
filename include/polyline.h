@@ -90,7 +90,7 @@ namespace FrenetTransform
          */
         Points gradient2 (const Eigen::MatrixXd& lengths) const override
         {
-            const auto indicesGrad { indices(lengths) + 1 };
+            const auto indicesGrad { indices(lengths) };
             return { m_x[2](indicesGrad), m_y[2](indicesGrad) };
         }
 
@@ -102,7 +102,7 @@ namespace FrenetTransform
          */
         Points gradient3 (const Eigen::MatrixXd& lengths) const override
         {
-            const auto indicesGrad { indices(lengths) + 1 };
+            const auto indicesGrad { indices(lengths) };
             return { m_x[3](indicesGrad), m_y[3](indicesGrad) };
         }
 
