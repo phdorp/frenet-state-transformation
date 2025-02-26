@@ -4,6 +4,8 @@
 #include <eigen3/Eigen/Core>
 #include <math.h>
 
+using Points = FrenetTransform::Path::Points;
+
 // The fixture for testing class Foo.
 class PolylineTest : public testing::Test
 {
@@ -138,6 +140,48 @@ TEST_F(PolylineTest, GetAngles2Circle)
     for(int index {}; index < input.rows(); ++index)
     {
         EXPECT_NEAR(groundTruth(index), result(index), 1e-2);
+    }
+}
+
+TEST_F(PolylineTest, NextPointsStraight)
+{
+    Points input {
+        {{0.0, 3.0, 2.0}},
+        {{0.0, 3.0, 4.0}}
+    };
+
+    const auto result { m_straight.nextPoints(input) };
+
+    const Points groundTruth {
+        {{0.0, 3.0, 3.0}},
+        {{0.0, 3.0, 3.0}}
+    };
+
+    for(int index {}; index < input.x.rows(); ++index)
+    {
+        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-10);
+        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-10);
+    }
+}
+
+TEST_F(PolylineTest, NextPointsCircle)
+{
+    Points input {
+        {{  0.0,  0.0, 1.0}},
+        {{-10.0, -2.0, 1.0}}
+    };
+
+    const auto result { m_circle.nextPoints(input) };
+
+    const Points groundTruth {
+        {{  0.0,   0.0, std::sqrt(50)}},
+        {{-10.0, -10.0, std::sqrt(50)}}
+    };
+
+    for(int index {}; index < input.x.rows(); ++index)
+    {
+        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-2);
+        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-2);
     }
 }
 
