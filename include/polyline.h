@@ -67,7 +67,18 @@ namespace FrenetTransform
 
             for(int cPoints {}; cPoints < points.numPoints(); ++cPoints)
             {
+                const auto distSqCorners { (points(cPoints).x() - m_x[0]).pow(2) + (points(cPoints).y() - m_y[0]).pow(2) };
+
                 double distSq { -1.0 };
+
+                for(int cCorder {}; cCorder < distSqCorners.rows(); ++cCorder)
+                {
+                    if(distSq < 0.0 ||  distSqCorners(cCorder) < distSq)
+                    {
+                        distSq = distSqCorners(cCorder);
+                        lLenghts(cPoints) = m_lengths(cCorder);
+                    }
+                }
 
                 for(int cThis {}; cThis < T; ++cThis)
                 {
