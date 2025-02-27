@@ -88,8 +88,8 @@ TEST_F(PolylineTest, GetNormalsCircle)
 
     const Points<Eigen::Dynamic> groundTruth
     {
-        {{1.0, std::sqrt(50) / 10, 0.0}},
-        {{0.0, std::sqrt(50) / 10, 1.0}}
+        {{-1.0, -std::sqrt(50) / 10,  0.0}},
+        {{ 0.0, -std::sqrt(50) / 10, -1.0}}
     };
 
     for(int index {}; index < input.rows(); ++index)

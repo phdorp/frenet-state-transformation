@@ -47,7 +47,7 @@ namespace FrenetTransform
         Points<Eigen::Dynamic> normal(const Eigen::ArrayXd& lengths) const
         {
             const Points<Eigen::Dynamic> tangents { tangent(lengths) };
-            return { tangents.y(), -tangents.x() };
+            return { -tangents.y(), tangents.x() };
         }
 
         /**
