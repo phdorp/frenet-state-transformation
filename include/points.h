@@ -23,6 +23,8 @@ namespace FrenetTransform{
 
         int numPoints() const { return NumPoints > -1 ? NumPoints : m_x.rows(); }
 
+        Eigen::Array<double, NumPoints, 1> distance(const Point& point) { return ((m_x - point.x()).pow(2) + (m_y - point.y()).pow(2)).sqrt(); }
+
         const Eigen::Array<double, NumPoints, 1>& x() const { return m_x; }
 
         double x(const int index) const { return m_x(index); }
@@ -53,6 +55,12 @@ namespace FrenetTransform{
 
         template<int T>
         friend Eigen::Array<double, T, 1> operator*(const Points<T>& points1, const Points<T>& points2) { return { points1.m_x * points2.m_x + points1.m_y * points2.m_y }; }
+
+        template<int T>
+        friend Points<T> operator*(const Points<T>& points, const Eigen::Array<double, T, 1>& nums) { return { points.m_x * nums, points.m_y * nums }; }
+
+        template<int T>
+        friend Points<T> operator*(const Eigen::Array<double, T, 1>& nums, const Points<T>& points) { return points * nums; }
 
     private:
         const Eigen::Array<double, NumPoints, 1> m_x {};
