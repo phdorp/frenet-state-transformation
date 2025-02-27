@@ -56,7 +56,7 @@ namespace FrenetTransform
          * @param points query points.
          * @return Points<Eigen::Dynamic> next to query points.
          */
-        virtual Points<Eigen::Dynamic> nextPoints(const Points<Eigen::Dynamic>& points) const = 0;
+        virtual Eigen::ArrayXd lengths(const Points<Eigen::Dynamic>& points) const = 0;
 
         /**
          * @brief Determines path angle at the given path lengths.

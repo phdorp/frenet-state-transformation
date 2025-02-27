@@ -151,7 +151,8 @@ TEST_F(PolylineTest, NextPointsStraight)
         {{0.0, 3.0, 4.0}}
     };
 
-    const auto result { m_straight.nextPoints(input) };
+    const auto lengths { m_straight.lengths(input) };
+    const auto result { m_straight(lengths) };
 
     const Points<Eigen::Dynamic> groundTruth {
         {{0.0, 3.0, 3.0}},
@@ -172,7 +173,8 @@ TEST_F(PolylineTest, NextPointsCircle)
         {{-10.0, -2.0, 1.0}}
     };
 
-    const auto result { m_circle.nextPoints(input) };
+    const auto lengths { m_circle.lengths(input) };
+    const auto result { m_circle(lengths) };
 
     const Points<Eigen::Dynamic> groundTruth {
         {{  0.0,   0.0, std::sqrt(50)}},

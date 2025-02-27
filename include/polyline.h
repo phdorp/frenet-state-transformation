@@ -6,6 +6,7 @@
 #include "path.h"
 #include "math.h"
 #include "points.h"
+#include "point.h"
 
 using FrenetTransform::Points;
 
@@ -60,10 +61,9 @@ namespace FrenetTransform
          * @param points query points.
          * @return Points<Eigen::Dynamic> next to query points.
          */
-        Points<Eigen::Dynamic> nextPoints(const Points<Eigen::Dynamic>& points) const override
+        Eigen::ArrayXd lengths(const Points<Eigen::Dynamic>& points) const override
         {
-            Eigen::ArrayXd xNext (points.numPoints());
-            Eigen::ArrayXd yNext (points.numPoints());
+            Eigen::ArrayXd lLenghts (points.numPoints());
 
             for(int cPoints {}; cPoints < points.numPoints(); ++cPoints)
             {
@@ -71,28 +71,30 @@ namespace FrenetTransform
 
                 for(int cThis {}; cThis < T; ++cThis)
                 {
-                    const double xDiffPnt { m_x[0].data()[cThis] - points.x(cPoints) };
-                    const double yDiffPnt { m_y[0].data()[cThis] - points.y(cPoints) };
+                    const Point pathNext { m_x[0].data()[cThis], m_y[0].data()[cThis] };
+                    const double xDiffPnt { pathNext.x() - points.x(cPoints) };
+                    const double yDiffPnt { pathNext.y() - points.y(cPoints) };
                     const double param { (xDiffPnt * m_xDiff(cThis) + yDiffPnt * m_yDiff(cThis))
                         / (std::pow(m_xDiff(cThis), 2) + std::pow(m_yDiff(cThis), 2)) };
 
                     if(param >= 0.0 && param <= 1.0)
                     {
-                        const double xCand { m_x[0].data()[cThis - 1] * param + (1 - param) * m_x[0].data()[cThis] };
-                        const double yCand { m_y[0].data()[cThis - 1] * param + (1 - param) * m_y[0].data()[cThis] };
+                        const Point pathPrev { m_x[0].data()[cThis - 1], m_y[0].data()[cThis - 1] };
+                        const double xCand { pathPrev.x() * param + (1 - param) * pathNext.x() };
+                        const double yCand { pathPrev.y() * param + (1 - param) * pathNext.y() };
+                        const Point cand { xCand, yCand };
                         const double distSqCand { std::pow(xCand - points.x(cPoints), 2) + std::pow(yCand - points.y(cPoints), 2) };
 
                         if(distSq < 0.0 || distSq > distSqCand)
                         {
-                            xNext(cPoints) = xCand;
-                            yNext(cPoints) = yCand;
                             distSq = distSqCand;
+                            lLenghts(cPoints) = m_lengths(cThis - 1) + cand.distance(pathPrev);
                         }
                     }
                 }
             }
 
-            return { xNext, yNext };
+            return lLenghts;
         }
 
         void setPoints(const ArrayT1& x, const ArrayT1& y)
