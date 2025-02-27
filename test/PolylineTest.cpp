@@ -22,7 +22,7 @@ class PolylineTest : public testing::Test
 
     const FrenetTransform::Polyline<5> m_straight;
 
-    const double m_radius { 10.0 };
+    const double m_radius { 5.0 };
     const Eigen::Array<double, 1079, 1> m_lengthsCircle { Eigen::Array<double, 1079, 1>::LinSpaced(-M_PI, M_PI)} ;
     const FrenetTransform::Polyline<1079> m_circle {};
     const FrenetTransform::Transform m_circleTransform;
