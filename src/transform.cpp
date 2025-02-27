@@ -11,3 +11,10 @@ Points<Eigen::Dynamic> Transform::posFrenet(const Points<Eigen::Dynamic>& posCar
     const auto normals { m_path->normal(lengths) };
     return { lengths, normals * posDiff };
 }
+
+Points<Eigen::Dynamic> Transform::posCartes(const Points<Eigen::Dynamic>& posFrenet) const
+{
+    const auto posPath { m_path->operator()(posFrenet.x()) };
+    const auto normals { m_path->normal(posFrenet.x()) };
+    return posPath + normals * posFrenet.y();
+}
