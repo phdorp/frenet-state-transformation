@@ -1,10 +1,11 @@
 #include "polyline.h"
+#include "points.h"
 
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
 #include <math.h>
 
-using Points = FrenetTransform::Path::Points;
+using FrenetTransform::Points;
 
 // The fixture for testing class Foo.
 class PolylineTest : public testing::Test
@@ -29,12 +30,12 @@ TEST_F(PolylineTest, GetPointsStraight)
 
     const auto result { m_straight(input) };
 
-    const FrenetTransform::Path::Points groundTruth { {{0.0, 2.0, 7.0}}, {{0.0, 2.0, 7.0}} };
+    const Points<Eigen::Dynamic> groundTruth { {{0.0, 2.0, 7.0}}, {{0.0, 2.0, 7.0}} };
 
     for(int index {}; index < input.rows(); ++index)
     {
-        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-10);
-        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-10);
+        EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-10);
+        EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-10);
     }
 }
 
@@ -45,7 +46,7 @@ TEST_F(PolylineTest, GetPointsCircle)
 
     const auto result { m_circle(input) };
 
-    const FrenetTransform::Path::Points groundTruth
+    const Points<Eigen::Dynamic> groundTruth
     {
         {{10.0, std::sqrt(50),  0.0}},
         {{ 0.0, std::sqrt(50), 10.0}}
@@ -53,8 +54,8 @@ TEST_F(PolylineTest, GetPointsCircle)
 
     for(int index {}; index < input.rows(); ++index)
     {
-        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-2);
-        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-2);
+        EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-2);
+        EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-2);
     }
 }
 
@@ -65,7 +66,7 @@ TEST_F(PolylineTest, GetTangentsCircle)
 
     const auto result { m_circle.tangent(input) };
 
-    const FrenetTransform::Path::Points groundTruth
+    const Points<Eigen::Dynamic> groundTruth
     {
         {{0.0, -std::sqrt(50) / 10, -1.0}},
         {{1.0,  std::sqrt(50) / 10,  0.0}}
@@ -73,8 +74,8 @@ TEST_F(PolylineTest, GetTangentsCircle)
 
     for(int index {}; index < input.rows(); ++index)
     {
-        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-2);
-        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-2);
+        EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-2);
+        EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-2);
     }
 }
 
@@ -85,7 +86,7 @@ TEST_F(PolylineTest, GetNormalsCircle)
 
     const auto result { m_circle.normal(input) };
 
-    const FrenetTransform::Path::Points groundTruth
+    const Points<Eigen::Dynamic> groundTruth
     {
         {{1.0, std::sqrt(50) / 10, 0.0}},
         {{0.0, std::sqrt(50) / 10, 1.0}}
@@ -93,8 +94,8 @@ TEST_F(PolylineTest, GetNormalsCircle)
 
     for(int index {}; index < input.rows(); ++index)
     {
-        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-2);
-        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-2);
+        EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-2);
+        EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-2);
     }
 }
 
@@ -145,43 +146,43 @@ TEST_F(PolylineTest, GetAngles2Circle)
 
 TEST_F(PolylineTest, NextPointsStraight)
 {
-    Points input {
+    Points<Eigen::Dynamic> input {
         {{0.0, 3.0, 2.0}},
         {{0.0, 3.0, 4.0}}
     };
 
     const auto result { m_straight.nextPoints(input) };
 
-    const Points groundTruth {
+    const Points<Eigen::Dynamic> groundTruth {
         {{0.0, 3.0, 3.0}},
         {{0.0, 3.0, 3.0}}
     };
 
-    for(int index {}; index < input.x.rows(); ++index)
+    for(int index {}; index < input.x().rows(); ++index)
     {
-        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-10);
-        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-10);
+        EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-10);
+        EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-10);
     }
 }
 
 TEST_F(PolylineTest, NextPointsCircle)
 {
-    Points input {
+    Points<Eigen::Dynamic> input {
         {{  0.0,  0.0, 1.0}},
         {{-10.0, -2.0, 1.0}}
     };
 
     const auto result { m_circle.nextPoints(input) };
 
-    const Points groundTruth {
+    const Points<Eigen::Dynamic> groundTruth {
         {{  0.0,   0.0, std::sqrt(50)}},
         {{-10.0, -10.0, std::sqrt(50)}}
     };
 
-    for(int index {}; index < input.x.rows(); ++index)
+    for(int index {}; index < input.x().rows(); ++index)
     {
-        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-2);
-        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-2);
+        EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-2);
+        EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-2);
     }
 }
 

@@ -5,6 +5,9 @@
 
 #include "path.h"
 #include "math.h"
+#include "points.h"
+
+using FrenetTransform::Points;
 
 namespace FrenetTransform
 {
@@ -35,7 +38,7 @@ namespace FrenetTransform
          */
         Polyline(const ArrayT1& x, const ArrayT1& y) { setPoints(x, y); }
 
-        Points operator()(const Eigen::ArrayXd& lengths) const override
+        Points<Eigen::Dynamic> operator()(const Eigen::ArrayXd& lengths) const override
         {
             // indices of corresponding polyline segments
             const Eigen::ArrayXi indicesLengths { indices(lengths) };
@@ -55,16 +58,14 @@ namespace FrenetTransform
          * @brief Determines next points to the query points.
          *
          * @param points query points.
-         * @return Points next to query points.
+         * @return Points<Eigen::Dynamic> next to query points.
          */
-        Points nextPoints(const Points& points) const override
+        Points<Eigen::Dynamic> nextPoints(const Points<Eigen::Dynamic>& points) const override
         {
-            const auto nPoints { points.x.rows() };
-            Eigen::ArrayXd xNext (nPoints);
-            Eigen::ArrayXd yNext (nPoints);
-            Eigen::ArrayXd distsSq { Eigen::ArrayXd (nPoints) - 1.0 };
+            Eigen::ArrayXd xNext (points.numPoints());
+            Eigen::ArrayXd yNext (points.numPoints());
 
-            for(int cPoints {}; cPoints < nPoints; ++cPoints)
+            for(int cPoints {}; cPoints < points.numPoints(); ++cPoints)
             {
                 double distSq { -1.0 };
 
@@ -125,7 +126,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 1st order gradient at given path lengths.
          */
-        Points gradient1 (const Eigen::MatrixXd& lengths) const override
+        Points<Eigen::Dynamic> gradient1 (const Eigen::MatrixXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
             return { m_x[1](indicesGrad), m_y[1](indicesGrad) };
@@ -137,7 +138,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 2nd order gradient at given path lengths.
          */
-        Points gradient2 (const Eigen::MatrixXd& lengths) const override
+        Points<Eigen::Dynamic> gradient2 (const Eigen::MatrixXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
             return { m_x[2](indicesGrad), m_y[2](indicesGrad) };
@@ -149,7 +150,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 3rd order gradient at given path lengths.
          */
-        Points gradient3 (const Eigen::MatrixXd& lengths) const override
+        Points<Eigen::Dynamic> gradient3 (const Eigen::MatrixXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
             return { m_x[3](indicesGrad), m_y[3](indicesGrad) };
