@@ -52,8 +52,8 @@ TEST_F(PolylineTest, GetPointsCircle)
 
     const Points<Eigen::Dynamic> groundTruth
     {
-        {{10.0, std::sqrt(50),  0.0}},
-        {{ 0.0, std::sqrt(50), 10.0}}
+        {{m_radius, std::sqrt(50),  0.0}},
+        {{ 0.0, std::sqrt(50), m_radius}}
     };
 
     for(int index {}; index < input.rows(); ++index)
@@ -174,15 +174,15 @@ TEST_F(PolylineTest, NextPointsCircle)
 {
     Points<Eigen::Dynamic> input {
         {{  0.0,  0.0, 1.0}},
-        {{-10.0, -2.0, 1.0}}
+        {{-m_radius, -2.0, 1.0}}
     };
 
     const auto lengths { m_circle.lengths(input) };
     const auto result { m_circle(lengths) };
 
     const Points<Eigen::Dynamic> groundTruth {
-        {{  0.0,   0.0, std::sqrt(50)}},
-        {{-10.0, -10.0, std::sqrt(50)}}
+        {{  0.0,   0.0, m_radius / std::sqrt(2)}},
+        {{-m_radius, -m_radius, m_radius / std::sqrt(2)}}
     };
 
     for(int index {}; index < input.x().rows(); ++index)
