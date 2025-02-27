@@ -195,21 +195,17 @@ TEST_F(PolylineTest, NextPointsCircle)
 TEST_F(PolylineTest, PosFrenetCircle)
 {
     const Points<Eigen::Dynamic> input {
-        {{      0.0,  0.0, 1.0}},
-        {{-m_radius, -2.0, 1.0}}
+        {{       0.0,  0.0, 1.0, 2 * m_radius }},
+        {{ -m_radius, -2.0, 1.0, 2 * m_radius }}
     };
 
-    const auto result { m_circleTransform.posFrenet(input) };
-
-    const Points<Eigen::Dynamic> groundTruth {
-        {{ M_PI / 2 * m_radius, M_PI / 2 * m_radius, 5 * M_PI / 4 * m_radius }},
-        {{                 0.0,      m_radius - 2.0, m_radius - std::sqrt(2) }}
-    };
+    const auto posFrenet {     m_circleTransform.posFrenet(input) };
+    const auto posCartes { m_circleTransform.posCartes(posFrenet) };
 
     for(int index {}; index < input.numPoints(); ++index)
     {
-        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-2);
-        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-2);
+        EXPECT_NEAR(posCartes.x(index), input.x(index), 1e-2);
+        EXPECT_NEAR(posCartes.y(index), input.y(index), 1e-2);
     }
 }
 
