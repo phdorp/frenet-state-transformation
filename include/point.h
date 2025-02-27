@@ -20,6 +20,8 @@ namespace FrenetTransform{
 
         double y() const { return m_y; }
 
+        Point operator-() const { return { -m_x, -m_y }; }
+
     private:
         double m_x {};
         double m_y {};
