@@ -215,6 +215,34 @@ TEST_F(PolylineTest, PosFrenetCircle)
     }
 }
 
+TEST_F(PolylineTest, VelFrenetCircle)
+{
+    Points<Eigen::Dynamic> posFrenets {
+        Eigen::Array<double, -1, 1>::Random(20).abs() * M_PI * 2,
+        Eigen::Array<double, -1, 1>::Random(20) * m_radius
+    };
+
+    Points<Eigen::Dynamic> velFrenets {
+        Eigen::Array<double, -1, 1>::Random(20) * m_radius,
+        Eigen::Array<double, -1, 1>::Random(20) * m_radius
+    };
+
+    // test frenet frame results since error grows with distance from path
+    const auto posCartes { m_circleTransform.posCartes(posFrenets) };
+    const auto velCartes { m_circleTransform.velCartes(velFrenets, posFrenets) };
+    const auto velFrenetsRes { m_circleTransform.velFrenet(velCartes, posFrenets) };
+
+    for(int index {}; index < posCartes.numPoints(); ++index)
+    {
+        // relative error
+        EXPECT_NEAR(velFrenetsRes.x(index) / velFrenets.x(index), 1.0, 1e-6);
+        EXPECT_NEAR(velFrenetsRes.y(index) / velFrenets.y(index), 1.0, 1e-6);
+        // absolute error
+        EXPECT_NEAR(velFrenetsRes.x(index), velFrenets.x(index), 1e-4);
+        EXPECT_NEAR(velFrenetsRes.y(index), velFrenets.y(index), 1e-4);
+    }
+}
+
 int main(int argc, char **argv)
 {
     std::srand(0);
