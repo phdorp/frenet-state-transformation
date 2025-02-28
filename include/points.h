@@ -63,8 +63,8 @@ namespace FrenetTransform{
         friend Points<T> operator*(const Eigen::Array<double, T, 1>& nums, const Points<T>& points) { return points * nums; }
 
     private:
-        const Eigen::Array<double, NumPoints, 1> m_x {};
-        const Eigen::Array<double, NumPoints, 1> m_y {};
+        Eigen::Array<double, NumPoints, 1> m_x {};
+        Eigen::Array<double, NumPoints, 1> m_y {};
     };
 };
 
