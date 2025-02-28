@@ -18,3 +18,14 @@ Points<Eigen::Dynamic> Transform::posCartes(const Points<Eigen::Dynamic>& posFre
     const auto normals { m_path->normal(posFrenet.x()) };
     return posPath + normals * posFrenet.y();
 }
+
+Eigen::Array<Eigen::ArrayXd, 2, 2> Transform::velTransform(const Points<Eigen::Dynamic>& posFrenet) const
+{
+    const auto tangents { m_path->tangent(posFrenet.x()) };
+    const auto normals { m_path->normal(posFrenet.x()) };
+    const auto curvs { m_path->angle1(posFrenet.x()) };
+    return {
+        {tangents.x() * (1 - curvs * posFrenet.y()), normals.x()},
+        {                              tangents.y(), normals.y()}
+    };
+}

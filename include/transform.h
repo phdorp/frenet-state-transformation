@@ -44,6 +44,8 @@ namespace FrenetTransform
 
     private:
         const std::shared_ptr<Path> m_path; /**< Store path. */
+
+        Eigen::Array<Eigen::ArrayXd, 2, 2> velTransform(const Points<Eigen::Dynamic>& posFrenet) const;
     };
 };
 
