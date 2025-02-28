@@ -38,7 +38,7 @@ namespace FrenetTransform
 
         Points<Eigen::Dynamic> posCartes(const Points<Eigen::Dynamic>& posFrenet) const;
 
-        Points<Eigen::Dynamic> velCartes(const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posCartes) const;
+        Points<Eigen::Dynamic> velCartes(const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const;
 
         Points<Eigen::Dynamic> accCartes(const Points<Eigen::Dynamic>& accFrenet, const Points<Eigen::Dynamic>& velCartes, const Points<Eigen::Dynamic>& posCartes) const;
 
