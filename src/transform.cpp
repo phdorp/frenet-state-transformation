@@ -29,3 +29,13 @@ Eigen::Array<Eigen::ArrayXd, 2, 2> Transform::velTransform(const Points<Eigen::D
         {                              tangents.y(), normals.y()}
     };
 }
+
+Eigen::Array<Eigen::ArrayXd, 2, 2> Transform::velTransformInv(const Points<Eigen::Dynamic>& posFrenet) const
+{
+    const auto velTransforms { Transform::velTransform(posFrenet) };
+    const auto normalization { 1 / (velTransforms(0, 0) * velTransforms(1, 1) - velTransforms(1, 0) * velTransforms(0, 1)) };
+    return {
+        { velTransforms(1, 1) * normalization, -velTransforms(0, 1) * normalization},
+        {-velTransforms(1, 0) * normalization,  velTransforms(0, 0) * normalization}
+    };
+}
