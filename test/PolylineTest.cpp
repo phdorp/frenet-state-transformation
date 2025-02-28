@@ -195,22 +195,29 @@ TEST_F(PolylineTest, NextPointsCircle)
 TEST_F(PolylineTest, PosFrenetCircle)
 {
     const Points<Eigen::Dynamic> input {
-        {{       0.0,  0.0, 1.0, 2 * m_radius }},
-        {{ -m_radius, -2.0, 1.0, 2 * m_radius }}
+        Eigen::Array<double, -1, 1>::Random(20) * 1.5 * m_radius,
+        Eigen::Array<double, -1, 1>::Random(20) * 1.5 * m_radius
     };
 
-    const auto posFrenet {     m_circleTransform.posFrenet(input) };
-    const auto posCartes { m_circleTransform.posCartes(posFrenet) };
+    // test frenet frame results since error grows with distance from path
+    const auto groundTruth     { m_circleTransform.posFrenet(input) };
+    const auto posCartes { m_circleTransform.posCartes(groundTruth) };
+    const auto result      { m_circleTransform.posFrenet(posCartes) };
 
     for(int index {}; index < input.numPoints(); ++index)
     {
-        EXPECT_NEAR(posCartes.x(index), input.x(index), 1e-2);
-        EXPECT_NEAR(posCartes.y(index), input.y(index), 1e-2);
+        // relative error
+        EXPECT_NEAR(groundTruth.x(index) / result.x(index), 1.0, 1e-6);
+        EXPECT_NEAR(groundTruth.y(index) / result.y(index), 1.0, 1e-6);
+        // absolute error
+        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-4);
+        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-4);
     }
 }
 
 int main(int argc, char **argv)
 {
+    std::srand(0);
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
