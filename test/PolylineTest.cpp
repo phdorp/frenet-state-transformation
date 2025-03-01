@@ -194,24 +194,53 @@ TEST_F(PolylineTest, NextPointsCircle)
 
 TEST_F(PolylineTest, PosFrenetCircle)
 {
-    const Points<Eigen::Dynamic> input {
-        Eigen::Array<double, -1, 1>::Random(20) * 1.5 * m_radius,
-        Eigen::Array<double, -1, 1>::Random(20) * 1.5 * m_radius
-    };
+    // sample radii and angles
+    const Eigen::Array<double, Eigen::Dynamic, 1> radii { Eigen::Array<double, Eigen::Dynamic, 1>::Random(20).abs() * m_radius };
+    const Eigen::Array<double, Eigen::Dynamic, 1> angles { Eigen::Array<double, Eigen::Dynamic, 1>::Random(20) * M_PI };
 
-    // test frenet frame results since error grows with distance from path
-    const auto groundTruth     { m_circleTransform.posFrenet(input) };
-    const auto posCartes { m_circleTransform.posCartes(groundTruth) };
-    const auto result      { m_circleTransform.posFrenet(posCartes) };
+    // determine cartesian positions
+    const Points<Eigen::Dynamic> input { radii * angles.cos(), radii * angles.sin() };
+
+    // determine frenet positions
+    const auto result { m_circleTransform.posFrenet(input) };
+
+    // determine ground truth frenet positions
+    const Points<Eigen::Dynamic> groundTruth  {m_radius * (angles + M_PI), m_radius - radii };
 
     for(int index {}; index < input.numPoints(); ++index)
     {
         // relative error
-        EXPECT_NEAR(groundTruth.x(index) / result.x(index), 1.0, 1e-6);
-        EXPECT_NEAR(groundTruth.y(index) / result.y(index), 1.0, 1e-6);
+        EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 1e-2);
+        EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 1e-2);
         // absolute error
-        EXPECT_NEAR(groundTruth.x(index), result.x(index), 1e-4);
-        EXPECT_NEAR(groundTruth.y(index), result.y(index), 1e-4);
+        EXPECT_NEAR(result.x(index), groundTruth.x(index), 1e-1);
+        EXPECT_NEAR(result.y(index), groundTruth.y(index), 1e-1);
+    }
+}
+
+TEST_F(PolylineTest, PosCartCircle)
+{
+    // sample radii and angles
+    const Eigen::Array<double, Eigen::Dynamic, 1> radii { Eigen::Array<double, Eigen::Dynamic, 1>::Random(20).abs() * m_radius };
+    const Eigen::Array<double, Eigen::Dynamic, 1> angles { Eigen::Array<double, Eigen::Dynamic, 1>::Random(20) * M_PI };
+
+    // determine frenet positions
+    const Points<Eigen::Dynamic> input  {m_radius * (angles + M_PI), m_radius - radii };
+
+    // determine frenet positions
+    const auto result { m_circleTransform.posCartes(input) };
+
+    // determine ground truth cartesian positions
+    const Points<Eigen::Dynamic> groundTruth { radii * angles.cos(), radii * angles.sin() };
+
+    for(int index {}; index < input.numPoints(); ++index)
+    {
+        // relative error
+        EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 0.7);
+        EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 0.7);
+        // absolute error
+        EXPECT_NEAR(result.x(index), groundTruth.x(index), 2e-2);
+        EXPECT_NEAR(result.y(index), groundTruth.y(index), 2e-2);
     }
 }
 
