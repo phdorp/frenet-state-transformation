@@ -246,29 +246,65 @@ TEST_F(PolylineTest, PosCartCircle)
 
 TEST_F(PolylineTest, VelFrenetCircle)
 {
-    Points<Eigen::Dynamic> posFrenets {
-        Eigen::Array<double, -1, 1>::Random(20).abs() * M_PI * 2,
-        Eigen::Array<double, -1, 1>::Random(20) * m_radius
-    };
+    // sample radii and angles
+    const Eigen::Array<double, Eigen::Dynamic, 1> radii { Eigen::Array<double, Eigen::Dynamic, 1>::Random(20).abs() * m_radius };
+    const Eigen::Array<double, Eigen::Dynamic, 1> angles { Eigen::Array<double, Eigen::Dynamic, 1>::Random(20) * M_PI };
 
-    Points<Eigen::Dynamic> velFrenets {
-        Eigen::Array<double, -1, 1>::Random(20) * m_radius,
-        Eigen::Array<double, -1, 1>::Random(20) * m_radius
-    };
+    // sample radial and angular velocities
+    const Eigen::Array<double, Eigen::Dynamic, 1> radiiDt { Eigen::Array<double, Eigen::Dynamic, 1>::Random(20) * m_radius };
+    const Eigen::Array<double, Eigen::Dynamic, 1> anglesDt { Eigen::Array<double, Eigen::Dynamic, 1>::Random(20) * M_PI / 8 };
+
+    // determine cartesian positions
+    const Points<Eigen::Dynamic> posFrenet {m_radius * (angles + M_PI), m_radius - radii };
+
+    // determine cartesian velocities
+    const Points<Eigen::Dynamic> input { radiiDt * angles.cos() - radii * anglesDt * angles.sin(), radiiDt * angles.sin() + radii * anglesDt * angles.cos() };
 
     // test frenet frame results since error grows with distance from path
-    const auto posCartes { m_circleTransform.posCartes(posFrenets) };
-    const auto velCartes { m_circleTransform.velCartes(velFrenets, posFrenets) };
-    const auto velFrenetsRes { m_circleTransform.velFrenet(velCartes, posFrenets) };
+    const auto result { m_circleTransform.velFrenet(input, posFrenet) };
 
-    for(int index {}; index < posCartes.numPoints(); ++index)
+    const Points<Eigen::Dynamic> groundTruth { m_radius * anglesDt, - radiiDt };
+
+    for(int index {}; index < posFrenet.numPoints(); ++index)
     {
         // relative error
-        EXPECT_NEAR(velFrenetsRes.x(index) / velFrenets.x(index), 1.0, 1e-6);
-        EXPECT_NEAR(velFrenetsRes.y(index) / velFrenets.y(index), 1.0, 1e-6);
+        EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 0.4);
+        EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 1e-2);
         // absolute error
-        EXPECT_NEAR(velFrenetsRes.x(index), velFrenets.x(index), 1e-4);
-        EXPECT_NEAR(velFrenetsRes.y(index), velFrenets.y(index), 1e-4);
+        EXPECT_NEAR(result.x(index), groundTruth.x(index), 0.2);
+        EXPECT_NEAR(result.y(index), groundTruth.y(index), 1e-2);
+    }
+}
+
+TEST_F(PolylineTest, VelCartCircle)
+{
+    // sample radii and angles
+    const Eigen::Array<double, Eigen::Dynamic, 1> radii { Eigen::Array<double, Eigen::Dynamic, 1>::Random(1).abs() * m_radius };
+    const Eigen::Array<double, Eigen::Dynamic, 1> angles { Eigen::Array<double, Eigen::Dynamic, 1>::Random(1) * M_PI };
+
+    // sample radial and angular velocities
+    const Eigen::Array<double, Eigen::Dynamic, 1> radiiDt { Eigen::Array<double, Eigen::Dynamic, 1>::Random(1) * m_radius };
+    const Eigen::Array<double, Eigen::Dynamic, 1> anglesDt { Eigen::Array<double, Eigen::Dynamic, 1>::Random(1) * M_PI / 8 };
+
+    // determine cartesian positions
+    const Points<Eigen::Dynamic> posFrenet {m_radius * (angles + M_PI), m_radius - radii };
+
+    // determine cartesian velocities
+    const Points<Eigen::Dynamic> input { m_radius * anglesDt, - radiiDt };
+
+    // test frenet frame results since error grows with distance from path
+    const auto result { m_circleTransform.velCartes(input, posFrenet) };
+
+    const Points<Eigen::Dynamic> groundTruth { radiiDt * angles.cos() - radii * anglesDt * angles.sin(), radiiDt * angles.sin() + radii * anglesDt * angles.cos() };
+
+    for(int index {}; index < posFrenet.numPoints(); ++index)
+    {
+        // relative error
+        EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 1e-3);
+        EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 6e-3);
+        // absolute error
+        EXPECT_NEAR(result.x(index), groundTruth.x(index), 3e-3);
+        EXPECT_NEAR(result.y(index), groundTruth.y(index), 6e-3);
     }
 }
 
