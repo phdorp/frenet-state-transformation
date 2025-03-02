@@ -24,10 +24,8 @@ namespace FrenetTransform
     class Polyline : public Path
     {
     public:
-        using MatrixT1 = Eigen::Matrix<double, T, 1>;
-        using MatrixT2 = Eigen::Matrix<double, T, 2>;
-
         using ArrayT1 = Eigen::Array<double, T, 1>;
+        using ArrayT2 = Eigen::Array<double, T, 2>;
 
         Polyline() = default;
 
@@ -139,7 +137,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 1st order gradient at given path lengths.
          */
-        Points<Eigen::Dynamic> gradient1 (const Eigen::MatrixXd& lengths) const override
+        Points<Eigen::Dynamic> gradient1 (const Eigen::ArrayXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
             return { m_x[1](indicesGrad), m_y[1](indicesGrad) };
@@ -151,7 +149,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 2nd order gradient at given path lengths.
          */
-        Points<Eigen::Dynamic> gradient2 (const Eigen::MatrixXd& lengths) const override
+        Points<Eigen::Dynamic> gradient2 (const Eigen::ArrayXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
             return { m_x[2](indicesGrad), m_y[2](indicesGrad) };
@@ -163,7 +161,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 3rd order gradient at given path lengths.
          */
-        Points<Eigen::Dynamic> gradient3 (const Eigen::MatrixXd& lengths) const override
+        Points<Eigen::Dynamic> gradient3 (const Eigen::ArrayXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
             return { m_x[3](indicesGrad), m_y[3](indicesGrad) };

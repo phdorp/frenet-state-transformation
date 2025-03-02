@@ -125,7 +125,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 1st order gradient at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> gradient1(const Eigen::MatrixXd& lengths) const = 0;
+        virtual Points<Eigen::Dynamic> gradient1(const Eigen::ArrayXd& lengths) const = 0;
 
         /**
          * @brief Determines 2nd order gradient at the given path lengths.
@@ -133,7 +133,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 2nd order gradient at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> gradient2(const Eigen::MatrixXd& lengths) const = 0;
+        virtual Points<Eigen::Dynamic> gradient2(const Eigen::ArrayXd& lengths) const = 0;
 
         /**
          * @brief Determines 3rd order gradient at the given path lengths.
@@ -141,7 +141,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 3rd order gradient at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> gradient3(const Eigen::MatrixXd& lengths) const = 0;
+        virtual Points<Eigen::Dynamic> gradient3(const Eigen::ArrayXd& lengths) const = 0;
     };
 };
 
