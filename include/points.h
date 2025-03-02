@@ -54,7 +54,7 @@ namespace FrenetTransform{
         friend Points<T> operator-(const Point& point, const Points<T>& points) { return -points + point; }
 
         template<int T>
-        friend Eigen::Array<double, T, 1> operator*(const Points<T>& points1, const Points<T>& points2) { return { points1.m_x * points2.m_x + points1.m_y * points2.m_y }; }
+        friend Eigen::Array<double, T, 1> operator*(const Points<T>& points1, const Points<T>& points2) { return points1.m_x * points2.m_x + points1.m_y * points2.m_y; }
 
         template<int T>
         friend Points<T> operator*(const Points<T>& points, const Eigen::Array<double, T, 1>& nums) { return { points.m_x * nums, points.m_y * nums }; }
