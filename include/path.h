@@ -71,15 +71,19 @@ namespace FrenetTransform
             Eigen::ArrayXd result (lengths.size());
             for(int iLength {}; iLength < lengths.size(); ++iLength)
             {
-                if(std::abs(tangents.x()(iLength)) < 0.5)
-                    result(iLength) = M_PI / 2 - std::atan(tangents.x()(iLength) / tangents.y()(iLength));
-                else
-                    result(iLength) = std::atan(tangents.y()(iLength) / tangents.x()(iLength));
+                const double xder { tangents.x()(iLength) };
+                const double yder { tangents.y()(iLength) };
 
-                if(tangents.x()(iLength) < 0 && tangents.y()(iLength) > 0)
-                    result(iLength) += M_PI;
-                else if(tangents.x()(iLength) < 0 && tangents.y()(iLength) < 0)
-                    result(iLength) -= M_PI;
+                if(xder > 0 && xder > std::abs(yder))
+                    result(iLength) = std::atan(yder / xder);
+                else if(yder > 0 && std::abs(xder) < yder)
+                    result(iLength) = M_PI / 2 - std::atan(xder / yder);
+                else if(xder < 0 && yder > 0 && -xder > yder)
+                    result(iLength) = M_PI + std::atan(yder / xder);
+                else if(yder < 0 && std::abs(xder) < -yder)
+                    result(iLength) = -M_PI / 2 - std::atan(xder / yder);
+                else
+                    result(iLength) = -M_PI + std::atan(yder / xder);
             }
 
             return result;

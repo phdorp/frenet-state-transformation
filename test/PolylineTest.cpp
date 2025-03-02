@@ -1,6 +1,7 @@
 #include "polyline.h"
 #include "points.h"
 #include "transform.h"
+#include "circle.h"
 
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
@@ -14,9 +15,10 @@ class PolylineTest : public testing::Test
 {
     protected:
     PolylineTest()
-        : m_straight { {0, 1, 2, 4, 7},  {0, 1, 2, 4, 7} }
-        , m_circle { m_radius * m_lengthsCircle.cos(), m_radius * m_lengthsCircle.sin() }
-        , m_circleTransform { std::make_shared<FrenetTransform::Polyline<1079>>(m_circle) }
+        : m_straight { {0.0, 1.0, 2.0, 4.0, 7.0},  {0.0, 1.0, 2.0, 4.0, 7.0} }
+        , m_circlePoly { m_radius * m_lengthsCircle.cos(), m_radius * m_lengthsCircle.sin() }
+        , m_circleTransform { std::make_shared<FrenetTransform::Polyline<1079>>(m_circlePoly) }
+        , m_circle { m_radius, { 0.0, 0.0 }, -M_PI }
     {
     }
 
@@ -24,8 +26,9 @@ class PolylineTest : public testing::Test
 
     const double m_radius { 5.0 };
     const Eigen::Array<double, 1079, 1> m_lengthsCircle { Eigen::Array<double, 1079, 1>::LinSpaced(-M_PI, M_PI)} ;
-    const FrenetTransform::Polyline<1079> m_circle {};
+    const FrenetTransform::Polyline<1079> m_circlePoly {};
     const FrenetTransform::Transform m_circleTransform;
+    const Testing::Circle m_circle;
 };
 
 TEST_F(PolylineTest, GetPointsStraight)
@@ -48,7 +51,7 @@ TEST_F(PolylineTest, GetPointsCircle)
     Eigen::ArrayXd input { {M_PI, M_PI + M_PI / 4, M_PI + M_PI / 2} };
     input *= m_radius;
 
-    const auto result { m_circle(input) };
+    const auto result { m_circlePoly(input) };
 
     const Points<Eigen::Dynamic> groundTruth
     {
@@ -68,7 +71,7 @@ TEST_F(PolylineTest, GetTangentsCircle)
     Eigen::ArrayXd input { {M_PI, M_PI + M_PI / 4, M_PI + M_PI / 2} };
     input *= m_radius;
 
-    const auto result { m_circle.tangent(input) };
+    const auto result { m_circlePoly.tangent(input) };
 
     const Points<Eigen::Dynamic> groundTruth
     {
@@ -88,7 +91,7 @@ TEST_F(PolylineTest, GetNormalsCircle)
     Eigen::ArrayXd input { {M_PI, M_PI + M_PI / 4, M_PI + M_PI / 2} };
     input *= m_radius;
 
-    const auto result { m_circle.normal(input) };
+    const auto result { m_circlePoly.normal(input) };
 
     const Points<Eigen::Dynamic> groundTruth
     {
@@ -105,17 +108,15 @@ TEST_F(PolylineTest, GetNormalsCircle)
 
 TEST_F(PolylineTest, GetAnglesCircle)
 {
-    Eigen::ArrayXd input { {M_PI / 2, M_PI, M_PI + M_PI / 4, M_PI + M_PI / 2} };
-    input *= m_radius;
+    const Eigen::ArrayXd angles { Eigen::ArrayXd::Random(20).abs() * M_PI * 2 };
+    const Eigen::ArrayXd input { angles * m_radius };
 
-    const auto result { m_circle.angle0(input) };
+    const auto result { m_circlePoly.angle0(input) };
 
-    const Eigen::ArrayXd groundTruth {{0.0, M_PI / 2, 3 * M_PI / 4, 0.0}};
+    const Eigen::ArrayXd groundTruth { m_circle.angle0(input) };
 
     for(int index {}; index < input.rows(); ++index)
-    {
         EXPECT_NEAR(groundTruth(index), result(index), 1e-2);
-    }
 }
 
 TEST_F(PolylineTest, GetAngles1Circle)
@@ -123,7 +124,7 @@ TEST_F(PolylineTest, GetAngles1Circle)
     Eigen::ArrayXd input { {M_PI / 2, M_PI, M_PI + M_PI / 4, M_PI + M_PI / 2} };
     input *= m_radius;
 
-    const auto result { m_circle.angle1(input) };
+    const auto result { m_circlePoly.angle1(input) };
 
     const Eigen::ArrayXd groundTruth { Eigen::ArrayXd::Ones(input.size()) / m_radius };
 
@@ -138,7 +139,7 @@ TEST_F(PolylineTest, GetAngles2Circle)
     Eigen::ArrayXd input { {M_PI / 2, M_PI, M_PI + M_PI / 4, M_PI + M_PI / 2} };
     input *= m_radius;
 
-    const auto result { m_circle.angle2(input) };
+    const auto result { m_circlePoly.angle2(input) };
 
     const Eigen::ArrayXd groundTruth { Eigen::ArrayXd::Zero(input.size()) };
 
@@ -177,8 +178,8 @@ TEST_F(PolylineTest, NextPointsCircle)
         {{-m_radius, -2.0, 1.0}}
     };
 
-    const auto lengths { m_circle.lengths(input) };
-    const auto result { m_circle(lengths) };
+    const auto lengths { m_circlePoly.lengths(input) };
+    const auto result { m_circlePoly(lengths) };
 
     const Points<Eigen::Dynamic> groundTruth {
         {{  0.0,   0.0, m_radius / std::sqrt(2)}},
