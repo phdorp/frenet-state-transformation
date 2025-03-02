@@ -5,7 +5,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-enable_testing()
+include(GoogleTest)
 
 add_executable(
     MathTest
@@ -17,6 +17,7 @@ target_link_libraries(
     transform
     GTest::gtest_main
 )
+gtest_discover_tests(MathTest)
 
 add_executable(
     PolylineTest
@@ -28,6 +29,5 @@ target_link_libraries(
   transform
   GTest::gtest_main
 )
+gtest_discover_tests(PolylineTest)
 
-include(GoogleTest)
-gtest_discover_tests(MathTest)
