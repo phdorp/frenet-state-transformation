@@ -32,6 +32,12 @@ namespace Testing
 
         Eigen::ArrayXd angle(const Eigen::ArrayXd& lengths) const { return lengths / m_radius + m_angle0; }
 
+        double radius() const { return m_radius; }
+
+        const Point& center() const { return m_center; }
+
+        double angleOffset() const { return m_angle0; }
+
     private:
         const double m_radius {};
         const Point m_center;
