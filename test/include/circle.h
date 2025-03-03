@@ -28,6 +28,8 @@ namespace Testing
 
         Eigen::ArrayXd lengths(const Points<Eigen::Dynamic>& points) const override { return m_radius * ((points.y() - m_center.y()) / (points.y() - m_center.y())).atan(); }
 
+        Eigen::ArrayXd lengths(const Eigen::ArrayXd& angles) const { return angles * m_radius; }
+
         Eigen::ArrayXd angle(const Eigen::ArrayXd& lengths) const { return lengths / m_radius + m_angle0; }
 
     private:
