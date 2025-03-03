@@ -42,9 +42,10 @@ namespace FrenetTransform
 
         Points<Eigen::Dynamic> accCartes(const Points<Eigen::Dynamic>& accFrenet, const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const;
 
-    private:
+    protected:
         const std::shared_ptr<Path> m_path; /**< Store path. */
 
+    private:
         Eigen::Array<Eigen::ArrayXd, 2, 2> velTransform(const Points<Eigen::Dynamic>& posFrenet) const;
 
         Eigen::Array<Eigen::ArrayXd, 2, 2> accTransform(const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const;
