@@ -30,25 +30,25 @@ namespace FrenetTransform
         {
         }
 
-        Points<Eigen::Dynamic> posFrenet(const Points<Eigen::Dynamic>& posCartes) const;
+        Points<Eigen::Dynamic, PointFrenet> posFrenet(const Points<Eigen::Dynamic, PointCartes>& posCartes) const;
 
-        Points<Eigen::Dynamic> velFrenet(const Points<Eigen::Dynamic>& velCartes, const Points<Eigen::Dynamic>& posFrenet) const;
+        Points<Eigen::Dynamic, PointFrenet> velFrenet(const Points<Eigen::Dynamic, PointCartes>& velCartes, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const;
 
-        Points<Eigen::Dynamic> accFrenet(const Points<Eigen::Dynamic>& accCartes, const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const;
+        Points<Eigen::Dynamic, PointFrenet> accFrenet(const Points<Eigen::Dynamic, PointCartes>& accCartes, const Points<Eigen::Dynamic, PointFrenet>& velFrenet, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const;
 
-        Points<Eigen::Dynamic> posCartes(const Points<Eigen::Dynamic>& posFrenet) const;
+        Points<Eigen::Dynamic, PointCartes> posCartes(const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const;
 
-        Points<Eigen::Dynamic> velCartes(const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const;
+        Points<Eigen::Dynamic, PointCartes> velCartes(const Points<Eigen::Dynamic, PointFrenet>& velFrenet, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const;
 
-        Points<Eigen::Dynamic> accCartes(const Points<Eigen::Dynamic>& accFrenet, const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const;
+        Points<Eigen::Dynamic, PointCartes> accCartes(const Points<Eigen::Dynamic, PointFrenet>& accFrenet, const Points<Eigen::Dynamic, PointFrenet>& velFrenet, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const;
 
     protected:
         const std::shared_ptr<Path> m_path; /**< Store path. */
 
     private:
-        Eigen::Array<Eigen::ArrayXd, 2, 2> velTransform(const Points<Eigen::Dynamic>& posFrenet) const;
+        Eigen::Array<Eigen::ArrayXd, 2, 2> velTransform(const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const;
 
-        Eigen::Array<Eigen::ArrayXd, 2, 2> accTransform(const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const;
+        Eigen::Array<Eigen::ArrayXd, 2, 2> accTransform(const Points<Eigen::Dynamic, PointFrenet>& velFrenet, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const;
 
         static Eigen::Array<Eigen::ArrayXd, 2, 2> transformInv(const Eigen::Array<Eigen::ArrayXd, 2, 2>& transform);
     };

@@ -3,7 +3,9 @@
 using FrenetTransform::Points;
 using FrenetTransform::Transform;
 
-Points<Eigen::Dynamic> Transform::posFrenet(const Points<Eigen::Dynamic>& posCartes) const
+namespace FrenetTransform
+{
+Points<Eigen::Dynamic, PointFrenet> Transform::posFrenet(const Points<Eigen::Dynamic, PointCartes>& posCartes) const
 {
     const auto lengths { m_path->lengths(posCartes) };
     const auto posPath { m_path->operator()(lengths) };
@@ -12,14 +14,14 @@ Points<Eigen::Dynamic> Transform::posFrenet(const Points<Eigen::Dynamic>& posCar
     return { lengths, normals * posDiff };
 }
 
-Points<Eigen::Dynamic> Transform::posCartes(const Points<Eigen::Dynamic>& posFrenet) const
+Points<Eigen::Dynamic, PointCartes> Transform::posCartes(const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const
 {
     const auto posPath { m_path->operator()(posFrenet.x()) };
     const auto normals { m_path->normal(posFrenet.x()) };
     return posPath + normals * posFrenet.y();
 }
 
-Points<Eigen::Dynamic> Transform::velFrenet(const Points<Eigen::Dynamic>& velCartes, const Points<Eigen::Dynamic>& posFrenet) const
+Points<Eigen::Dynamic, PointFrenet> Transform::velFrenet(const Points<Eigen::Dynamic, PointCartes>& velCartes, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const
 {
     const auto velTransformsInv { Transform::transformInv(Transform::velTransform(posFrenet)) };
     return {
@@ -28,7 +30,7 @@ Points<Eigen::Dynamic> Transform::velFrenet(const Points<Eigen::Dynamic>& velCar
     };
 }
 
-Points<Eigen::Dynamic> Transform::velCartes(const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const
+Points<Eigen::Dynamic, PointCartes> Transform::velCartes(const Points<Eigen::Dynamic, PointFrenet>& velFrenet, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const
 {
     const auto velTransforms { Transform::velTransform(posFrenet) };
     return {
@@ -37,10 +39,10 @@ Points<Eigen::Dynamic> Transform::velCartes(const Points<Eigen::Dynamic>& velFre
     };
 }
 
-Points<Eigen::Dynamic> Transform::accFrenet(const Points<Eigen::Dynamic>& accCartes, const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const
+Points<Eigen::Dynamic, PointFrenet> Transform::accFrenet(const Points<Eigen::Dynamic, PointCartes>& accCartes, const Points<Eigen::Dynamic, PointFrenet>& velFrenet, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const
 {
     const auto accTransform { Transform::accTransform(velFrenet, posFrenet) };
-    const Points<Eigen::Dynamic> accRel {
+    const Points<Eigen::Dynamic, PointFrenet> accRel {
         accCartes.x() - accTransform(0, 0) * velFrenet.x() - accTransform(0, 1) * velFrenet.y(),
         accCartes.y() - accTransform(1, 0) * velFrenet.x() - accTransform(1, 1) * velFrenet.y()
     };
@@ -54,7 +56,7 @@ Points<Eigen::Dynamic> Transform::accFrenet(const Points<Eigen::Dynamic>& accCar
 }
 
 
-Points<Eigen::Dynamic> Transform::accCartes(const Points<Eigen::Dynamic>& accFrenet, const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const
+Points<Eigen::Dynamic, PointCartes> Transform::accCartes(const Points<Eigen::Dynamic, PointFrenet>& accFrenet, const Points<Eigen::Dynamic, PointFrenet>& velFrenet, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const
 {
     const auto accTransform { Transform::accTransform(velFrenet, posFrenet) };
     const auto velTransform { Transform::velTransform(posFrenet) };
@@ -64,7 +66,7 @@ Points<Eigen::Dynamic> Transform::accCartes(const Points<Eigen::Dynamic>& accFre
     };
 }
 
-Eigen::Array<Eigen::ArrayXd, 2, 2> Transform::velTransform(const Points<Eigen::Dynamic>& posFrenet) const
+Eigen::Array<Eigen::ArrayXd, 2, 2> Transform::velTransform(const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const
 {
     const auto tangents { m_path->tangent(posFrenet.x()) };
     const auto normals { m_path->normal(posFrenet.x()) };
@@ -75,7 +77,7 @@ Eigen::Array<Eigen::ArrayXd, 2, 2> Transform::velTransform(const Points<Eigen::D
     };
 }
 
-Eigen::Array<Eigen::ArrayXd, 2, 2> Transform::accTransform(const Points<Eigen::Dynamic>& velFrenet, const Points<Eigen::Dynamic>& posFrenet) const
+Eigen::Array<Eigen::ArrayXd, 2, 2> Transform::accTransform(const Points<Eigen::Dynamic, PointFrenet>& velFrenet, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const
 {
     const auto tangents { m_path->tangent(posFrenet.x()) };
     const auto normals { m_path->normal(posFrenet.x()) };
@@ -100,3 +102,4 @@ Eigen::Array<Eigen::ArrayXd, 2, 2> Transform::transformInv(const Eigen::Array<Ei
         {-transform(1, 0) * normalization,  transform(0, 0) * normalization}
     };
 }
+};

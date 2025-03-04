@@ -10,6 +10,7 @@
 
 using FrenetTransform::Points;
 
+
 namespace FrenetTransform
 {
     /**
@@ -37,7 +38,7 @@ namespace FrenetTransform
          */
         Polyline(const ArrayT1& x, const ArrayT1& y) { setPoints(x, y); }
 
-        Points<Eigen::Dynamic> operator()(const Eigen::ArrayXd& lengths) const override
+        Points<Eigen::Dynamic, PointCartes> operator()(const Eigen::ArrayXd& lengths) const override
         {
             // indices of corresponding polyline segments
             const Eigen::ArrayXi indicesLengths { indices(lengths) };
@@ -59,7 +60,7 @@ namespace FrenetTransform
          * @param points query points.
          * @return Points<Eigen::Dynamic> next to query points.
          */
-        Eigen::ArrayXd lengths(const Points<Eigen::Dynamic>& points) const override
+        Eigen::ArrayXd lengths(const Points<Eigen::Dynamic, PointCartes>& points) const override
         {
             Eigen::ArrayXd lLenghts (points.numPoints());
 
@@ -80,7 +81,7 @@ namespace FrenetTransform
 
                 for(int cThis {}; cThis < T; ++cThis)
                 {
-                    const Point pathNext { m_x[0].data()[cThis], m_y[0].data()[cThis] };
+                    const PointCartes pathNext { m_x[0].data()[cThis], m_y[0].data()[cThis] };
                     const double xDiffPnt { pathNext.x() - points.x(cPoints) };
                     const double yDiffPnt { pathNext.y() - points.y(cPoints) };
                     const double param { (xDiffPnt * m_xDiff(cThis) + yDiffPnt * m_yDiff(cThis))
@@ -88,10 +89,10 @@ namespace FrenetTransform
 
                     if(param >= 0.0 && param <= 1.0)
                     {
-                        const Point pathPrev { m_x[0].data()[cThis - 1], m_y[0].data()[cThis - 1] };
+                        const PointCartes pathPrev { m_x[0].data()[cThis - 1], m_y[0].data()[cThis - 1] };
                         const double xCand { pathPrev.x() * param + (1 - param) * pathNext.x() };
                         const double yCand { pathPrev.y() * param + (1 - param) * pathNext.y() };
-                        const Point cand { xCand, yCand };
+                        const PointCartes cand { xCand, yCand };
                         const double distSqCand { std::pow(xCand - points.x(cPoints), 2) + std::pow(yCand - points.y(cPoints), 2) };
 
                         if(distSq < 0.0 || distSq > distSqCand)
@@ -137,7 +138,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 1st order gradient at given path lengths.
          */
-        Points<Eigen::Dynamic> gradient1 (const Eigen::ArrayXd& lengths) const override
+        Points<Eigen::Dynamic, PointCartes> gradient1 (const Eigen::ArrayXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
             return { m_x[1](indicesGrad), m_y[1](indicesGrad) };
@@ -149,7 +150,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 2nd order gradient at given path lengths.
          */
-        Points<Eigen::Dynamic> gradient2 (const Eigen::ArrayXd& lengths) const override
+        Points<Eigen::Dynamic, PointCartes> gradient2 (const Eigen::ArrayXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
             return { m_x[2](indicesGrad), m_y[2](indicesGrad) };
@@ -161,7 +162,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 3rd order gradient at given path lengths.
          */
-        Points<Eigen::Dynamic> gradient3 (const Eigen::ArrayXd& lengths) const override
+        Points<Eigen::Dynamic, PointCartes> gradient3 (const Eigen::ArrayXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
             return { m_x[3](indicesGrad), m_y[3](indicesGrad) };

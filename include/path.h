@@ -28,7 +28,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return points at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> operator()(const Eigen::ArrayXd& lengths) const = 0;
+        virtual Points<Eigen::Dynamic, PointCartes> operator()(const Eigen::ArrayXd& lengths) const = 0;
 
         /**
          * @brief Determines tangent vectors at the given path lengths.
@@ -36,7 +36,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return tangent vectors.
          */
-        Points<Eigen::Dynamic> tangent(const Eigen::ArrayXd& lengths) const { return gradient1(lengths); }
+        Points<Eigen::Dynamic, PointCartes> tangent(const Eigen::ArrayXd& lengths) const { return gradient1(lengths); }
 
         /**
          * @brief Determines normal vectors at the given path lengths.
@@ -44,9 +44,9 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return normal vectors.
          */
-        Points<Eigen::Dynamic> normal(const Eigen::ArrayXd& lengths) const
+        Points<Eigen::Dynamic, PointCartes> normal(const Eigen::ArrayXd& lengths) const
         {
-            const Points<Eigen::Dynamic> tangents { tangent(lengths) };
+            const Points<Eigen::Dynamic, PointCartes> tangents { tangent(lengths) };
             return { -tangents.y(), tangents.x() };
         }
 
@@ -56,7 +56,7 @@ namespace FrenetTransform
          * @param points query points.
          * @return Points<Eigen::Dynamic> next to query points.
          */
-        virtual Eigen::ArrayXd lengths(const Points<Eigen::Dynamic>& points) const = 0;
+        virtual Eigen::ArrayXd lengths(const Points<Eigen::Dynamic, PointCartes>& points) const = 0;
 
         /**
          * @brief Determines path angle at the given path lengths.
@@ -66,7 +66,7 @@ namespace FrenetTransform
          */
         Eigen::ArrayXd angle0(const Eigen::ArrayXd& lengths) const
         {
-            const Points<Eigen::Dynamic> tangents { tangent(lengths) };
+            const Points<Eigen::Dynamic, PointCartes> tangents { tangent(lengths) };
 
             Eigen::ArrayXd result (lengths.size());
             for(int iLength {}; iLength < lengths.size(); ++iLength)
@@ -129,7 +129,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 1st order gradient at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> gradient1(const Eigen::ArrayXd& lengths) const = 0;
+        virtual Points<Eigen::Dynamic, PointCartes> gradient1(const Eigen::ArrayXd& lengths) const = 0;
 
         /**
          * @brief Determines 2nd order gradient at the given path lengths.
@@ -137,7 +137,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 2nd order gradient at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> gradient2(const Eigen::ArrayXd& lengths) const = 0;
+        virtual Points<Eigen::Dynamic, PointCartes> gradient2(const Eigen::ArrayXd& lengths) const = 0;
 
         /**
          * @brief Determines 3rd order gradient at the given path lengths.
@@ -145,7 +145,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 3rd order gradient at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> gradient3(const Eigen::ArrayXd& lengths) const = 0;
+        virtual Points<Eigen::Dynamic, PointCartes> gradient3(const Eigen::ArrayXd& lengths) const = 0;
     };
 };
 
