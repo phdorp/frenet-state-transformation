@@ -11,6 +11,8 @@ namespace FrenetTransform
 {
     namespace Testing
     {
+        using limits = std::numeric_limits<double>;
+
         class CircleTest : public testing::Test
         {
         protected:
@@ -19,6 +21,19 @@ namespace FrenetTransform
 
             const Points<Eigen::Dynamic, PointCircle> m_posCircle { m_circle.radius() * (1 + Eigen::ArrayXd::Random(100) * 0.95) , Eigen::ArrayXd::Random(100) * M_PI * 0.99 };
             const Points<Eigen::Dynamic, PointFrenet> m_posFrenet { m_transform.posFrenet(m_posCircle) };
+
+            template <typename Tarray>
+            void expectAllClose(const Eigen::ArrayBase<Tarray>& estimate, const Eigen::ArrayBase<Tarray>& groundTruth, double errAbs = limits::infinity(), double errRel = limits::infinity())
+            {
+                for(int row {}; row < estimate.rows(); ++row)
+                {
+                    for(int col {}; col < estimate.cols(); ++col)
+                    {
+                        EXPECT_NEAR(estimate(row, col), groundTruth(row, col), errAbs);
+                        EXPECT_NEAR(estimate(row, col) / groundTruth(row, col), 1.0, errRel);
+                    }
+                }
+            }
         };
     };
 };
