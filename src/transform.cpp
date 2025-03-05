@@ -50,8 +50,8 @@ Points<Eigen::Dynamic, PointFrenet> Transform::accFrenet(const Points<Eigen::Dyn
     const auto velTransformsInv { Transform::transformInv(Transform::velTransform(posFrenet)) };
 
     return {
-        velTransformsInv(0, 0) * accRel.x() * velTransformsInv(0, 1) * accRel.y(),
-        velTransformsInv(1, 0) * accRel.x() * velTransformsInv(1, 1) * accRel.y()
+        velTransformsInv(0, 0) * accRel.x() + velTransformsInv(0, 1) * accRel.y(),
+        velTransformsInv(1, 0) * accRel.x() + velTransformsInv(1, 1) * accRel.y()
     };
 }
 
