@@ -89,8 +89,8 @@ Eigen::Array<Eigen::ArrayXd, 2, 2> Transform::accTransform(const Points<Eigen::D
     const auto latScaleDer { curv1s * velFrenet.x() * posFrenet.y() + curvs * velFrenet.y() };
 
     return {
-        {normals.x() * curvs * latScale - tangents.x() * latScaleDer, -curvs * tangents.x()},
-        {normals.y() * curvs * latScale - tangents.y() * latScaleDer, -curvs * tangents.y()}
+        {normals.x() * curvs * latScale * velFrenet.x() - tangents.x() * latScaleDer, -curvs * tangents.x() * velFrenet.x()},
+        {normals.y() * curvs * latScale * velFrenet.x() - tangents.y() * latScaleDer, -curvs * tangents.y() * velFrenet.x()}
     };
 }
 
