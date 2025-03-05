@@ -37,7 +37,7 @@ namespace FrenetTransform
 
             Points<Eigen::Dynamic, PointCartes> velCartes(const Points<Eigen::Dynamic, PointCircle>& velCircle, const Points<Eigen::Dynamic, PointCircle>& posCircle) const
             {
-                return { velCircle.x() * posCircle.y().cos() - posCircle.x() * velCircle.y() * posCircle.y().sin(),  velCircle.x() * posCircle.y().sin() - posCircle.x() * velCircle.y() * posCircle.y().cos() };
+                return { velCircle.x() * posCircle.y().cos() - posCircle.x() * velCircle.y() * posCircle.y().sin(),  velCircle.x() * posCircle.y().sin() + posCircle.x() * velCircle.y() * posCircle.y().cos() };
             }
 
             Points<Eigen::Dynamic, PointCartes> accCartes(const Points<Eigen::Dynamic, PointCircle>& accCircle, const Points<Eigen::Dynamic, PointCircle>& velCircle, const Points<Eigen::Dynamic, PointCircle>& posCircle) const
