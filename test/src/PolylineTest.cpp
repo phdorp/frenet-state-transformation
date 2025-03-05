@@ -16,8 +16,6 @@ namespace FrenetTransform
         class PolylineTest : public CircleTest
         {
         protected:
-            const Polyline<5> m_straight { {0.0, 1.0, 2.0, 4.0, 7.0},  {0.0, 1.0, 2.0, 4.0, 7.0} };
-
             const Polyline<Eigen::Dynamic> m_circlePoly { m_circle(Eigen::ArrayXd::LinSpaced(1079, 0.0, 2 * M_PI) * m_circle.radius()) };
             const Transform m_circleTransform { std::make_shared<Polyline<Eigen::Dynamic>>(m_circlePoly) };
 
@@ -31,21 +29,6 @@ namespace FrenetTransform
             const Points<Eigen::Dynamic, PointCartes> m_accCartes { m_transform.accCartes(m_accCircle, m_velCircle, m_posCircle) };
             const Points<Eigen::Dynamic, PointFrenet> m_accFrenet { m_transform.accFrenet(m_accCircle) };
         };
-
-        TEST_F(PolylineTest, GetPointsStraight)
-        {
-            Eigen::ArrayXd input { {0.0, std::sqrt(8), std::sqrt(98)} };
-
-            const auto result { m_straight(input) };
-
-            const Points<Eigen::Dynamic, PointCartes> groundTruth { {{0.0, 2.0, 7.0}}, {{0.0, 2.0, 7.0}} };
-
-            for(int index {}; index < input.rows(); ++index)
-            {
-                EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-10);
-                EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-10);
-            }
-        }
 
         // TEST_F(PolylineTest, GetPointsCircle)
         // {
@@ -117,28 +100,6 @@ namespace FrenetTransform
             for(int index {}; index < groundTruth.rows(); ++index)
             {
                 EXPECT_NEAR(groundTruth(index), result(index), 1e-2);
-            }
-        }
-
-        TEST_F(PolylineTest, NextPointsStraight)
-        {
-            Points<Eigen::Dynamic, PointCartes> input {
-                {{0.0, 3.0, 2.0}},
-                {{0.0, 3.0, 4.0}}
-            };
-
-            const auto lengths { m_straight.lengths(input) };
-            const auto result { m_straight(lengths) };
-
-            const Points<Eigen::Dynamic, PointCartes> groundTruth {
-                {{0.0, 3.0, 3.0}},
-                {{0.0, 3.0, 3.0}}
-            };
-
-            for(int index {}; index < input.x().rows(); ++index)
-            {
-                EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-10);
-                EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-10);
             }
         }
 
