@@ -32,199 +32,115 @@ namespace FrenetTransform
 
         TEST_F(PolylineTest, GetPointsCircle)
         {
-            const auto result { m_circlePoly(m_posFrenet.x()) };
+            const auto pointsCircleEst { m_circlePoly(m_posFrenet.x()) };
+            const auto pointsCircleGtr { m_circle(m_posFrenet.x()) };
 
-            const Points<Eigen::Dynamic, PointCartes> groundTruth { m_circle(m_posFrenet.x()) };
-
-            for(int index {}; index < m_posCartes.numPoints(); ++index)
-            {
-                EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-2);
-                EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-2);
-            }
+            expectAllClose(pointsCircleEst.x(), pointsCircleGtr.x(), 1e-2);
+            expectAllClose(pointsCircleEst.y(), pointsCircleGtr.y(), 1e-2);
         }
 
         TEST_F(PolylineTest, GetTangentsCircle)
         {
-            const auto result { m_circlePoly.tangent(m_posFrenet.x()) };
+            const auto tangentsEst { m_circlePoly.tangent(m_posFrenet.x()) };
+            const auto tangentsGtr { m_circle.tangent(m_posFrenet.x()) };
 
-            const Points<Eigen::Dynamic, PointCartes> groundTruth { m_circle.tangent(m_posFrenet.x()) };
-
-            for(int index {}; index < groundTruth.numPoints(); ++index)
-            {
-                EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-2);
-                EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-2);
-            }
+            expectAllClose(tangentsEst.x(), tangentsGtr.x(), 1e-2);
+            expectAllClose(tangentsEst.y(), tangentsGtr.y(), 1e-2);
         }
 
         TEST_F(PolylineTest, GetNormalsCircle)
         {
-            const auto result { m_circlePoly.normal(m_posFrenet.x()) };
+            const auto normalsEst { m_circlePoly.normal(m_posFrenet.x()) };
+            const auto normalsGtr { m_circle.normal(m_posFrenet.x()) };
 
-            const Points<Eigen::Dynamic, PointCartes> groundTruth { m_circle.normal(m_posFrenet.x()) };
-
-            for(int index {}; index < groundTruth.numPoints(); ++index)
-            {
-                EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-2);
-                EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-2);
-            }
+            expectAllClose(normalsEst.x(), normalsGtr.x(), 1e-2);
+            expectAllClose(normalsEst.y(), normalsGtr.y(), 1e-2);
         }
 
         TEST_F(PolylineTest, GetAnglesCircle)
         {
-            const auto result { m_circlePoly.angle0(m_posFrenet.x()) };
+            const auto angles0Est { m_circlePoly.angle0(m_posFrenet.x()) };
+            const auto angles0Gtr { m_circle.angle0(m_posFrenet.x()) };
 
-            const Eigen::ArrayXd groundTruth { m_circle.angle0(m_posFrenet.x()) };
-
-            for(int index {}; index < groundTruth.rows(); ++index)
-                EXPECT_NEAR(groundTruth(index), result(index), 1e-2);
+            expectAllClose(angles0Est, angles0Gtr, 1e-2);
         }
 
         TEST_F(PolylineTest, GetAngles1Circle)
         {
-            const auto result { m_circlePoly.angle1(m_posFrenet.x()) };
+            const auto angles1Est { m_circlePoly.angle1(m_posFrenet.x()) };
+            const auto angles1Gtr { m_circle.angle1(m_posFrenet.x()) };
 
-            const Eigen::ArrayXd groundTruth { m_circle.angle1(m_posFrenet.x()) };
-
-            for(int index {}; index < groundTruth.rows(); ++index)
-            {
-                EXPECT_NEAR(groundTruth(index), result(index), 1e-2);
-            }
+            expectAllClose(angles1Est, angles1Gtr, 1e-2);
         }
 
         TEST_F(PolylineTest, GetAngles2Circle)
         {
-            const auto result { m_circlePoly.angle2(m_posFrenet.x()) };
+            const auto angles2Est { m_circlePoly.angle2(m_posFrenet.x()) };
+            const auto angles2Gtr { m_circle.angle2(m_posFrenet.x()) };
 
-            const Eigen::ArrayXd groundTruth { m_circle.angle2(m_posFrenet.x()) };
-
-            for(int index {}; index < groundTruth.rows(); ++index)
-            {
-                EXPECT_NEAR(groundTruth(index), result(index), 1e-2);
-            }
+            expectAllClose(angles2Est,angles2Gtr, 1e-2);
         }
 
         TEST_F(PolylineTest, NextPointsCircle)
         {
-            const auto lengths { m_circlePoly.lengths(m_posCartes) };
-            const auto result { m_circlePoly(lengths) };
+            const auto lengthsEst { m_circlePoly.lengths(m_posCartes) };
+            const auto lengthsGtr { m_circle.lengths(m_posCartes) };
 
-            const Points<Eigen::Dynamic, PointCartes> groundTruth { m_circle(m_posFrenet.x()) };
-
-            for(int index {}; index < groundTruth.x().rows(); ++index)
-            {
-                EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 2e-2);
-                EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 2e-2);
-            }
+            expectAllClose(lengthsEst, lengthsGtr, 2e-2);
         }
 
         TEST_F(PolylineTest, PosFrenetCircle)
         {
             // determine frenet positions
-            const auto result { m_circleTransform.posFrenet(m_posCartes) };
+            const auto posFrenet { m_circleTransform.posFrenet(m_posCartes) };
 
-            // determine ground truth frenet positions
-            const Points<Eigen::Dynamic, PointFrenet> groundTruth  { m_posFrenet };
-
-            for(int index {}; index < groundTruth.numPoints(); ++index)
-            {
-                // relative error
-                EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 2e-2);
-                EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 1e-2);
-                // absolute error
-                EXPECT_NEAR(result.x(index), groundTruth.x(index), 1e-1);
-                EXPECT_NEAR(result.y(index), groundTruth.y(index), 1e-1);
-            }
+            expectAllClose(posFrenet.x(), m_posFrenet.x(), 1e-1, 2e-2);
+            expectAllClose(posFrenet.y(), m_posFrenet.y(), 1e-1, 1e-2);
         }
 
         TEST_F(PolylineTest, PosCartCircle)
         {
             // determine frenet positions
-            const auto result { m_circleTransform.posCartes(m_posFrenet) };
+            const auto posCartes { m_circleTransform.posCartes(m_posFrenet) };
 
-            // determine ground truth cartesian positions
-            const Points<Eigen::Dynamic, PointCartes> groundTruth { m_posCartes };
-
-            for(int index {}; index < groundTruth.numPoints(); ++index)
-            {
-                // relative error
-                EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 0.7);
-                EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 0.7);
-                // absolute error
-                EXPECT_NEAR(result.x(index), groundTruth.x(index), 2e-2);
-                EXPECT_NEAR(result.y(index), groundTruth.y(index), 2e-2);
-            }
+            expectAllClose(posCartes.x(), m_posCartes.x(), 2e-2, 0.7);
+            expectAllClose(posCartes.y(), m_posCartes.y(), 2e-2, 0.7);
         }
 
         TEST_F(PolylineTest, VelFrenetCircle)
         {
             // test frenet frame results since error grows with distance from path
-            const auto result { m_circleTransform.velFrenet(m_velCartes, m_posFrenet) };
+            const auto velFrenet { m_circleTransform.velFrenet(m_velCartes, m_posFrenet) };
 
-            const Points<Eigen::Dynamic, PointFrenet> groundTruth { m_velFrenet };
-
-            for(int index {}; index < groundTruth.numPoints(); ++index)
-            {
-                // relative error
-                EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 0.55);
-                EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 3e-2);
-                // absolute error
-                EXPECT_NEAR(result.x(index), groundTruth.x(index), 0.2);
-                EXPECT_NEAR(result.y(index), groundTruth.y(index), 2e-2);
-            }
+            expectAllClose(velFrenet.x(), m_velFrenet.x(), 2e-1, 0.55);
+            expectAllClose(velFrenet.y(), m_velFrenet.y(), 2e-2, 3e-2);
         }
 
         TEST_F(PolylineTest, VelCartCircle)
         {
             // test frenet frame results since error grows with distance from path
-            const auto result { m_circleTransform.velCartes(m_velFrenet, m_posFrenet) };
+            const auto velCartes { m_circleTransform.velCartes(m_velFrenet, m_posFrenet) };
 
-            const Points<Eigen::Dynamic, PointCartes> groundTruth { m_velCartes };
-
-            for(int index {}; index < groundTruth.numPoints(); ++index)
-            {
-                // relative error
-                EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 0.2);
-                EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 0.15);
-                // absolute error
-                EXPECT_NEAR(result.x(index), groundTruth.x(index), 6e-2);
-                EXPECT_NEAR(result.y(index), groundTruth.y(index), 2e-2);
-            }
+            expectAllClose(velCartes.x(), m_velCartes.x(), 6e-2, 0.2);
+            expectAllClose(velCartes.y(), m_velCartes.y(), 2e-2, 0.15);
         }
 
         TEST_F(PolylineTest, AccFrenetCircle)
         {
             // test frenet frame results since error grows with distance from path
-            const auto result { m_circleTransform.accFrenet(m_accCartes, m_velFrenet, m_posFrenet) };
+            const auto accFrenet { m_circleTransform.accFrenet(m_accCartes, m_velFrenet, m_posFrenet) };
 
-            const Points<Eigen::Dynamic, PointFrenet> groundTruth { m_accFrenet };
-
-            for(int index {}; index < groundTruth.numPoints(); ++index)
-            {
-                // relative error
-                EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 4.5e-1);
-                EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 4.5e-1);
-                // absolute error
-                EXPECT_NEAR(result.x(index), groundTruth.x(index), 7e-2);
-                EXPECT_NEAR(result.y(index), groundTruth.y(index), 7e-2);
-            }
+            expectAllClose(accFrenet.x(), m_accFrenet.x(), 7e-2, 4.5e-1);
+            expectAllClose(accFrenet.y(), m_accFrenet.y(), 7e-2, 4.5e-1);
         }
 
         TEST_F(PolylineTest, AccCartCircle)
         {
             // test frenet frame results since error grows with distance from path
-            const auto result { m_circleTransform.accCartes(m_accFrenet, m_velFrenet, m_posFrenet) };
+            const auto accCartes { m_circleTransform.accCartes(m_accFrenet, m_velFrenet, m_posFrenet) };
 
-            const Points<Eigen::Dynamic, PointCartes> groundTruth { m_accCartes };
-
-            for(int index {}; index < groundTruth.numPoints(); ++index)
-            {
-                // relative error
-                EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 2e-1);
-                EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 2e-1);
-                // absolute error
-                EXPECT_NEAR(result.x(index), groundTruth.x(index), 2e-2);
-                EXPECT_NEAR(result.y(index), groundTruth.y(index), 2e-2);
-            }
+            expectAllClose(accCartes.x(), m_accCartes.x(), 2e-2, 2e-1);
+            expectAllClose(accCartes.y(), m_accCartes.y(), 2e-2, 2e-1);
         }
     };
 };
