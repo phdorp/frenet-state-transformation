@@ -229,6 +229,42 @@ namespace FrenetTransform
                 EXPECT_NEAR(result.y(index), groundTruth.y(index), 2e-2);
             }
         }
+
+        TEST_F(PolylineTest, AccFrenetCircle)
+        {
+            // test frenet frame results since error grows with distance from path
+            const auto result { m_circleTransform.accFrenet(m_accCartes, m_velFrenet, m_posFrenet) };
+
+            const Points<Eigen::Dynamic, PointFrenet> groundTruth { m_accFrenet };
+
+            for(int index {}; index < groundTruth.numPoints(); ++index)
+            {
+                // relative error
+                EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 4.5e-1);
+                EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 4.5e-1);
+                // absolute error
+                EXPECT_NEAR(result.x(index), groundTruth.x(index), 7e-2);
+                EXPECT_NEAR(result.y(index), groundTruth.y(index), 7e-2);
+            }
+        }
+
+        TEST_F(PolylineTest, AccCartCircle)
+        {
+            // test frenet frame results since error grows with distance from path
+            const auto result { m_circleTransform.accCartes(m_accFrenet, m_velFrenet, m_posFrenet) };
+
+            const Points<Eigen::Dynamic, PointCartes> groundTruth { m_accCartes };
+
+            for(int index {}; index < groundTruth.numPoints(); ++index)
+            {
+                // relative error
+                EXPECT_NEAR(result.x(index) / groundTruth.x(index), 1.0, 2e-1);
+                EXPECT_NEAR(result.y(index) / groundTruth.y(index), 1.0, 2e-1);
+                // absolute error
+                EXPECT_NEAR(result.x(index), groundTruth.x(index), 2e-2);
+                EXPECT_NEAR(result.y(index), groundTruth.y(index), 2e-2);
+            }
+        }
     };
 };
 
