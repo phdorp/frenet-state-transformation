@@ -5,29 +5,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-enable_testing()
-
-add_executable(
-    MathTest
-    MathTest.cpp
-)
-target_link_libraries(
-    MathTest
-    PRIVATE
-    transform
-    GTest::gtest_main
-)
-
-add_executable(
-    PolylineTest
-    PolylineTest.cpp
-)
-target_link_libraries(
-  PolylineTest
-  PRIVATE
-  transform
-  GTest::gtest_main
-)
-
 include(GoogleTest)
-gtest_discover_tests(MathTest)
+
+add_subdirectory(src)

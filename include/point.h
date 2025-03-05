@@ -1,0 +1,50 @@
+#ifndef POINT_H
+#define POINT_H
+
+#include <math.h>
+
+namespace FrenetTransform{
+    template <typename Derived>
+    class Point
+    {
+    public:
+        Point() = delete;
+
+        Point(double x, double y)
+            : m_x { x }, m_y { y }
+        {
+        }
+
+        double distance(const Point& point) const { return std::sqrt(std::pow(point.x() - m_x, 2) + std::pow(point.y() - m_y, 2)); }
+
+        double x() const { return m_x; }
+
+        double y() const { return m_y; }
+
+        Point operator-() const { return { -m_x, -m_y }; }
+
+    private:
+        double m_x {};
+        double m_y {};
+    };
+
+    class PointFrenet : public Point<PointFrenet>
+    {
+    public:
+        PointFrenet(double x, double y)
+            : Point<PointFrenet> { x, y }
+        {
+        }
+    };
+
+    class PointCartes : public Point<PointCartes>
+    {
+    public:
+        PointCartes(double x, double y)
+            : Point<PointCartes> { x, y }
+        {
+        }
+    };
+};
+
+#endif

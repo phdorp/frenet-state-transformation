@@ -24,7 +24,7 @@ namespace FrenetTransform
         const auto rowsExLast {Eigen::seq(0, numbers.rows()-2)}; // sequence over all row indices except last one
         const auto rowsExFirst {Eigen::seq(1, numbers.rows()-1)}; // sequence over all row indices except first one
 
-        T result {}; // result array
+        T result { Eigen::ArrayBase<T>::Zero(numbers.rows(), numbers.cols()) }; // result array
 
         // perform differences
         result(rowsExFirst, colsAll) = numbers(rowsExFirst, colsAll) - numbers(rowsExLast, colsAll);
@@ -114,7 +114,7 @@ namespace FrenetTransform
         const Eigen::Array<double, rows, cols> diffDepents { diffBackward(depents) }; // finite differences dependent variables
         const Eigen::Array<double, rows, 1> diffIndepents { diffBackward(indepents) }; // finite differences independent variables
 
-        Eigen::Array<double, rows, cols> result {}; // instantiate result array
+        Eigen::Array<double, rows, cols> result { Eigen::Array<double, rows, cols>::Zero(depents.rows(), depents.cols()) }; // instantiate result array
 
         // perform column-wise normalization of dependent differences
         for(int col {}; col < cols; ++col)

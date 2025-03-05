@@ -1,4 +1,4 @@
-add_library(transform path.cpp polyline.cpp)
+add_library(transform path.cpp polyline.cpp transform.cpp)
 
 target_include_directories(transform PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
