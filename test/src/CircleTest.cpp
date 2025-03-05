@@ -6,9 +6,9 @@ namespace FrenetTransform
     {
         TEST_F(CircleTest, asdf)
         {
-            const auto result { m_circle.angle0(m_circle.lengths(m_pointsCircle.y())) };
+            const auto result { m_circle.angle0(m_posFrenet.x()) };
 
-            Eigen::ArrayXd groundTruth { m_pointsCircle.y() - M_PI / 2};
+            Eigen::ArrayXd groundTruth { m_posCircle.y() + M_PI / 2};
             for(int index {}; index < groundTruth.rows(); ++index)
                 if(groundTruth(index) > M_PI)
                     groundTruth(index) += -2*M_PI;
