@@ -30,18 +30,18 @@ namespace FrenetTransform
             const Points<Eigen::Dynamic, PointFrenet> m_accFrenet { m_transform.accFrenet(m_accCircle) };
         };
 
-        // TEST_F(PolylineTest, GetPointsCircle)
-        // {
-        //     const auto result { m_circlePoly(m_posFrenet.x()) };
+        TEST_F(PolylineTest, GetPointsCircle)
+        {
+            const auto result { m_circlePoly(m_posFrenet.x()) };
 
-        //     const Points<Eigen::Dynamic, PointCartes> groundTruth { m_circle(m_posFrenet.x()) };
+            const Points<Eigen::Dynamic, PointCartes> groundTruth { m_circle(m_posFrenet.x()) };
 
-        //     for(int index {}; index < m_posCartes.numPoints(); ++index)
-        //     {
-        //         EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-2);
-        //         EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-2);
-        //     }
-        // }
+            for(int index {}; index < m_posCartes.numPoints(); ++index)
+            {
+                EXPECT_NEAR(groundTruth.x()(index), result.x()(index), 1e-2);
+                EXPECT_NEAR(groundTruth.y()(index), result.y()(index), 1e-2);
+            }
+        }
 
         TEST_F(PolylineTest, GetTangentsCircle)
         {
