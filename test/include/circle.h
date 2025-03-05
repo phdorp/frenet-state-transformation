@@ -6,6 +6,7 @@
 
 #include "path.h"
 #include "point.h"
+#include "math.h"
 
 namespace FrenetTransform
 {
@@ -25,7 +26,12 @@ namespace FrenetTransform
 
             Points<Eigen::Dynamic, PointCartes> operator()(const Eigen::ArrayXd& lengths) const override { return { m_center.x() + m_radius * angle(lengths).cos(), m_center.y() + m_radius * angle(lengths).sin() }; }
 
-            Eigen::ArrayXd lengths(const Points<Eigen::Dynamic, PointCartes>& points) const override { return m_radius * ((points.y() - m_center.y()) / (points.y() - m_center.y())).atan(); }
+            Eigen::ArrayXd lengths(const Points<Eigen::Dynamic, PointCartes>& points) const override
+            {
+                const Eigen::ArrayXd dirsx { points.x() - m_center.x() };
+                const Eigen::ArrayXd dirsy { points.y() - m_center.y() };
+                return m_radius * (angleDir(dirsx, dirsy) - m_angle0);
+            }
 
             Eigen::ArrayXd lengths(const Eigen::ArrayXd& angles) const { return angles * m_radius; }
 
