@@ -38,6 +38,8 @@ namespace FrenetTransform
          */
         Polyline(const ArrayT1& x, const ArrayT1& y) { setPoints(x, y); }
 
+        Polyline(const Points<T, PointCartes>& points) { setPoints(points.x(), points.y()); }
+
         Points<Eigen::Dynamic, PointCartes> operator()(const Eigen::ArrayXd& lengths) const override
         {
             // indices of corresponding polyline segments
