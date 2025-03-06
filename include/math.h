@@ -128,6 +128,31 @@ namespace FrenetTransform
 
         return result;
     }
+
+    template <typename Tarray>
+    Tarray angleDir(const Eigen::ArrayBase<Tarray>& dirxs, const Eigen::ArrayBase<Tarray>& dirys)
+    {
+        Tarray angles { Eigen::ArrayBase<Tarray>::Zero(dirxs.rows(), dirxs.cols()) };
+
+        for(int row {}; row < dirxs.rows(); ++row)
+        {
+            for(int col{}; col < dirxs.cols(); ++col)
+            {
+                if(dirxs(row, col) > 0 && dirxs(row, col) > std::abs(dirys(row, col)))
+                    angles(row, col) = std::atan(dirys(row, col) / dirxs(row, col));
+                else if(dirys(row, col) > 0 && std::abs(dirxs(row, col)) < dirys(row, col))
+                    angles(row, col) = M_PI / 2 - std::atan(dirxs(row, col) / dirys(row, col));
+                else if(dirxs(row, col) < 0 && dirys(row, col) > 0 && -dirxs(row, col) > dirys(row, col))
+                    angles(row, col) = M_PI + std::atan(dirys(row, col) / dirxs(row, col));
+                else if(dirys(row, col) < 0 && std::abs(dirxs(row, col)) < -dirys(row, col))
+                    angles(row, col) = -M_PI / 2 - std::atan(dirxs(row, col) / dirys(row, col));
+                else
+                    angles(row, col) = -M_PI + std::atan(dirys(row, col) / dirxs(row, col));
+            }
+        }
+
+        return angles;
+    }
 };
 
 #endif

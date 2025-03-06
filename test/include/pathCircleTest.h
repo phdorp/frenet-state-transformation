@@ -1,6 +1,7 @@
 #include "points.h"
 #include "circle.h"
 #include "transformCircle.h"
+#include "testBase.h"
 
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
@@ -11,7 +12,7 @@ namespace FrenetTransform
 {
     namespace Testing
     {
-        class CircleTest : public testing::Test
+        class PathCircleTest : public TestBase
         {
         protected:
             const Circle m_circle { 5.0, {0.0, 0.0}, -M_PI };

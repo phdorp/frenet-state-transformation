@@ -1,47 +1,47 @@
 add_executable(
-    MathTest
-    MathTest.cpp
+    mathTest
+    mathTest.cpp
 )
 
-target_include_directories(MathTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
+target_include_directories(mathTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
 
 target_link_libraries(
-    MathTest
+    mathTest
     PRIVATE
     transform
     GTest::gtest_main
 )
 
-gtest_discover_tests(MathTest)
+gtest_discover_tests(mathTest)
 
 add_executable(
-    PolylineTest
-    PolylineTest.cpp
+    pathPolylineTest
+    pathPolylineTest.cpp
 )
 
-target_include_directories(PolylineTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
+target_include_directories(pathPolylineTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
 
 target_link_libraries(
-    PolylineTest
+    pathPolylineTest
     PRIVATE
     transform
     GTest::gtest_main
 )
 
-gtest_discover_tests(PolylineTest)
+gtest_discover_tests(pathPolylineTest)
 
 add_executable(
-    CircleTest
-    CircleTest.cpp
+    pathCircleTest
+    pathCircleTest.cpp
 )
 
-target_include_directories(CircleTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
+target_include_directories(pathCircleTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
 
 target_link_libraries(
-    CircleTest
+    pathCircleTest
     PRIVATE
     transform
     GTest::gtest_main
 )
 
-gtest_discover_tests(CircleTest)
+gtest_discover_tests(pathCircleTest)

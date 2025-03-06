@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include "points.h"
+#include "math.h"
 
 using FrenetTransform::Points;
 
@@ -68,25 +69,7 @@ namespace FrenetTransform
         {
             const Points<Eigen::Dynamic, PointCartes> tangents { tangent(lengths) };
 
-            Eigen::ArrayXd result (lengths.size());
-            for(int iLength {}; iLength < lengths.size(); ++iLength)
-            {
-                const double xder { tangents.x()(iLength) };
-                const double yder { tangents.y()(iLength) };
-
-                if(xder > 0 && xder > std::abs(yder))
-                    result(iLength) = std::atan(yder / xder);
-                else if(yder > 0 && std::abs(xder) < yder)
-                    result(iLength) = M_PI / 2 - std::atan(xder / yder);
-                else if(xder < 0 && yder > 0 && -xder > yder)
-                    result(iLength) = M_PI + std::atan(yder / xder);
-                else if(yder < 0 && std::abs(xder) < -yder)
-                    result(iLength) = -M_PI / 2 - std::atan(xder / yder);
-                else
-                    result(iLength) = -M_PI + std::atan(yder / xder);
-            }
-
-            return result;
+            return angleDir(tangents.x(), tangents.y());
         }
 
         /**
