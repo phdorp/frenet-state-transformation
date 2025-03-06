@@ -13,7 +13,7 @@ namespace FrenetTransform
     {
         using limits = std::numeric_limits<double>;
 
-        class CircleTest : public testing::Test
+        class PathCircleTest : public testing::Test
         {
         protected:
             const Circle m_circle { 5.0, {0.0, 0.0}, -M_PI };

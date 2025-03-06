@@ -2,7 +2,7 @@
 #include "points.h"
 #include "transform.h"
 #include "circle.h"
-#include "CircleTest.h"
+#include "pathCircleTest.h"
 
 #include <gtest/gtest.h>
 #include <eigen3/Eigen/Core>
@@ -13,7 +13,7 @@ namespace FrenetTransform
 {
     namespace Testing
     {
-        class PolylineTest : public CircleTest
+        class PathPolylineTest : public PathCircleTest
         {
         protected:
             const Polyline<Eigen::Dynamic> m_circlePoly { m_circle(Eigen::ArrayXd::LinSpaced(1079, 0.0, 2 * M_PI) * m_circle.radius()) };
@@ -30,7 +30,7 @@ namespace FrenetTransform
             const Points<Eigen::Dynamic, PointFrenet> m_accFrenet { m_transform.accFrenet(m_accCircle) };
         };
 
-        TEST_F(PolylineTest, GetPointsCircle)
+        TEST_F(PathPolylineTest, GetPointsCircle)
         {
             const auto pointsCircleEst { m_circlePoly(m_posFrenet.x()) };
             const auto pointsCircleGtr { m_circle(m_posFrenet.x()) };
@@ -39,7 +39,7 @@ namespace FrenetTransform
             expectAllClose(pointsCircleEst.y(), pointsCircleGtr.y(), 1e-2);
         }
 
-        TEST_F(PolylineTest, GetTangentsCircle)
+        TEST_F(PathPolylineTest, GetTangentsCircle)
         {
             const auto tangentsEst { m_circlePoly.tangent(m_posFrenet.x()) };
             const auto tangentsGtr { m_circle.tangent(m_posFrenet.x()) };
@@ -48,7 +48,7 @@ namespace FrenetTransform
             expectAllClose(tangentsEst.y(), tangentsGtr.y(), 1e-2);
         }
 
-        TEST_F(PolylineTest, GetNormalsCircle)
+        TEST_F(PathPolylineTest, GetNormalsCircle)
         {
             const auto normalsEst { m_circlePoly.normal(m_posFrenet.x()) };
             const auto normalsGtr { m_circle.normal(m_posFrenet.x()) };
@@ -57,7 +57,7 @@ namespace FrenetTransform
             expectAllClose(normalsEst.y(), normalsGtr.y(), 1e-2);
         }
 
-        TEST_F(PolylineTest, GetAnglesCircle)
+        TEST_F(PathPolylineTest, GetAnglesCircle)
         {
             const auto angles0Est { m_circlePoly.angle0(m_posFrenet.x()) };
             const auto angles0Gtr { m_circle.angle0(m_posFrenet.x()) };
@@ -65,7 +65,7 @@ namespace FrenetTransform
             expectAllClose(angles0Est, angles0Gtr, 1e-2);
         }
 
-        TEST_F(PolylineTest, GetAngles1Circle)
+        TEST_F(PathPolylineTest, GetAngles1Circle)
         {
             const auto angles1Est { m_circlePoly.angle1(m_posFrenet.x()) };
             const auto angles1Gtr { m_circle.angle1(m_posFrenet.x()) };
@@ -73,7 +73,7 @@ namespace FrenetTransform
             expectAllClose(angles1Est, angles1Gtr, 1e-2);
         }
 
-        TEST_F(PolylineTest, GetAngles2Circle)
+        TEST_F(PathPolylineTest, GetAngles2Circle)
         {
             const auto angles2Est { m_circlePoly.angle2(m_posFrenet.x()) };
             const auto angles2Gtr { m_circle.angle2(m_posFrenet.x()) };
@@ -81,7 +81,7 @@ namespace FrenetTransform
             expectAllClose(angles2Est,angles2Gtr, 1e-2);
         }
 
-        TEST_F(PolylineTest, NextPointsCircle)
+        TEST_F(PathPolylineTest, NextPointsCircle)
         {
             const auto lengthsEst { m_circlePoly.lengths(m_posCartes) };
             const auto lengthsGtr { m_circle.lengths(m_posCartes) };
@@ -89,7 +89,7 @@ namespace FrenetTransform
             expectAllClose(lengthsEst, lengthsGtr, 2e-2);
         }
 
-        TEST_F(PolylineTest, PosFrenetCircle)
+        TEST_F(PathPolylineTest, PosFrenetCircle)
         {
             // determine frenet positions
             const auto posFrenet { m_circleTransform.posFrenet(m_posCartes) };
@@ -98,7 +98,7 @@ namespace FrenetTransform
             expectAllClose(posFrenet.y(), m_posFrenet.y(), 1e-1, 1e-2);
         }
 
-        TEST_F(PolylineTest, PosCartCircle)
+        TEST_F(PathPolylineTest, PosCartCircle)
         {
             // determine frenet positions
             const auto posCartes { m_circleTransform.posCartes(m_posFrenet) };
@@ -107,7 +107,7 @@ namespace FrenetTransform
             expectAllClose(posCartes.y(), m_posCartes.y(), 2e-2, 0.7);
         }
 
-        TEST_F(PolylineTest, VelFrenetCircle)
+        TEST_F(PathPolylineTest, VelFrenetCircle)
         {
             // test frenet frame results since error grows with distance from path
             const auto velFrenet { m_circleTransform.velFrenet(m_velCartes, m_posFrenet) };
@@ -116,7 +116,7 @@ namespace FrenetTransform
             expectAllClose(velFrenet.y(), m_velFrenet.y(), 2e-2, 3e-2);
         }
 
-        TEST_F(PolylineTest, VelCartCircle)
+        TEST_F(PathPolylineTest, VelCartCircle)
         {
             // test frenet frame results since error grows with distance from path
             const auto velCartes { m_circleTransform.velCartes(m_velFrenet, m_posFrenet) };
@@ -125,7 +125,7 @@ namespace FrenetTransform
             expectAllClose(velCartes.y(), m_velCartes.y(), 2e-2, 0.15);
         }
 
-        TEST_F(PolylineTest, AccFrenetCircle)
+        TEST_F(PathPolylineTest, AccFrenetCircle)
         {
             // test frenet frame results since error grows with distance from path
             const auto accFrenet { m_circleTransform.accFrenet(m_accCartes, m_velFrenet, m_posFrenet) };
@@ -134,7 +134,7 @@ namespace FrenetTransform
             expectAllClose(accFrenet.y(), m_accFrenet.y(), 7e-2, 4.5e-1);
         }
 
-        TEST_F(PolylineTest, AccCartCircle)
+        TEST_F(PathPolylineTest, AccCartCircle)
         {
             // test frenet frame results since error grows with distance from path
             const auto accCartes { m_circleTransform.accCartes(m_accFrenet, m_velFrenet, m_posFrenet) };

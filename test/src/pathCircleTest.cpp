@@ -1,10 +1,10 @@
-#include "CircleTest.h"
+#include "pathCircleTest.h"
 
 namespace FrenetTransform
 {
     namespace Testing
     {
-        TEST_F(CircleTest, asdf)
+        TEST_F(PathCircleTest, DirectionAngle)
         {
             const auto anglesEst { m_circle.angle0(m_posFrenet.x()) };
 
