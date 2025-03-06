@@ -19,7 +19,7 @@ namespace FrenetTransform
     class Transform
     {
     public:
-        Transform() = delete;
+        Transform() = default;
 
         /**
          * @brief Construct a new Transform object from a given Path.
@@ -43,7 +43,7 @@ namespace FrenetTransform
         Points<Eigen::Dynamic, PointCartes> accCartes(const Points<Eigen::Dynamic, PointFrenet>& accFrenet, const Points<Eigen::Dynamic, PointFrenet>& velFrenet, const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const;
 
     protected:
-        const std::shared_ptr<Path> m_path; /**< Store path. */
+        std::shared_ptr<Path> m_path; /**< Store path. */
 
     private:
         Eigen::Array<Eigen::ArrayXd, 2, 2> velTransform(const Points<Eigen::Dynamic, PointFrenet>& posFrenet) const;
