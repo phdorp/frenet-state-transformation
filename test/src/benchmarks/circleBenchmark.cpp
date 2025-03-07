@@ -14,16 +14,35 @@ namespace FrenetTransform
         {
         protected:
             void SetUp(::benchmark::State& state) {
-                m_circlePoly = Polyline { m_circle(Eigen::ArrayXd::LinSpaced(state.range(0), 0.0, 2 * M_PI) * m_circle.radius()) };
+                std::srand(0);
+                const Points<Eigen::Dynamic, PointCircle> m_posCircle {
+                    m_circle.radius() * (1 + Eigen::ArrayXd::Random(state.range(0)) * 0.95) ,
+                    Eigen::ArrayXd::Random(state.range(0)) * M_PI * 0.95 };
+
+                m_posFrenet = m_transform.posFrenet(m_posCircle);
+                m_posCartes = m_transform.posCartes(m_posCircle);
+
+                m_circlePoly = Polyline { m_circle(Eigen::ArrayXd::LinSpaced(state.range(1), 0.0, 2 * M_PI) * m_circle.radius()) };
                 m_circleTransform = Transform { std::make_shared<Polyline<Eigen::Dynamic>>(m_circlePoly) };
+            }
+
+            template <typename Tpoint>
+            void reportError(const Points<Eigen::Dynamic, Tpoint> diff, benchmark::State& state)
+            {
+                const auto errX { diff.x().abs() };
+                state.counters["ErrMaxX"] = *std::max_element(errX.begin(), errX.end());
+                state.counters["ErrMinX"] = *std::min_element(errX.begin(), errX.end());
+                const auto errY { diff.y().abs() };
+                state.counters["ErrMaxY"] = *std::max_element(errY.begin(), errY.end());
+                state.counters["ErrMinY"] = *std::min_element(errY.begin(), errY.end());
+
             }
 
             const Circle m_circle { 5.0, {0.0, 0.0}, -M_PI };
             const TransformCircle m_transform { std::make_shared<Circle>(m_circle) };
 
-            const Points<Eigen::Dynamic, PointCircle> m_posCircle { m_circle.radius() * (1 + Eigen::ArrayXd::Random(100) * 0.95) , Eigen::ArrayXd::Random(100) * M_PI * 0.99 };
-            const Points<Eigen::Dynamic, PointFrenet> m_posFrenet { m_transform.posFrenet(m_posCircle) };
-            const Points<Eigen::Dynamic, PointCartes> m_posCartes { m_transform.posCartes(m_posCircle) };
+            Points<Eigen::Dynamic, PointFrenet> m_posFrenet {};
+            Points<Eigen::Dynamic, PointCartes> m_posCartes {};
 
             Polyline<Eigen::Dynamic> m_circlePoly {};
             Transform m_circleTransform {};
@@ -34,14 +53,20 @@ namespace FrenetTransform
             Points<Eigen::Dynamic, PointCartes> posCartes {};
             for(auto _ : state)
                 posCartes = m_circleTransform.posCartes(m_posFrenet);
-            const auto diff { posCartes - m_posCartes };
-            const auto error_x { diff.x().abs() };
-            state.counters["error_max_x"] = *std::max_element(error_x.begin(), error_x.end());
-            const auto error_y { diff.y().abs() };
-            state.counters["error_max_y"] = *std::max_element(error_y.begin(), error_y.end());
+            reportError(posCartes - m_posCartes, state);
         }
 
-        BENCHMARK_REGISTER_F(PolylineBenchmark, PosFrenetCartes)->Range(8, 8<<10)->ArgName("NumPoints");
+        BENCHMARK_REGISTER_F(PolylineBenchmark, PosFrenetCartes)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
+
+        BENCHMARK_DEFINE_F(PolylineBenchmark, PosCartesFrenet)(benchmark::State& state)
+        {
+            Points<Eigen::Dynamic, PointFrenet> posFrenet {};
+            for(auto _ : state)
+                posFrenet = m_circleTransform.posFrenet(m_posCartes);
+            reportError(posFrenet - m_posFrenet, state);
+        }
+
+        BENCHMARK_REGISTER_F(PolylineBenchmark, PosCartesFrenet)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
     };
 };
 
