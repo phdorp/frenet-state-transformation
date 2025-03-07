@@ -25,14 +25,20 @@ namespace FrenetTransform
             const Points<Eigen::Dynamic, PointFrenet> m_posFrenet { m_transform.posFrenet(m_posCircle) };
             const Points<Eigen::Dynamic, PointCartes> m_posCartes { m_transform.posCartes(m_posCircle) };
 
-            Polyline<Eigen::Dynamic> m_circlePoly;
-            Transform m_circleTransform;
+            Polyline<Eigen::Dynamic> m_circlePoly {};
+            Transform m_circleTransform {};
         };
 
         BENCHMARK_DEFINE_F(PolylineBenchmark, PosFrenetCartes)(benchmark::State& state)
         {
+            Points<Eigen::Dynamic, PointCartes> posCartes {};
             for(auto _ : state)
-                m_circleTransform.posCartes(m_posFrenet);
+                posCartes = m_circleTransform.posCartes(m_posFrenet);
+            const auto diff { posCartes - m_posCartes };
+            const auto error_x { diff.x().abs() };
+            state.counters["error_max_x"] = *std::max_element(error_x.begin(), error_x.end());
+            const auto error_y { diff.y().abs() };
+            state.counters["error_max_y"] = *std::max_element(error_y.begin(), error_y.end());
         }
 
         BENCHMARK_REGISTER_F(PolylineBenchmark, PosFrenetCartes)->Range(8, 8<<10)->ArgName("NumPoints");

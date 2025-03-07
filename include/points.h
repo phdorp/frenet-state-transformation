@@ -11,7 +11,7 @@ namespace FrenetTransform{
     class Points
     {
     public:
-        Points() = delete;
+        Points () {}
 
         Points(const Eigen::Array<double, NumPoints, 1>& x, const Eigen::Array<double, NumPoints, 1>& y)
             : m_x { x }, m_y { y }
