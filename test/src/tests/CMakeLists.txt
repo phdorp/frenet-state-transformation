@@ -1,4 +1,3 @@
-include(FetchContent)
 include(GoogleTest)
 
 FetchContent_Declare(
