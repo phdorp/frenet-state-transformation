@@ -9,10 +9,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 add_subdirectory(src)
 
-option(BUILD_TESTING "..." OFF)
+option(BUILD_TEST "Build tests for transformation." OFF)
+option(BUILD_BENCHMARK "Build benchmarks for transformations." OFF)
 
-if(BUILD_TESTING)
+if(BUILD_TEST)
     enable_testing()
     add_subdirectory(test/src/tests)
+endif()
+
+if(BUILD_BENCHMARK)
     add_subdirectory(test/src/benchmarks)
 endif()
