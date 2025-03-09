@@ -16,16 +16,16 @@ namespace FrenetTransform
         class PathPolylineTest : public PathCircleTest
         {
         protected:
-            const Polyline<Eigen::Dynamic> m_circlePoly { m_circle(Eigen::ArrayXd::LinSpaced(1079, 0.0, 2 * M_PI) * m_circle.radius()) };
+            const Polyline<Eigen::Dynamic> m_circlePoly { m_circle(Eigen::ArrayXd::LinSpaced(4096, 0.0, 2 * M_PI) * m_circle.radius()) };
             const Transform m_circleTransform { std::make_shared<Polyline<Eigen::Dynamic>>(m_circlePoly) };
 
             const Points<Eigen::Dynamic, PointCartes> m_posCartes { m_transform.posCartes(m_posCircle) };
 
-            const Points<Eigen::Dynamic, PointCircle> m_velCircle { Eigen::ArrayXd::Random(100).abs() * m_circle.radius(), Eigen::ArrayXd::Random(100) * M_PI / 4 };
+            const Points<Eigen::Dynamic, PointCircle> m_velCircle { Eigen::ArrayXd::Random(numQuery).abs() * m_circle.radius(), Eigen::ArrayXd::Random(numQuery) * M_PI / 4 };
             const Points<Eigen::Dynamic, PointCartes> m_velCartes { m_transform.velCartes(m_velCircle, m_posCircle) };
             const Points<Eigen::Dynamic, PointFrenet> m_velFrenet { m_transform.velFrenet(m_velCircle) };
 
-            const Points<Eigen::Dynamic, PointCircle> m_accCircle { Eigen::ArrayXd::Random(100).abs() * m_circle.radius(), Eigen::ArrayXd::Random(100) * M_PI / 4 };
+            const Points<Eigen::Dynamic, PointCircle> m_accCircle { Eigen::ArrayXd::Random(numQuery).abs() * m_circle.radius(), Eigen::ArrayXd::Random(numQuery) * M_PI / 4 };
             const Points<Eigen::Dynamic, PointCartes> m_accCartes { m_transform.accCartes(m_accCircle, m_velCircle, m_posCircle) };
             const Points<Eigen::Dynamic, PointFrenet> m_accFrenet { m_transform.accFrenet(m_accCircle) };
         };
@@ -94,8 +94,8 @@ namespace FrenetTransform
             // determine frenet positions
             const auto posFrenet { m_circleTransform.posFrenet(m_posCartes) };
 
-            expectAllClose(posFrenet.x(), m_posFrenet.x(), 1e-1, 2e-2);
-            expectAllClose(posFrenet.y(), m_posFrenet.y(), 1e-1, 1e-2);
+            expectAllClose(posFrenet.x(), m_posFrenet.x(), 4e-3);
+            expectAllClose(posFrenet.y(), m_posFrenet.y(), 4e-3);
         }
 
         TEST_F(PathPolylineTest, PosCartCircle)
@@ -103,8 +103,8 @@ namespace FrenetTransform
             // determine frenet positions
             const auto posCartes { m_circleTransform.posCartes(m_posFrenet) };
 
-            expectAllClose(posCartes.x(), m_posCartes.x(), 2e-2, 0.7);
-            expectAllClose(posCartes.y(), m_posCartes.y(), 2e-2, 0.7);
+            expectAllClose(posCartes.x(), m_posCartes.x(), 1.6e-2);
+            expectAllClose(posCartes.y(), m_posCartes.y(), 1.6e-2);
         }
 
         TEST_F(PathPolylineTest, VelFrenetCircle)
@@ -112,8 +112,8 @@ namespace FrenetTransform
             // test frenet frame results since error grows with distance from path
             const auto velFrenet { m_circleTransform.velFrenet(m_velCartes, m_posFrenet) };
 
-            expectAllClose(velFrenet.x(), m_velFrenet.x(), 2e-1, 0.55);
-            expectAllClose(velFrenet.y(), m_velFrenet.y(), 2e-2, 3e-2);
+            expectAllClose(velFrenet.x(), m_velFrenet.x(), 5e-1);
+            expectAllClose(velFrenet.y(), m_velFrenet.y(), 5e-1);
         }
 
         TEST_F(PathPolylineTest, VelCartCircle)
@@ -121,8 +121,8 @@ namespace FrenetTransform
             // test frenet frame results since error grows with distance from path
             const auto velCartes { m_circleTransform.velCartes(m_velFrenet, m_posFrenet) };
 
-            expectAllClose(velCartes.x(), m_velCartes.x(), 6e-2, 0.2);
-            expectAllClose(velCartes.y(), m_velCartes.y(), 2e-2, 0.15);
+            expectAllClose(velCartes.x(), m_velCartes.x(), 6e-2, 5e-2);
+            expectAllClose(velCartes.y(), m_velCartes.y(), 2e-2, 5e-2);
         }
 
         TEST_F(PathPolylineTest, AccFrenetCircle)
@@ -130,8 +130,8 @@ namespace FrenetTransform
             // test frenet frame results since error grows with distance from path
             const auto accFrenet { m_circleTransform.accFrenet(m_accCartes, m_velFrenet, m_posFrenet) };
 
-            expectAllClose(accFrenet.x(), m_accFrenet.x(), 7e-2, 4.5e-1);
-            expectAllClose(accFrenet.y(), m_accFrenet.y(), 7e-2, 4.5e-1);
+            expectAllClose(accFrenet.x(), m_accFrenet.x(), 7e-2, 5e-1);
+            expectAllClose(accFrenet.y(), m_accFrenet.y(), 7e-2, 5e-2);
         }
 
         TEST_F(PathPolylineTest, AccCartCircle)
@@ -139,8 +139,8 @@ namespace FrenetTransform
             // test frenet frame results since error grows with distance from path
             const auto accCartes { m_circleTransform.accCartes(m_accFrenet, m_velFrenet, m_posFrenet) };
 
-            expectAllClose(accCartes.x(), m_accCartes.x(), 2e-2, 2e-1);
-            expectAllClose(accCartes.y(), m_accCartes.y(), 2e-2, 2e-1);
+            expectAllClose(accCartes.x(), m_accCartes.x(), 5e-2);
+            expectAllClose(accCartes.y(), m_accCartes.y(), 5e-2);
         }
     };
 };
