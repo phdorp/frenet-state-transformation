@@ -46,12 +46,15 @@ namespace FrenetTransform
             const Eigen::ArrayXi indicesLengths { indices(lengths) };
 
             // relative position along the linear segment
-            const auto pathLengthsdiff { FrenetTransform::diffBackward(m_lengths) };
-            const auto relativePos { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths + 1) };
+            const Eigen::ArrayXd pathLengthsdiff { FrenetTransform::diffBackward(m_lengths) };
+            Eigen::ArrayXd relativePos { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths) };
+
+            for(double& pos : relativePos)
+                pos = std::clamp(pos, 0.0, 1.0);
 
             // absolute position along path
-            const auto x { m_x[0](indicesLengths + 1) * relativePos + m_x[0](indicesLengths) * (1 - relativePos) };
-            const auto y { m_y[0](indicesLengths + 1) * relativePos + m_y[0](indicesLengths) * (1 - relativePos) };
+            const Eigen::ArrayXd x { m_x[0](indicesLengths + 1) * relativePos + m_x[0](indicesLengths) * (1 - relativePos) };
+            const Eigen::ArrayXd y { m_y[0](indicesLengths + 1) * relativePos + m_y[0](indicesLengths) * (1 - relativePos) };
 
             return { x, y };
         }
