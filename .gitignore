@@ -40,5 +40,5 @@ build/
 # documentation
 docs
 
-# output files
-out
+# log files
+benchmarks/logs
