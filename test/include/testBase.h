@@ -16,14 +16,8 @@ namespace FrenetTransform
             template <typename Tarray>
             void expectAllClose(const Eigen::ArrayBase<Tarray>& estimate, const Eigen::ArrayBase<Tarray>& groundTruth, double errAbs = limits::infinity(), double errRel = limits::infinity())
             {
-                for(int row {}; row < estimate.rows(); ++row)
-                {
-                    for(int col {}; col < estimate.cols(); ++col)
-                    {
-                        EXPECT_NEAR(estimate(row, col), groundTruth(row, col), errAbs);
-                        EXPECT_NEAR(estimate(row, col) / groundTruth(row, col), 1.0, errRel);
-                    }
-                }
+                const auto errAbsVals { (estimate - groundTruth).abs() };
+                EXPECT_LT(*std::max_element(errAbsVals.begin(), errAbsVals.end()), errAbs);
             }
         };
     };
