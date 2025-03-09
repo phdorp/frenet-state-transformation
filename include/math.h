@@ -90,13 +90,16 @@ namespace FrenetTransform
     template <typename T>
     int first(const Eigen::ArrayBase<T>& sequence)
     {
-        for(int index {}; index < sequence.rows(); ++index)
+        int index {};
+
+        for(auto val : sequence)
         {
-            if(sequence(index) >=0)
+            if(val >=0)
                 return index;
+            ++index;
         }
 
-        return -1;
+        return index - 1;
     }
 
     /**
