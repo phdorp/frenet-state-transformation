@@ -29,13 +29,14 @@ namespace FrenetTransform
             template <typename Tpoint>
             void reportError(const Points<Eigen::Dynamic, Tpoint> diff, benchmark::State& state)
             {
-                const auto errX { diff.x().abs() };
-                state.counters["ErrMaxX"] = *std::max_element(errX.begin(), errX.end());
-                state.counters["ErrMinX"] = *std::min_element(errX.begin(), errX.end());
-                const auto errY { diff.y().abs() };
-                state.counters["ErrMaxY"] = *std::max_element(errY.begin(), errY.end());
-                state.counters["ErrMinY"] = *std::min_element(errY.begin(), errY.end());
-
+                Eigen::ArrayXd errX { diff.x().abs() };
+                std::sort(errX.begin(), errX.end());
+                state.counters["ErrMaxX"] = errX(errX.rows() - 1);
+                state.counters["ErrMedX"] = errX(errX.rows() / 2);
+                Eigen::ArrayXd errY { diff.y().abs() };
+                std::sort(errY.begin(), errY.end());
+                state.counters["ErrMaxY"] = errY(errY.rows() - 1);
+                state.counters["ErrMedY"] = errY(errY.rows() / 2);
             }
 
             const Circle m_circle { 5.0, {0.0, 0.0}, -M_PI };
