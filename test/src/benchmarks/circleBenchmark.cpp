@@ -17,12 +17,18 @@ namespace FrenetTransform
                 std::srand(0);
                 const Points<Eigen::Dynamic, PointCircle> m_posCircle {
                     m_circle.radius() * (1 + Eigen::ArrayXd::Random(state.range(0)) * 0.95) ,
-                    Eigen::ArrayXd::Random(state.range(0)) * M_PI * 0.95 };
+                    -Eigen::ArrayXd::Random(state.range(0)).abs() * M_PI };
 
                 m_posFrenet = m_transform.posFrenet(m_posCircle);
                 m_posCartes = m_transform.posCartes(m_posCircle);
 
-                m_circlePoly = Polyline { m_circle(Eigen::ArrayXd::LinSpaced(state.range(1), 0.0, 2 * M_PI) * m_circle.radius()) };
+                // non-uniform length discretization
+                Eigen::ArrayXd m_lengths { Eigen::ArrayXd::Zero(state.range(1)) };
+                m_lengths(Eigen::seqN(1,state.range(1) - 2)) = Eigen::ArrayXd::Random(state.range(1) - 2).abs() * 3 / 2 * M_PI * m_circle.radius();
+                m_lengths(state.range(1) - 1) = 3 / 2 * M_PI * m_circle.radius();
+                std::sort(m_lengths.begin(), m_lengths.end());
+
+                m_circlePoly = Polyline { m_circle(m_lengths) };
                 m_circleTransform = Transform { std::make_shared<Polyline<Eigen::Dynamic>>(m_circlePoly) };
             }
 
