@@ -47,7 +47,7 @@ namespace FrenetTransform
 
             // relative position along the linear segment
             const Eigen::ArrayXd pathLengthsdiff { FrenetTransform::diffBackward(m_lengths) };
-            Eigen::ArrayXd relativePos { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths) };
+            Eigen::ArrayXd relativePos { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths + 1) };
 
             for(double& pos : relativePos)
                 pos = std::clamp(pos, 0.0, 1.0);
@@ -146,7 +146,7 @@ namespace FrenetTransform
         Points<Eigen::Dynamic, PointCartes> gradient1 (const Eigen::ArrayXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
-            return { m_x[1](indicesGrad), m_y[1](indicesGrad) };
+            return { m_x[1](indicesGrad + 1), m_y[1](indicesGrad + 1) };
         }
 
         /**
@@ -158,7 +158,7 @@ namespace FrenetTransform
         Points<Eigen::Dynamic, PointCartes> gradient2 (const Eigen::ArrayXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
-            return { m_x[2](indicesGrad), m_y[2](indicesGrad) };
+            return { m_x[2](indicesGrad + 2), m_y[2](indicesGrad + 2) };
         }
 
         /**
@@ -170,7 +170,7 @@ namespace FrenetTransform
         Points<Eigen::Dynamic, PointCartes> gradient3 (const Eigen::ArrayXd& lengths) const override
         {
             const auto indicesGrad { indices(lengths) };
-            return { m_x[3](indicesGrad), m_y[3](indicesGrad) };
+            return { m_x[3](indicesGrad + 3), m_y[3](indicesGrad + 3) };
         }
 
         /**
