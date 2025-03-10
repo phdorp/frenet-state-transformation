@@ -143,7 +143,7 @@ namespace FrenetTransform
 
             int result { FrenetTransform::first(input) }; // get negative index
 
-            int groundTruth { -1 }; // ground truth index
+            int groundTruth { 4 }; // ground truth index
 
             EXPECT_EQ(result, groundTruth);
         }

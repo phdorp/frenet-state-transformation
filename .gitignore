@@ -39,3 +39,6 @@ build/
 
 # documentation
 docs
+
+# log files
+benchmarks/logs
