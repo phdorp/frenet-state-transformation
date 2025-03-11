@@ -12,4 +12,5 @@ target_include_directories(circleBenchmark PRIVATE "${CMAKE_SOURCE_DIR}/test/inc
 
 target_link_libraries(circleBenchmark PRIVATE
     transform
-    benchmark::benchmark)
+    benchmark::benchmark
+    eigen)

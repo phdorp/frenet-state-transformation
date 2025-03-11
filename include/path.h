@@ -1,7 +1,7 @@
 #ifndef PATH_H
 #define PATH_H
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 #include <array>
 #include <math.h>
 

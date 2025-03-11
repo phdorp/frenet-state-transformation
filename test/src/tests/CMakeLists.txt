@@ -18,6 +18,7 @@ target_link_libraries(
     PRIVATE
     transform
     GTest::gtest_main
+    eigen
 )
 
 gtest_discover_tests(mathTest)
@@ -34,6 +35,7 @@ target_link_libraries(
     PRIVATE
     transform
     GTest::gtest_main
+    eigen
 )
 
 gtest_discover_tests(pathPolylineTest)
@@ -50,6 +52,7 @@ target_link_libraries(
     PRIVATE
     transform
     GTest::gtest_main
+    eigen
 )
 
 gtest_discover_tests(pathCircleTest)

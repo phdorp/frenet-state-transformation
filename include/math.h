@@ -1,7 +1,7 @@
 #ifndef MATH_H
 #define MATH_H
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 
 namespace FrenetTransform
 {
