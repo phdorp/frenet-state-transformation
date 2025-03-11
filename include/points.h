@@ -1,7 +1,7 @@
 #ifndef POINTS_H
 #define POINTS_H
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 #include <cassert>
 
 #include "point.h"

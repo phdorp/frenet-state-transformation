@@ -1,7 +1,7 @@
 #ifndef CIRCLE_H
 #define CIRCLE_H
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 #include <math.h>
 
 #include "path.h"

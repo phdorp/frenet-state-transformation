@@ -5,7 +5,7 @@
 #include "pathCircleTest.h"
 
 #include <gtest/gtest.h>
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 #include <math.h>
 #include <memory>
 

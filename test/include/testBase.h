@@ -2,7 +2,7 @@
 #define TEST_BASE_H
 
 #include <gtest/gtest.h>
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 
 namespace FrenetTransform
 {

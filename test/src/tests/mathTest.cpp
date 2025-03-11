@@ -1,6 +1,6 @@
 #include "math.h"
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 #include <gtest/gtest.h>
 
 namespace FrenetTransform

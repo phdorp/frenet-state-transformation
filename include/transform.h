@@ -1,7 +1,7 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include <eigen3/Eigen/Core>
+#include <Eigen/Core>
 #include <memory>
 
 #include "path.h"
