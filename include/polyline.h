@@ -80,20 +80,8 @@ namespace FrenetTransform
 
             for(int cPoints {}; cPoints < points.numPoints(); ++cPoints)
             {
-                const auto distSqCorners { (points(cPoints).x() - m_x[0]).pow(2) + (points(cPoints).y() - m_y[0]).pow(2) };
-
                 double distSq { -1.0 };
-
-                for(int cCorder {}; cCorder < distSqCorners.rows(); ++cCorder)
-                {
-                    if(distSq < 0.0 ||  distSqCorners(cCorder) < distSq)
-                    {
-                        distSq = distSqCorners(cCorder);
-                        lLenghts(cPoints) = m_lengths(cCorder);
-                    }
-                }
-
-                for(int cThis {}; cThis < T; ++cThis)
+                for(int cThis {1}; cThis < m_lengths.rows(); ++cThis)
                 {
                     const PointCartes pathNext { m_x[0].data()[cThis], m_y[0].data()[cThis] };
                     const double xDiffPnt { pathNext.x() - points.x(cPoints) };
@@ -101,19 +89,31 @@ namespace FrenetTransform
                     const double param { (xDiffPnt * m_xDiff(cThis) + yDiffPnt * m_yDiff(cThis))
                         / (std::pow(m_xDiff(cThis), 2) + std::pow(m_yDiff(cThis), 2)) };
 
-                    if(param >= 0.0 && param <= 1.0)
+                    double distSqCand {};
+                    double candLength {};
+                    if(param >= 1.0)
+                    {
+                        distSqCand = std::pow( m_x[0].data()[cThis - 1] - points.x(cPoints), 2) + std::pow(m_y[0].data()[cThis - 1] - points.y(cPoints), 2);
+                        candLength = m_lengths.data()[cThis - 1];
+                    }
+                    else if(param <= 0.0)
+                    {
+                        distSqCand = std::pow( m_x[0].data()[cThis] - points.x(cPoints), 2) + std::pow(m_y[0].data()[cThis] - points.y(cPoints), 2);
+                        candLength = m_lengths.data()[cThis];
+                    }
+                    else
                     {
                         const PointCartes pathPrev { m_x[0].data()[cThis - 1], m_y[0].data()[cThis - 1] };
                         const double xCand { pathPrev.x() * param + (1 - param) * pathNext.x() };
                         const double yCand { pathPrev.y() * param + (1 - param) * pathNext.y() };
-                        const PointCartes cand { xCand, yCand };
-                        const double distSqCand { std::pow(xCand - points.x(cPoints), 2) + std::pow(yCand - points.y(cPoints), 2) };
+                        distSqCand = std::pow(xCand - points.x(cPoints), 2) + std::pow(yCand - points.y(cPoints), 2);
+                        candLength = m_lengths(cThis - 1) +  (PointCartes { xCand, yCand }).distance(pathPrev);
+                    }
 
-                        if(distSq < 0.0 || distSq > distSqCand)
-                        {
-                            distSq = distSqCand;
-                            lLenghts(cPoints) = m_lengths(cThis - 1) + cand.distance(pathPrev);
-                        }
+                    if(distSqCand < distSq || distSq < 0)
+                    {
+                        distSq = distSqCand;
+                        lLenghts(cPoints) = candLength;
                     }
                 }
             }
@@ -200,7 +200,7 @@ namespace FrenetTransform
 
             // get indices of next segments
             for(int row {}; row < lengths.rows(); ++row)
-                result(row) = FrenetTransform::first(m_lengths - lengths(row));
+                result(row) = FrenetTransform::first(m_lengths(Eigen::seqN(0, m_lengths.rows() - 2)) - lengths(row));
 
             return result;
         }

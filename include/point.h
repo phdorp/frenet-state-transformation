@@ -8,7 +8,7 @@ namespace FrenetTransform{
     class Point
     {
     public:
-        Point() = delete;
+        Point() = default;
 
         Point(double x, double y)
             : m_x { x }, m_y { y }
@@ -22,6 +22,16 @@ namespace FrenetTransform{
         double y() const { return m_y; }
 
         Point operator-() const { return { -m_x, -m_y }; }
+
+        friend Point operator+(const Point& pointA, const Point& pointB)
+        {
+            return { pointA.x() + pointB.x(), pointA.y() + pointB.y() };
+        }
+
+        friend Point operator-(const Point& pointA, const Point& pointB)
+        {
+            return { pointA + (-pointB) };
+        }
 
     private:
         double m_x {};
