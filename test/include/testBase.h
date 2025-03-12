@@ -21,8 +21,9 @@ namespace FrenetTransform
 
                 for(int idx {}; idx < estimate.size(); ++idx)
                 {
-                    EXPECT_LT(errAbsVals(idx), errAbs) << "Error bound violated at index " << maxIdx << '!';
-                    EXPECT_LT(errRelVals(idx), errRel) << "Error bound violated at index " << maxIdx << '!';
+                    EXPECT_LT(errAbsVals(idx), errAbs) << "Error bound violated at index " << idx << '!';
+                    if(!std::isinf(errRelVals(idx)))
+                        EXPECT_LT(errRelVals(idx), errRel) << "Error bound violated at index " << idx << '!';
                 }
             }
         };
