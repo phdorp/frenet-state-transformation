@@ -200,7 +200,7 @@ namespace FrenetTransform
 
             // get indices of next segments
             for(int row {}; row < lengths.rows(); ++row)
-                result(row) = FrenetTransform::first(m_lengths - lengths(row));
+                result(row) = FrenetTransform::first(m_lengths(Eigen::seqN(0, m_lengths.rows() - 2)) - lengths(row));
 
             return result;
         }
