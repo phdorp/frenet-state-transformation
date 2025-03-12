@@ -57,3 +57,20 @@ target_link_libraries(
 
 gtest_discover_tests(pathCircleTest)
 
+add_executable(
+    pathPolylineLineTest
+    pathPolylineLineTest.cpp
+)
+
+target_include_directories(pathPolylineLineTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
+
+target_link_libraries(
+    pathPolylineLineTest
+    PRIVATE
+    transform
+    GTest::gtest_main
+    eigen
+)
+
+gtest_discover_tests(pathPolylineLineTest)
+
