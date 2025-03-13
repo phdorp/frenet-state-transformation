@@ -9,7 +9,32 @@ set(EIGEN_BUILD_PKGCONFIG OFF)
 set(EIGEN_BUILD_DOC OFF)
 FetchContent_MakeAvailable(eigen)
 
-add_library(transform path.cpp polyline.cpp transform.cpp)
-target_link_libraries(transform PRIVATE eigen)
 
-target_include_directories(transform PUBLIC "${CMAKE_SOURCE_DIR}/include")
+# make cache variables for install destinations
+include(GNUInstallDirs)
+
+file(GLOB
+  SOURCE_FILES
+  *.cpp
+)
+
+add_library(transform ${SOURCE_FILES})
+target_link_libraries(transform PUBLIC eigen)
+
+target_include_directories(transform
+  PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+)
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file (
+  ${PROJECT_SOURCE_DIR}/cmake/Config.cmake.in
+  ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+)
+
+export (
+  TARGETS transform eigen
+  NAMESPACE FrenetTransform::
+  FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake
+)

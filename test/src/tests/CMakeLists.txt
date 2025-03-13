@@ -6,71 +6,27 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-add_executable(
-    mathTest
-    mathTest.cpp
+FILE(GLOB
+    MAIN_FILES
+    *Test.cpp
 )
 
-target_include_directories(mathTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
+foreach(item ${MAIN_FILES})
+    get_filename_component(LIB_FILE ${item} NAME_WE)
+    add_executable(
+        ${LIB_FILE}
+        ${item}
+    )
 
-target_link_libraries(
-    mathTest
-    PRIVATE
-    transform
-    GTest::gtest_main
-    eigen
-)
+    target_include_directories(${LIB_FILE} PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
 
-gtest_discover_tests(mathTest)
+    target_link_libraries(
+        ${LIB_FILE}
+        PRIVATE
+        transform
+        GTest::gtest_main
+        eigen
+    )
 
-add_executable(
-    pathPolylineTest
-    pathPolylineTest.cpp
-)
-
-target_include_directories(pathPolylineTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
-
-target_link_libraries(
-    pathPolylineTest
-    PRIVATE
-    transform
-    GTest::gtest_main
-    eigen
-)
-
-gtest_discover_tests(pathPolylineTest)
-
-add_executable(
-    pathCircleTest
-    pathCircleTest.cpp
-)
-
-target_include_directories(pathCircleTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
-
-target_link_libraries(
-    pathCircleTest
-    PRIVATE
-    transform
-    GTest::gtest_main
-    eigen
-)
-
-gtest_discover_tests(pathCircleTest)
-
-add_executable(
-    pathPolylineLineTest
-    pathPolylineLineTest.cpp
-)
-
-target_include_directories(pathPolylineLineTest PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
-
-target_link_libraries(
-    pathPolylineLineTest
-    PRIVATE
-    transform
-    GTest::gtest_main
-    eigen
-)
-
-gtest_discover_tests(pathPolylineLineTest)
-
+    gtest_discover_tests(${LIB_FILE})
+endforeach()
