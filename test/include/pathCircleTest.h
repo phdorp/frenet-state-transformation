@@ -12,15 +12,18 @@ namespace FrenetTransform
 {
     namespace Testing
     {
+        template <typename NumQueries>
         class PathCircleTest : public TestBase
         {
-        protected:
-            const Circle<Eigen::Dynamic> m_circle { 5.0, {0.0, 0.0}, -M_PI };
-            const TransformCircle<Eigen::Dynamic> m_transform { std::make_shared<Circle<Eigen::Dynamic>>(m_circle) };
+        public:
+            static constexpr int s_numQueries { NumQueries::s_val == -1 ? 100 : NumQueries::s_val };
 
-            const int numQuery { 100 };
-            const Points<Eigen::Dynamic, PointCircle> m_posCircle { m_circle.radius() * (1 + Eigen::ArrayXd::Random(numQuery) * 0.95) , Eigen::ArrayXd::Random(numQuery) * M_PI * 0.95 };
-            const Points<Eigen::Dynamic> m_posFrenet { m_transform.posFrenet(m_posCircle) };
+        protected:
+            const Circle<NumQueries::s_val> m_circle { 5.0, {0.0, 0.0}, -M_PI };
+            const TransformCircle<NumQueries::s_val> m_transform { std::make_shared<Circle<NumQueries::s_val>>(m_circle) };
+
+            const Points<NumQueries::s_val, PointCircle> m_posCircle { m_circle.radius() * (1 + Eigen::Array<double, NumQueries::s_val, 1>::Random(s_numQueries) * 0.95) , Eigen::Array<double, NumQueries::s_val, 1>::Random(s_numQueries) * M_PI * 0.95 };
+            const Points<NumQueries::s_val> m_posFrenet { m_transform.posFrenet(m_posCircle) };
         };
     };
 };
