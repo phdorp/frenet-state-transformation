@@ -42,7 +42,7 @@ namespace FrenetTransform
             const Eigen::ArrayXi indicesLengths { indices(lengths) };
 
             // relative position along the linear segment
-            const Eigen::ArrayXd pathLengthsdiff { FrenetTransform::diffBackward(m_lengths) };
+            const Eigen::ArrayXd pathLengthsdiff { diffBackward(m_lengths) };
             Eigen::ArrayXd relativePos { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths + 1) };
 
             for(double& pos : relativePos)
