@@ -22,15 +22,9 @@ namespace FrenetTransform{
 
         Point operator-() const { return { -m_x, -m_y }; }
 
-        friend Point operator+(const Point& pointA, const Point& pointB)
-        {
-            return { pointA.x() + pointB.x(), pointA.y() + pointB.y() };
-        }
+        friend Point operator+(const Point& pointA, const Point& pointB) { return { pointA.x() + pointB.x(), pointA.y() + pointB.y() }; }
 
-        friend Point operator-(const Point& pointA, const Point& pointB)
-        {
-            return { pointA + (-pointB) };
-        }
+        friend Point operator-(const Point& pointA, const Point& pointB) { return { pointA + (-pointB) }; }
 
     private:
         double m_x {};

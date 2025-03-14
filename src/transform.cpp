@@ -1,8 +1,5 @@
 #include "frenetTransform/transform.h"
 
-using FrenetTransform::Points;
-using FrenetTransform::Transform;
-
 namespace FrenetTransform
 {
 Points<Eigen::Dynamic> Transform::posFrenet(const Points<Eigen::Dynamic>& posCartes) const

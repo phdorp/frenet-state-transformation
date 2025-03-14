@@ -8,8 +8,6 @@
 #include "frenetTransform/points.h"
 #include "frenetTransform/math.h"
 
-using FrenetTransform::Points;
-
 namespace FrenetTransform
 {
     /**

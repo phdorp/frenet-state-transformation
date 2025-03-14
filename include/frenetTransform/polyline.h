@@ -8,9 +8,6 @@
 #include "frenetTransform/points.h"
 #include "frenetTransform/point.h"
 
-using FrenetTransform::Points;
-
-
 namespace FrenetTransform
 {
     /**
@@ -26,7 +23,6 @@ namespace FrenetTransform
     {
     public:
         using ArrayT1 = Eigen::Array<double, T, 1>;
-        using ArrayT2 = Eigen::Array<double, T, 2>;
 
         Polyline() = default;
 

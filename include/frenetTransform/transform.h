@@ -7,8 +7,6 @@
 #include "frenetTransform/path.h"
 #include "frenetTransform/points.h"
 
-using FrenetTransform::Points;
-
 namespace FrenetTransform
 {
     /**
