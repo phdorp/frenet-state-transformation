@@ -117,7 +117,7 @@ namespace FrenetTransform
         const Eigen::Array<double, NumRows, NumCols> diffDepents { diffBackward(depents) }; // finite differences dependent variables
         const Eigen::Array<double, NumRows, 1> diffIndepents { diffBackward(indepents) }; // finite differences independent variables
 
-        Eigen::Array<double, NumRows, NumCols> result { Eigen::Array<double, NumRows, NumCols>::Zero(depents.NumRows(), depents.NumCols()) }; // instantiate result array
+        Eigen::Array<double, NumRows, NumCols> result { Eigen::Array<double, NumRows, NumCols>::Zero(depents.rows(), depents.cols()) }; // instantiate result array
 
         // perform column-wise normalization of dependent differences
         for(int col {}; col < NumCols; ++col)
