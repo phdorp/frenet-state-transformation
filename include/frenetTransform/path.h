@@ -15,9 +15,11 @@ namespace FrenetTransform
      *
      * The properties include orientation, curvature, cuvature change, normal and tangential.
      */
+    template <int NumQueries=Eigen::Dynamic>
     class Path
     {
     public:
+        using ArrayQueries = Eigen::Array<double, NumQueries, 1>;
 
         virtual ~Path() = default;
 
@@ -27,7 +29,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return points at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> operator()(const Eigen::ArrayXd& lengths) const = 0;
+        virtual Points<NumQueries> operator()(const ArrayQueries& lengths) const = 0;
 
         /**
          * @brief Determines tangent vectors at the given path lengths.
@@ -35,7 +37,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return tangent vectors.
          */
-        Points<Eigen::Dynamic> tangent(const Eigen::ArrayXd& lengths) const { return gradient1(lengths); }
+        Points<NumQueries> tangent(const ArrayQueries& lengths) const { return gradient1(lengths); }
 
         /**
          * @brief Determines normal vectors at the given path lengths.
@@ -43,9 +45,9 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return normal vectors.
          */
-        Points<Eigen::Dynamic> normal(const Eigen::ArrayXd& lengths) const
+        Points<NumQueries> normal(const ArrayQueries& lengths) const
         {
-            const Points<Eigen::Dynamic> tangents { tangent(lengths) };
+            const Points<NumQueries> tangents { tangent(lengths) };
             return { -tangents.y(), tangents.x() };
         }
 
@@ -53,9 +55,9 @@ namespace FrenetTransform
          * @brief Determines next points to the query points.
          *
          * @param points query points.
-         * @return Points<Eigen::Dynamic> next to query points.
+         * @return Points<NumQueries> next to query points.
          */
-        virtual Eigen::ArrayXd lengths(const Points<Eigen::Dynamic>& points) const = 0;
+        virtual ArrayQueries lengths(const Points<NumQueries>& points) const = 0;
 
         /**
          * @brief Determines path angle at the given path lengths.
@@ -63,9 +65,9 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return path angles.
          */
-        Eigen::ArrayXd angle0(const Eigen::ArrayXd& lengths) const
+        ArrayQueries angle0(const ArrayQueries& lengths) const
         {
-            const Points<Eigen::Dynamic> tangents { tangent(lengths) };
+            const Points<NumQueries> tangents { tangent(lengths) };
 
             return angleDir(tangents.x(), tangents.y());
         }
@@ -76,7 +78,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return path curvatures.
          */
-        Eigen::ArrayXd angle1(const Eigen::ArrayXd& lengths) const
+        ArrayQueries angle1(const ArrayQueries& lengths) const
         {
             const auto grad1 { gradient1(lengths) };
             const auto grad2 { gradient2(lengths) };
@@ -90,7 +92,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return path curvatures.
          */
-        Eigen::ArrayXd angle2(const Eigen::ArrayXd& lengths) const
+        ArrayQueries angle2(const ArrayQueries& lengths) const
         {
             const auto grad1 { gradient1(lengths) };
             const auto grad1Abs { (grad1.x().square() + grad1.y().square()).sqrt() };
@@ -110,7 +112,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 1st order gradient at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> gradient1(const Eigen::ArrayXd& lengths) const = 0;
+        virtual Points<NumQueries> gradient1(const ArrayQueries& lengths) const = 0;
 
         /**
          * @brief Determines 2nd order gradient at the given path lengths.
@@ -118,7 +120,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 2nd order gradient at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> gradient2(const Eigen::ArrayXd& lengths) const = 0;
+        virtual Points<NumQueries> gradient2(const ArrayQueries& lengths) const = 0;
 
         /**
          * @brief Determines 3rd order gradient at the given path lengths.
@@ -126,7 +128,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 3rd order gradient at given path lengths.
          */
-        virtual Points<Eigen::Dynamic> gradient3(const Eigen::ArrayXd& lengths) const = 0;
+        virtual Points<NumQueries> gradient3(const ArrayQueries& lengths) const = 0;
     };
 };
 
