@@ -4,7 +4,7 @@
 #include <Eigen/Core>
 #include <cassert>
 
-#include "point.h"
+#include "frenetTransform/point.h"
 
 namespace FrenetTransform{
     template <int NumPoints, typename PointType>

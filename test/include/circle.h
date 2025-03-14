@@ -4,9 +4,9 @@
 #include <Eigen/Core>
 #include <math.h>
 
-#include "path.h"
-#include "point.h"
-#include "math.h"
+#include "frenetTransform/path.h"
+#include "frenetTransform/point.h"
+#include "frenetTransform/math.h"
 
 namespace FrenetTransform
 {

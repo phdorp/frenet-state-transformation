@@ -4,8 +4,8 @@
 #include <Eigen/Core>
 #include <memory>
 
-#include "path.h"
-#include "points.h"
+#include "frenetTransform/path.h"
+#include "frenetTransform/points.h"
 
 using FrenetTransform::Points;
 

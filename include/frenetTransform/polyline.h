@@ -3,10 +3,10 @@
 
 #include <math.h>
 
-#include "path.h"
-#include "math.h"
-#include "points.h"
-#include "point.h"
+#include "frenetTransform/path.h"
+#include "frenetTransform/math.h"
+#include "frenetTransform/points.h"
+#include "frenetTransform/point.h"
 
 using FrenetTransform::Points;
 

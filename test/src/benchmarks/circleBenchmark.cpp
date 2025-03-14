@@ -1,8 +1,8 @@
 #include <benchmark/benchmark.h>
 
-#include "point.h"
-#include "points.h"
-#include "polyline.h"
+#include "frenetTransform/point.h"
+#include "frenetTransform/points.h"
+#include "frenetTransform/polyline.h"
 #include "circle.h"
 #include "transformCircle.h"
 

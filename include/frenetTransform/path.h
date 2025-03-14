@@ -5,8 +5,8 @@
 #include <array>
 #include <math.h>
 
-#include "points.h"
-#include "math.h"
+#include "frenetTransform/points.h"
+#include "frenetTransform/math.h"
 
 using FrenetTransform::Points;
 
