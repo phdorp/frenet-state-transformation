@@ -5,66 +5,77 @@
 #include "frenetTransform/polychain.h"
 #include "circle.h"
 #include "transformCircle.h"
+#include "constexprTypes.h"
 
 namespace FrenetTransform
 {
     namespace Testing
     {
+
+        template <typename Params>
         class PolylineBenchmark : public benchmark::Fixture
         {
         protected:
-            const Circle<Eigen::Dynamic> m_circle { 5.0, {0.0, 0.0}, -M_PI };
-            const TransformCircle<Eigen::Dynamic> m_transform { std::make_shared<Circle<Eigen::Dynamic>>(m_circle) };
+            static constexpr int numPoints { Params::s_vals[0] };
+            static constexpr int numQueries { Params::s_vals[1] };
 
-            Points<Eigen::Dynamic> m_posFrenet {};
-            Points<Eigen::Dynamic> m_velFrenet {};
-            Points<Eigen::Dynamic> m_accFrenet {};
+            using ArrayQueries = Eigen::Array<double, Params::s_vals[1], 1>;
+            using ArrayPoints = Eigen::Array<double, Params::s_vals[0], 1>;
 
-            Points<Eigen::Dynamic> m_posCartes {};
-            Points<Eigen::Dynamic> m_velCartes {};
-            Points<Eigen::Dynamic> m_accCartes {};
+            const Circle<numQueries> m_circle { 5.0, {0.0, 0.0}, -M_PI };
+            const TransformCircle<numQueries> m_transform { std::make_shared<Circle<numQueries>>(m_circle) };
 
-            Polychain<Eigen::Dynamic> m_circlePoly {};
-            Transform<Eigen::Dynamic> m_circleTransform {};
+            const Circle<numPoints> m_circleApprox { 5.0, {0.0, 0.0}, -M_PI };
+
+            Points<numQueries> m_posFrenet {};
+            Points<numQueries> m_velFrenet {};
+            Points<numQueries> m_accFrenet {};
+
+            Points<numQueries> m_posCartes {};
+            Points<numQueries> m_velCartes {};
+            Points<numQueries> m_accCartes {};
+
+            Polychain<numPoints, numQueries> m_circlePoly {};
+            Transform<numQueries> m_circleTransform {};
 
             void SetUp(::benchmark::State& state) {
                 std::srand(0);
-                const Eigen::ArrayXd posCircleX  { m_circle.radius() * (1 + Eigen::ArrayXd::Random(state.range(0)) * 0.95) };
+                const ArrayQueries posCircleX  { m_circle.radius() * (1 + ArrayQueries::Random(state.range(0)) * 0.95) };
                 std::srand(1);
-                const Eigen::ArrayXd posCircleY { -Eigen::ArrayXd::Random(state.range(0)).abs() * M_PI };
+                const ArrayQueries posCircleY { -ArrayQueries::Random(state.range(0)).abs() * M_PI };
 
-                const Points<Eigen::Dynamic, PointCircle> m_posCircle { posCircleX, posCircleY };
+                const Points<numQueries, PointCircle> m_posCircle { posCircleX, posCircleY };
                 m_posFrenet = m_transform.posFrenet(m_posCircle);
                 m_posCartes = m_transform.posCartes(m_posCircle);
 
                 std::srand(2);
-                const Eigen::ArrayXd velCircleX  { m_circle.radius() * (1 + Eigen::ArrayXd::Random(state.range(0)) * 0.95) };
+                const ArrayQueries velCircleX  { m_circle.radius() * (1 + ArrayQueries::Random(state.range(0)) * 0.95) };
                 std::srand(3);
-                const Eigen::ArrayXd velCircleY { Eigen::ArrayXd::Random(state.range(0)) * M_PI / 4 };
+                const ArrayQueries velCircleY { ArrayQueries::Random(state.range(0)) * M_PI / 4 };
 
-                const Points<Eigen::Dynamic, PointCircle> m_velCircle { velCircleX, velCircleY };
+                const Points<numQueries, PointCircle> m_velCircle { velCircleX, velCircleY };
                 m_velFrenet = m_transform.velFrenet(m_velCircle);
                 m_velCartes = m_transform.velCartes(m_velCircle, m_posCircle);
 
                 std::srand(4);
-                const Eigen::ArrayXd accCircleX  { m_circle.radius() * (1 + Eigen::ArrayXd::Random(state.range(0)) * 0.95) };
+                const ArrayQueries accCircleX  { m_circle.radius() * (1 + ArrayQueries::Random(state.range(0)) * 0.95) };
                 std::srand(5);
-                const Eigen::ArrayXd accCircleY { Eigen::ArrayXd::Random(state.range(0)) * M_PI / 4 };
+                const ArrayQueries accCircleY { ArrayQueries::Random(state.range(0)) * M_PI / 4 };
 
-                const Points<Eigen::Dynamic, PointCircle> m_accCircle { accCircleX, accCircleY };
+                const Points<numQueries, PointCircle> m_accCircle { accCircleX, accCircleY };
                 m_accFrenet = m_transform.accFrenet(m_accCircle);
                 m_accCartes = m_transform.accCartes(m_accCircle, m_velCircle, m_posCircle);
 
                 // non-uniform length discretization
                 std::srand(6);
-                Eigen::ArrayXd m_lengths { Eigen::ArrayXd::LinSpaced(state.range(1), 0.0, 3 / 2 * M_PI) * m_circle.radius() };
+                ArrayPoints m_lengths { ArrayPoints::LinSpaced(state.range(1), 0.0, 3 / 2 * M_PI) * m_circle.radius() };
 
-                m_circlePoly = Polychain { m_circle(m_lengths) };
-                m_circleTransform = Transform<Eigen::Dynamic> { std::make_shared<Polychain<Eigen::Dynamic>>(m_circlePoly) };
+                m_circlePoly = Polychain<numPoints, numQueries> { m_circleApprox(m_lengths) };
+                m_circleTransform = Transform<numQueries> { std::make_shared<Polychain<numPoints, numQueries>>(m_circlePoly) };
             }
 
             template <typename Tpoint>
-            void reportError(const Points<Eigen::Dynamic, Tpoint> diff, benchmark::State& state)
+            void reportError(const Points<numQueries, Tpoint> diff, benchmark::State& state)
             {
                 Eigen::ArrayXd errX { diff.x().abs() };
                 std::sort(errX.begin(), errX.end());
@@ -75,68 +86,150 @@ namespace FrenetTransform
                 state.counters["ErrMaxY"] = errY(errY.rows() - 1);
                 state.counters["ErrMedY"] = errY(errY.rows() / 2);
             }
+
+            void posCartes(benchmark::State& state)
+            {
+                Points<numQueries> posCartes {};
+                for(auto _ : state)
+                    posCartes = m_circleTransform.posCartes(m_posFrenet);
+                reportError(posCartes - m_posCartes, state);
+            }
+
+            void velCartes(benchmark::State& state)
+            {
+                Points<numQueries> velCartes {};
+                for(auto _ : state)
+                    velCartes = m_circleTransform.velCartes(m_velFrenet, m_posFrenet);
+                reportError(velCartes - m_velCartes, state);
+            }
+
+            void accCartes(benchmark::State& state)
+            {
+                Points<numQueries> accCartes {};
+                for(auto _ : state)
+                    accCartes = m_circleTransform.accCartes(m_accFrenet, m_velFrenet, m_posFrenet);
+                reportError(accCartes - m_accCartes, state);
+            }
+
+            void posFrenet(benchmark::State& state)
+            {
+                Points<numQueries> posFrenet {};
+                for(auto _ : state)
+                    posFrenet = m_circleTransform.posFrenet(m_posCartes);
+                reportError(posFrenet - m_posFrenet, state);
+            }
+
+            void velFrenet(benchmark::State& state)
+            {
+                Points<numQueries> velFrenet {};
+                for(auto _ : state)
+                    velFrenet = m_circleTransform.velFrenet(m_velCartes, m_posFrenet);
+                reportError(velFrenet - m_velFrenet, state);
+            }
+
+            void accFrenet(benchmark::State& state)
+            {
+                Points<numQueries> accFrenet {};
+                for(auto _ : state)
+                    accFrenet = m_circleTransform.accFrenet(m_accCartes, m_velFrenet, m_posFrenet);
+                reportError(accFrenet - m_accFrenet, state);
+            }
         };
 
-        BENCHMARK_DEFINE_F(PolylineBenchmark, PosCartes)(benchmark::State& state)
-        {
-            Points<Eigen::Dynamic> posCartes {};
-            for(auto _ : state)
-                posCartes = m_circleTransform.posCartes(m_posFrenet);
-            reportError(posCartes - m_posCartes, state);
-        }
+        using Dynamic = ConstVals<int, 2, std::array<int, 2> {Eigen::Dynamic, Eigen::Dynamic}>;
+        using Static8 = ConstVals<int, 2, std::array<int, 2> {8, 8}>;
+        using Static512 = ConstVals<int, 2, std::array<int, 2> {512, 512}>;
+        using Static4096 = ConstVals<int, 2, std::array<int, 2> {4096, 4096}>;
 
-        BENCHMARK_REGISTER_F(PolylineBenchmark, PosCartes)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
+        // Benchmark: posCartes
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            PosCartesDynamic,
+            Dynamic
+        )(benchmark::State& state) { posCartes(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, PosCartesDynamic)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
 
-        BENCHMARK_DEFINE_F(PolylineBenchmark, VelCartes)(benchmark::State& state)
-        {
-            Points<Eigen::Dynamic> velCartes {};
-            for(auto _ : state)
-                velCartes = m_circleTransform.velCartes(m_velFrenet, m_posFrenet);
-            reportError(velCartes - m_velCartes, state);
-        }
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            PosCartesStatic8,
+            Static8
+        )(benchmark::State& state) { posCartes(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, PosCartesStatic8)->Args({8, 8})->ArgNames({"NumQueries", "NumPoints"});
 
-        BENCHMARK_REGISTER_F(PolylineBenchmark, VelCartes)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            PosCartesStatic512,
+            Static512
+        )(benchmark::State& state) { posCartes(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, PosCartesStatic512)->Args({512, 512})->ArgNames({"NumQueries", "NumPoints"});
 
-        BENCHMARK_DEFINE_F(PolylineBenchmark, AccCartes)(benchmark::State& state)
-        {
-            Points<Eigen::Dynamic> accCartes {};
-            for(auto _ : state)
-                accCartes = m_circleTransform.accCartes(m_accFrenet, m_velFrenet, m_posFrenet);
-            reportError(accCartes - m_accCartes, state);
-        }
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            PosCartesStatic4096,
+            Static4096
+        )(benchmark::State& state) { posCartes(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, PosCartesStatic4096)->Args({4096, 4096})->ArgNames({"NumQueries", "NumPoints"});
 
-        BENCHMARK_REGISTER_F(PolylineBenchmark, AccCartes)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
+        // Benchmark: velCartes
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            VelCartesDynamic,
+            Dynamic
+        )(benchmark::State& state) { velCartes(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, VelCartesDynamic)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
 
-        BENCHMARK_DEFINE_F(PolylineBenchmark, PosFrenet)(benchmark::State& state)
-        {
-            Points<Eigen::Dynamic> posFrenet {};
-            for(auto _ : state)
-                posFrenet = m_circleTransform.posFrenet(m_posCartes);
-            reportError(posFrenet - m_posFrenet, state);
-        }
+        // Benchmark: accCartes
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            AccCartesDynamic,
+            Dynamic
+        )(benchmark::State& state) { accCartes(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, AccCartesDynamic)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
 
-        BENCHMARK_REGISTER_F(PolylineBenchmark, PosFrenet)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
+        // Benchmark: posFrenet
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            PosFrenetDyn,
+            Dynamic
+        )(benchmark::State& state) { posFrenet(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, PosFrenetDyn)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
 
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            PosFrenetStatic8,
+            Static8
+        )(benchmark::State& state) { posFrenet(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, PosFrenetStatic8)->Args({8, 8})->ArgNames({"NumQueries", "NumPoints"});
 
-        BENCHMARK_DEFINE_F(PolylineBenchmark, VelFrenet)(benchmark::State& state)
-        {
-            Points<Eigen::Dynamic> velFrenet {};
-            for(auto _ : state)
-                velFrenet = m_circleTransform.velFrenet(m_velCartes, m_posFrenet);
-            reportError(velFrenet - m_velFrenet, state);
-        }
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            PosFrenetStatic512,
+            Static512
+        )(benchmark::State& state) { posFrenet(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, PosFrenetStatic512)->Args({512, 512})->ArgNames({"NumQueries", "NumPoints"});
 
-        BENCHMARK_REGISTER_F(PolylineBenchmark, VelFrenet)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            PosFrenetStatic4096,
+            Static4096
+        )(benchmark::State& state) { posFrenet(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, PosFrenetStatic4096)->Args({4096, 4096})->ArgNames({"NumQueries", "NumPoints"});
 
-        BENCHMARK_DEFINE_F(PolylineBenchmark, AccFrenet)(benchmark::State& state)
-        {
-            Points<Eigen::Dynamic> accFrenet {};
-            for(auto _ : state)
-                accFrenet = m_circleTransform.accFrenet(m_accCartes, m_velFrenet, m_posFrenet);
-            reportError(accFrenet - m_accFrenet, state);
-        }
+        // Benchmark: velFrenet
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            VelFrenetDyn,
+            Dynamic
+        )(benchmark::State& state) { velFrenet(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, VelFrenetDyn)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
 
-        BENCHMARK_REGISTER_F(PolylineBenchmark, AccFrenet)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
+        // Benchmark: accFrenet
+        BENCHMARK_TEMPLATE_DEFINE_F(
+            PolylineBenchmark,
+            AccFrenetDyn,
+            Dynamic
+        )(benchmark::State& state) { accFrenet(state); }
+        BENCHMARK_REGISTER_F(PolylineBenchmark, AccFrenetDyn)->Ranges({{8, 8<<10}, {8, 8<<10}})->ArgNames({"NumQueries", "NumPoints"});
     };
 };
 
