@@ -1,4 +1,4 @@
-#include "frenetTransform/polyline.h"
+#include "frenetTransform/polychain.h"
 #include "frenetTransform/points.h"
 #include "frenetTransform/transform.h"
 #include "line.h"
@@ -20,7 +20,7 @@ namespace FrenetTransform
 
             const Points<Eigen::Dynamic> m_pointsCartes { Eigen::ArrayXd::Random(100).abs(), Eigen::ArrayXd::Random(100).abs() };
 
-            const Polyline<-1> m_polyline { m_line(Eigen::ArrayXd {{0.0, 1.0, 1.5, 2.23}}) };
+            const Polychain<-1> m_polyline { m_line(Eigen::ArrayXd {{0.0, 1.0, 1.5, 2.23}}) };
         };
     };
 };

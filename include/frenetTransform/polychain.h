@@ -11,20 +11,20 @@
 namespace FrenetTransform
 {
     /**
-     * @brief Path representation as polyline.
+     * @brief Path representation as polychain.
      *
-     * Represents a 2-dimensional path as a polyline.
+     * Represents a 2-dimensional path as a polychain.
      * Provide path properties based on finite differences at query points.
      *
      * @tparam NumPoints determines the number points along the path.
      */
     template <int NumPoints>
-    class Polyline : public Path
+    class Polychain : public Path
     {
     public:
         using ArrayPoints = Eigen::Array<double, NumPoints, 1>;
 
-        Polyline() = default;
+        Polychain() = default;
 
         /**
          * @brief Construct a new Path object from Cartesian x- and y-positions.
@@ -32,13 +32,13 @@ namespace FrenetTransform
          * @param x coordinates in x-direction.
          * @param y coordinates in y-direction.
          */
-        Polyline(const ArrayPoints& x, const ArrayPoints& y) { setPoints(x, y); }
+        Polychain(const ArrayPoints& x, const ArrayPoints& y) { setPoints(x, y); }
 
-        Polyline(const Points<NumPoints>& points) { setPoints(points.x(), points.y()); }
+        Polychain(const Points<NumPoints>& points) { setPoints(points.x(), points.y()); }
 
         Points<Eigen::Dynamic> operator()(const Eigen::ArrayXd& lengths) const override
         {
-            // indices of corresponding polyline segments
+            // indices of corresponding polychain segments
             const Eigen::ArrayXi indicesLengths { indices(lengths) };
 
             // relative position along the linear segment
@@ -140,7 +140,7 @@ namespace FrenetTransform
         ArrayPoints m_yDiff {};
         std::array<ArrayPoints, s_numGrad> m_x {}; /*<< coordinates and gradients in x-direction*/
         std::array<ArrayPoints, s_numGrad> m_y {}; /*<< coordinates and gradients in y-direction*/
-        ArrayPoints m_lengths {}; /*<< partial lengths along polyline*/
+        ArrayPoints m_lengths {}; /*<< partial lengths along polychain*/
 
         /**
          * @brief Determines 1st order gradient at the given path lengths.
@@ -185,7 +185,7 @@ namespace FrenetTransform
         }
 
         /**
-         * @brief Determines indices of polyline segment corresponding to the given path lengths.
+         * @brief Determines indices of polychain segment corresponding to the given path lengths.
          *
          * @param lengths lengths along the path.
          * @return indices corresponding to given path lengths.

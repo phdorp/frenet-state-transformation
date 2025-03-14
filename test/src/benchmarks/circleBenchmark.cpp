@@ -2,7 +2,7 @@
 
 #include "frenetTransform/point.h"
 #include "frenetTransform/points.h"
-#include "frenetTransform/polyline.h"
+#include "frenetTransform/polychain.h"
 #include "circle.h"
 #include "transformCircle.h"
 
@@ -24,7 +24,7 @@ namespace FrenetTransform
             Points<Eigen::Dynamic> m_velCartes {};
             Points<Eigen::Dynamic> m_accCartes {};
 
-            Polyline<Eigen::Dynamic> m_circlePoly {};
+            Polychain<Eigen::Dynamic> m_circlePoly {};
             Transform m_circleTransform {};
 
             void SetUp(::benchmark::State& state) {
@@ -59,8 +59,8 @@ namespace FrenetTransform
                 std::srand(6);
                 Eigen::ArrayXd m_lengths { Eigen::ArrayXd::LinSpaced(state.range(1), 0.0, 3 / 2 * M_PI) * m_circle.radius() };
 
-                m_circlePoly = Polyline { m_circle(m_lengths) };
-                m_circleTransform = Transform { std::make_shared<Polyline<Eigen::Dynamic>>(m_circlePoly) };
+                m_circlePoly = Polychain { m_circle(m_lengths) };
+                m_circleTransform = Transform { std::make_shared<Polychain<Eigen::Dynamic>>(m_circlePoly) };
             }
 
             template <typename Tpoint>

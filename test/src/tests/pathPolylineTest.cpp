@@ -1,4 +1,4 @@
-#include "frenetTransform/polyline.h"
+#include "frenetTransform/polychain.h"
 #include "frenetTransform/points.h"
 #include "frenetTransform/transform.h"
 #include "circle.h"
@@ -16,8 +16,8 @@ namespace FrenetTransform
         class PathPolylineTest : public PathCircleTest
         {
         protected:
-            const Polyline<Eigen::Dynamic> m_circlePoly { m_circle(Eigen::ArrayXd::LinSpaced(4096, 0.0, 2 * M_PI) * m_circle.radius()) };
-            const Transform m_circleTransform { std::make_shared<Polyline<Eigen::Dynamic>>(m_circlePoly) };
+            const Polychain<Eigen::Dynamic> m_circlePoly { m_circle(Eigen::ArrayXd::LinSpaced(4096, 0.0, 2 * M_PI) * m_circle.radius()) };
+            const Transform m_circleTransform { std::make_shared<Polychain<Eigen::Dynamic>>(m_circlePoly) };
 
             const Points<Eigen::Dynamic> m_posCartes { m_transform.posCartes(m_posCircle) };
 
