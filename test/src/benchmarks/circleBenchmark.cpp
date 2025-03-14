@@ -13,8 +13,8 @@ namespace FrenetTransform
         class PolylineBenchmark : public benchmark::Fixture
         {
         protected:
-            const Circle m_circle { 5.0, {0.0, 0.0}, -M_PI };
-            const TransformCircle m_transform { std::make_shared<Circle>(m_circle) };
+            const Circle<Eigen::Dynamic> m_circle { 5.0, {0.0, 0.0}, -M_PI };
+            const TransformCircle<Eigen::Dynamic> m_transform { std::make_shared<Circle<Eigen::Dynamic>>(m_circle) };
 
             Points<Eigen::Dynamic> m_posFrenet {};
             Points<Eigen::Dynamic> m_velFrenet {};
@@ -25,7 +25,7 @@ namespace FrenetTransform
             Points<Eigen::Dynamic> m_accCartes {};
 
             Polychain<Eigen::Dynamic> m_circlePoly {};
-            Transform m_circleTransform {};
+            Transform<Eigen::Dynamic> m_circleTransform {};
 
             void SetUp(::benchmark::State& state) {
                 std::srand(0);
@@ -60,7 +60,7 @@ namespace FrenetTransform
                 Eigen::ArrayXd m_lengths { Eigen::ArrayXd::LinSpaced(state.range(1), 0.0, 3 / 2 * M_PI) * m_circle.radius() };
 
                 m_circlePoly = Polychain { m_circle(m_lengths) };
-                m_circleTransform = Transform { std::make_shared<Polychain<Eigen::Dynamic>>(m_circlePoly) };
+                m_circleTransform = Transform<Eigen::Dynamic> { std::make_shared<Polychain<Eigen::Dynamic>>(m_circlePoly) };
             }
 
             template <typename Tpoint>

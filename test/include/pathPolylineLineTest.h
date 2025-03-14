@@ -16,11 +16,11 @@ namespace FrenetTransform
         class PathPolylineLineTest : public TestBase
         {
         protected:
-            const Line m_line { {0.0, 0.0}, {1.0, 2.0} };
+            const Line<Eigen::Dynamic> m_line { {0.0, 0.0}, {1.0, 2.0} };
 
             const Points<Eigen::Dynamic> m_pointsCartes { Eigen::ArrayXd::Random(100).abs(), Eigen::ArrayXd::Random(100).abs() };
 
-            const Polychain<-1> m_polyline { m_line(Eigen::ArrayXd {{0.0, 1.0, 1.5, 2.23}}) };
+            const Polychain<Eigen::Dynamic> m_polyline { m_line(Eigen::ArrayXd {{0.0, 1.0, 1.5, 2.23}}) };
         };
     };
 };

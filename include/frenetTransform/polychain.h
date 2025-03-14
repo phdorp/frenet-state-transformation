@@ -18,11 +18,12 @@ namespace FrenetTransform
      *
      * @tparam NumPoints determines the number points along the path.
      */
-    template <int NumPoints>
-    class Polychain : public Path
+    template <int NumPoints, int NumQueries=Eigen::Dynamic>
+    class Polychain : public Path<NumQueries>
     {
     public:
         using ArrayPoints = Eigen::Array<double, NumPoints, 1>;
+        using ArrayQueries = Eigen::Array<double, NumQueries, 1>;
 
         Polychain() = default;
 
@@ -36,21 +37,21 @@ namespace FrenetTransform
 
         Polychain(const Points<NumPoints>& points) { setPoints(points.x(), points.y()); }
 
-        Points<Eigen::Dynamic> operator()(const Eigen::ArrayXd& lengths) const override
+        Points<NumQueries> operator()(const ArrayQueries& lengths) const override
         {
             // indices of corresponding polychain segments
-            const Eigen::ArrayXi indicesLengths { indices(lengths) };
+            const Eigen::Array<int, NumQueries, 1> indicesLengths { indices(lengths) };
 
             // relative position along the linear segment
-            const Eigen::ArrayXd pathLengthsdiff { diffBackward(m_lengths) };
-            Eigen::ArrayXd relativePos { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths + 1) };
+            const ArrayPoints pathLengthsdiff { diffBackward(m_lengths) };
+            ArrayQueries relativePos { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths + 1) };
 
             for(double& pos : relativePos)
                 pos = std::clamp(pos, 0.0, 1.0);
 
             // absolute position along path
-            Eigen::ArrayXd x { m_x[0](indicesLengths + 1) * relativePos + m_x[0](indicesLengths) * (1 - relativePos) };
-            Eigen::ArrayXd y { m_y[0](indicesLengths + 1) * relativePos + m_y[0](indicesLengths) * (1 - relativePos) };
+            ArrayQueries x { m_x[0](indicesLengths + 1) * relativePos + m_x[0](indicesLengths) * (1 - relativePos) };
+            ArrayQueries y { m_y[0](indicesLengths + 1) * relativePos + m_y[0](indicesLengths) * (1 - relativePos) };
 
             for(int row {}; row < indicesLengths.rows(); ++row)
             {
@@ -68,11 +69,11 @@ namespace FrenetTransform
          * @brief Determines next points to the query points.
          *
          * @param points query points.
-         * @return Points<Eigen::Dynamic> next to query points.
+         * @return Points<NumQueries> next to query points.
          */
-        Eigen::ArrayXd lengths(const Points<Eigen::Dynamic>& points) const override
+        ArrayQueries lengths(const Points<NumQueries>& points) const override
         {
-            Eigen::ArrayXd lLenghts (points.numPoints());
+            ArrayQueries lLenghts (points.numPoints());
 
             for(int cPoints {}; cPoints < points.numPoints(); ++cPoints)
             {
@@ -148,7 +149,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 1st order gradient at given path lengths.
          */
-        Points<Eigen::Dynamic> gradient1 (const Eigen::ArrayXd& lengths) const override
+        Points<NumQueries> gradient1 (const ArrayQueries& lengths) const override
         {
             auto indicesGrad { indices(lengths) };
             for(int& idx : indicesGrad)
@@ -162,7 +163,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 2nd order gradient at given path lengths.
          */
-        Points<Eigen::Dynamic> gradient2 (const Eigen::ArrayXd& lengths) const override
+        Points<NumQueries> gradient2 (const ArrayQueries& lengths) const override
         {
             auto indicesGrad { indices(lengths) };
             for(int& idx : indicesGrad)
@@ -176,7 +177,7 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return 3rd order gradient at given path lengths.
          */
-        Points<Eigen::Dynamic> gradient3 (const Eigen::ArrayXd& lengths) const override
+        Points<NumQueries> gradient3 (const ArrayQueries& lengths) const override
         {
             auto indicesGrad { indices(lengths) };
             for(int& idx : indicesGrad)
@@ -190,9 +191,9 @@ namespace FrenetTransform
          * @param lengths lengths along the path.
          * @return indices corresponding to given path lengths.
          */
-        Eigen::ArrayXi indices(const Eigen::ArrayXd& lengths) const
+        Eigen::Array<int, NumQueries, 1> indices(const ArrayQueries& lengths) const
         {
-            Eigen::ArrayXi result(lengths.size()); // vector of segment indices
+            Eigen::Array<int, NumQueries, 1> result(lengths.rows()); // vector of segment indices
 
             // get indices of next segments
             for(int row {}; row < lengths.rows(); ++row)
