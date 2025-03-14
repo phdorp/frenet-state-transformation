@@ -16,13 +16,13 @@ namespace FrenetTransform
      * Represents a 2-dimensional path as a polyline.
      * Provide path properties based on finite differences at query points.
      *
-     * @tparam T determines the number points along the path.
+     * @tparam NumPoints determines the number points along the path.
      */
-    template <int T>
+    template <int NumPoints>
     class Polyline : public Path
     {
     public:
-        using ArrayT1 = Eigen::Array<double, T, 1>;
+        using ArrayPoints = Eigen::Array<double, NumPoints, 1>;
 
         Polyline() = default;
 
@@ -32,9 +32,9 @@ namespace FrenetTransform
          * @param x coordinates in x-direction.
          * @param y coordinates in y-direction.
          */
-        Polyline(const ArrayT1& x, const ArrayT1& y) { setPoints(x, y); }
+        Polyline(const ArrayPoints& x, const ArrayPoints& y) { setPoints(x, y); }
 
-        Polyline(const Points<T>& points) { setPoints(points.x(), points.y()); }
+        Polyline(const Points<NumPoints>& points) { setPoints(points.x(), points.y()); }
 
         Points<Eigen::Dynamic> operator()(const Eigen::ArrayXd& lengths) const override
         {
@@ -117,7 +117,7 @@ namespace FrenetTransform
             return lLenghts;
         }
 
-        void setPoints(const ArrayT1& x, const ArrayT1& y)
+        void setPoints(const ArrayPoints& x, const ArrayPoints& y)
         {
             m_x[0] = x;
             m_xDiff = FrenetTransform::diffBackward(x);
@@ -136,11 +136,11 @@ namespace FrenetTransform
 
     private:
         static constexpr int s_numGrad { 4 };
-        ArrayT1 m_xDiff {};
-        ArrayT1 m_yDiff {};
-        std::array<ArrayT1, s_numGrad> m_x {}; /*<< coordinates and gradients in x-direction*/
-        std::array<ArrayT1, s_numGrad> m_y {}; /*<< coordinates and gradients in y-direction*/
-        ArrayT1 m_lengths {}; /*<< partial lengths along polyline*/
+        ArrayPoints m_xDiff {};
+        ArrayPoints m_yDiff {};
+        std::array<ArrayPoints, s_numGrad> m_x {}; /*<< coordinates and gradients in x-direction*/
+        std::array<ArrayPoints, s_numGrad> m_y {}; /*<< coordinates and gradients in y-direction*/
+        ArrayPoints m_lengths {}; /*<< partial lengths along polyline*/
 
         /**
          * @brief Determines 1st order gradient at the given path lengths.
