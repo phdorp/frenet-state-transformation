@@ -3,6 +3,7 @@
 #include "frenetTransform/transform.h"
 #include "circle.h"
 #include "pathCircleTest.h"
+#include "constexprTypes.h"
 
 #include <gtest/gtest.h>
 #include <Eigen/Core>
