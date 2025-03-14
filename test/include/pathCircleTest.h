@@ -20,7 +20,7 @@ namespace FrenetTransform
 
             const int numQuery { 100 };
             const Points<Eigen::Dynamic, PointCircle> m_posCircle { m_circle.radius() * (1 + Eigen::ArrayXd::Random(numQuery) * 0.95) , Eigen::ArrayXd::Random(numQuery) * M_PI * 0.95 };
-            const Points<Eigen::Dynamic, PointFrenet> m_posFrenet { m_transform.posFrenet(m_posCircle) };
+            const Points<Eigen::Dynamic> m_posFrenet { m_transform.posFrenet(m_posCircle) };
         };
     };
 };

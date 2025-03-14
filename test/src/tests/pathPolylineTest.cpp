@@ -19,15 +19,15 @@ namespace FrenetTransform
             const Polyline<Eigen::Dynamic> m_circlePoly { m_circle(Eigen::ArrayXd::LinSpaced(4096, 0.0, 2 * M_PI) * m_circle.radius()) };
             const Transform m_circleTransform { std::make_shared<Polyline<Eigen::Dynamic>>(m_circlePoly) };
 
-            const Points<Eigen::Dynamic, PointCartes> m_posCartes { m_transform.posCartes(m_posCircle) };
+            const Points<Eigen::Dynamic> m_posCartes { m_transform.posCartes(m_posCircle) };
 
             const Points<Eigen::Dynamic, PointCircle> m_velCircle { Eigen::ArrayXd::Random(numQuery).abs() * m_circle.radius(), Eigen::ArrayXd::Random(numQuery) * M_PI / 4 };
-            const Points<Eigen::Dynamic, PointCartes> m_velCartes { m_transform.velCartes(m_velCircle, m_posCircle) };
-            const Points<Eigen::Dynamic, PointFrenet> m_velFrenet { m_transform.velFrenet(m_velCircle) };
+            const Points<Eigen::Dynamic> m_velCartes { m_transform.velCartes(m_velCircle, m_posCircle) };
+            const Points<Eigen::Dynamic> m_velFrenet { m_transform.velFrenet(m_velCircle) };
 
             const Points<Eigen::Dynamic, PointCircle> m_accCircle { Eigen::ArrayXd::Random(numQuery).abs() * m_circle.radius(), Eigen::ArrayXd::Random(numQuery) * M_PI / 4 };
-            const Points<Eigen::Dynamic, PointCartes> m_accCartes { m_transform.accCartes(m_accCircle, m_velCircle, m_posCircle) };
-            const Points<Eigen::Dynamic, PointFrenet> m_accFrenet { m_transform.accFrenet(m_accCircle) };
+            const Points<Eigen::Dynamic> m_accCartes { m_transform.accCartes(m_accCircle, m_velCircle, m_posCircle) };
+            const Points<Eigen::Dynamic> m_accFrenet { m_transform.accFrenet(m_accCircle) };
         };
 
         TEST_F(PathPolylineTest, GetPointsCircle)

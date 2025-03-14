@@ -16,13 +16,13 @@ namespace FrenetTransform
             const Circle m_circle { 5.0, {0.0, 0.0}, -M_PI };
             const TransformCircle m_transform { std::make_shared<Circle>(m_circle) };
 
-            Points<Eigen::Dynamic, PointFrenet> m_posFrenet {};
-            Points<Eigen::Dynamic, PointFrenet> m_velFrenet {};
-            Points<Eigen::Dynamic, PointFrenet> m_accFrenet {};
+            Points<Eigen::Dynamic> m_posFrenet {};
+            Points<Eigen::Dynamic> m_velFrenet {};
+            Points<Eigen::Dynamic> m_accFrenet {};
 
-            Points<Eigen::Dynamic, PointCartes> m_posCartes {};
-            Points<Eigen::Dynamic, PointCartes> m_velCartes {};
-            Points<Eigen::Dynamic, PointCartes> m_accCartes {};
+            Points<Eigen::Dynamic> m_posCartes {};
+            Points<Eigen::Dynamic> m_velCartes {};
+            Points<Eigen::Dynamic> m_accCartes {};
 
             Polyline<Eigen::Dynamic> m_circlePoly {};
             Transform m_circleTransform {};
@@ -79,7 +79,7 @@ namespace FrenetTransform
 
         BENCHMARK_DEFINE_F(PolylineBenchmark, PosCartes)(benchmark::State& state)
         {
-            Points<Eigen::Dynamic, PointCartes> posCartes {};
+            Points<Eigen::Dynamic> posCartes {};
             for(auto _ : state)
                 posCartes = m_circleTransform.posCartes(m_posFrenet);
             reportError(posCartes - m_posCartes, state);
@@ -89,7 +89,7 @@ namespace FrenetTransform
 
         BENCHMARK_DEFINE_F(PolylineBenchmark, VelCartes)(benchmark::State& state)
         {
-            Points<Eigen::Dynamic, PointCartes> velCartes {};
+            Points<Eigen::Dynamic> velCartes {};
             for(auto _ : state)
                 velCartes = m_circleTransform.velCartes(m_velFrenet, m_posFrenet);
             reportError(velCartes - m_velCartes, state);
@@ -99,7 +99,7 @@ namespace FrenetTransform
 
         BENCHMARK_DEFINE_F(PolylineBenchmark, AccCartes)(benchmark::State& state)
         {
-            Points<Eigen::Dynamic, PointCartes> accCartes {};
+            Points<Eigen::Dynamic> accCartes {};
             for(auto _ : state)
                 accCartes = m_circleTransform.accCartes(m_accFrenet, m_velFrenet, m_posFrenet);
             reportError(accCartes - m_accCartes, state);
@@ -109,7 +109,7 @@ namespace FrenetTransform
 
         BENCHMARK_DEFINE_F(PolylineBenchmark, PosFrenet)(benchmark::State& state)
         {
-            Points<Eigen::Dynamic, PointFrenet> posFrenet {};
+            Points<Eigen::Dynamic> posFrenet {};
             for(auto _ : state)
                 posFrenet = m_circleTransform.posFrenet(m_posCartes);
             reportError(posFrenet - m_posFrenet, state);
@@ -120,7 +120,7 @@ namespace FrenetTransform
 
         BENCHMARK_DEFINE_F(PolylineBenchmark, VelFrenet)(benchmark::State& state)
         {
-            Points<Eigen::Dynamic, PointFrenet> velFrenet {};
+            Points<Eigen::Dynamic> velFrenet {};
             for(auto _ : state)
                 velFrenet = m_circleTransform.velFrenet(m_velCartes, m_posFrenet);
             reportError(velFrenet - m_velFrenet, state);
@@ -130,7 +130,7 @@ namespace FrenetTransform
 
         BENCHMARK_DEFINE_F(PolylineBenchmark, AccFrenet)(benchmark::State& state)
         {
-            Points<Eigen::Dynamic, PointFrenet> accFrenet {};
+            Points<Eigen::Dynamic> accFrenet {};
             for(auto _ : state)
                 accFrenet = m_circleTransform.accFrenet(m_accCartes, m_velFrenet, m_posFrenet);
             reportError(accFrenet - m_accFrenet, state);

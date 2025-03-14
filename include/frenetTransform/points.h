@@ -7,7 +7,7 @@
 #include "frenetTransform/point.h"
 
 namespace FrenetTransform{
-    template <int NumPoints, typename PointType>
+    template <int NumPoints, typename PointType=Point>
     class Points
     {
     public:
@@ -19,12 +19,12 @@ namespace FrenetTransform{
             assert(x.cols() == y.cols());
         }
 
-        Point<PointType> operator()(const int index) const { return { m_x(index), m_y(index) }; }
+        PointType operator()(const int index) const { return { m_x(index), m_y(index) }; }
 
         int numPoints() const { return NumPoints > -1 ? NumPoints : m_x.rows(); }
 
         template<typename P>
-        Eigen::Array<double, NumPoints, 1> distance(const Point<PointType>& point) { return ((m_x - point.x()).pow(2) + (m_y - point.y()).pow(2)).sqrt(); }
+        Eigen::Array<double, NumPoints, 1> distance(const PointType& point) { return ((m_x - point.x()).pow(2) + (m_y - point.y()).pow(2)).sqrt(); }
 
         const Eigen::Array<double, NumPoints, 1>& x() const { return m_x; }
 
@@ -40,19 +40,19 @@ namespace FrenetTransform{
         friend Points<T, PointType> operator+(const Points<T, PointType>& points1, const Points<T, PointType>& points2) { return { points1.m_x + points2.m_x, points1.m_y + points2.m_y }; }
 
         template<int T>
-        friend Points<T, PointType> operator+(const Points<T, PointType>& points, const Point<PointType>& point) { return { point.m_x + point.x(), points.m_y + point.y() }; }
+        friend Points<T, PointType> operator+(const Points<T, PointType>& points, const PointType& point) { return { point.m_x + point.x(), points.m_y + point.y() }; }
 
         template<int T>
-        friend Points<T, PointType> operator+(const Point<PointType>& point, const Points<T, PointType>& points) { return points + point; }
+        friend Points<T, PointType> operator+(const PointType& point, const Points<T, PointType>& points) { return points + point; }
 
         template<int T>
         friend Points<T, PointType> operator-(const Points<T, PointType>& points1, const Points<T, PointType>& points2) { return -points2 + points1; }
 
         template<int T>
-        friend Points<T, PointType> operator-(const Points<T, PointType>& points, const Point<PointType>& point) { return -point + points; }
+        friend Points<T, PointType> operator-(const Points<T, PointType>& points, const PointType& point) { return -point + points; }
 
         template<int T>
-        friend Points<T, PointType> operator-(const Point<PointType>& point, const Points<T, PointType>& points) { return -points + point; }
+        friend Points<T, PointType> operator-(const PointType& point, const Points<T, PointType>& points) { return -points + point; }
 
         template<int T>
         friend Eigen::Array<double, T, 1> operator*(const Points<T, PointType>& points1, const Points<T, PointType>& points2) { return points1.m_x * points2.m_x + points1.m_y * points2.m_y; }

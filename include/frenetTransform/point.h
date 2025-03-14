@@ -4,7 +4,6 @@
 #include <math.h>
 
 namespace FrenetTransform{
-    template <typename Derived>
     class Point
     {
     public:
@@ -36,24 +35,6 @@ namespace FrenetTransform{
     private:
         double m_x {};
         double m_y {};
-    };
-
-    class PointFrenet : public Point<PointFrenet>
-    {
-    public:
-        PointFrenet(double x, double y)
-            : Point<PointFrenet> { x, y }
-        {
-        }
-    };
-
-    class PointCartes : public Point<PointCartes>
-    {
-    public:
-        PointCartes(double x, double y)
-            : Point<PointCartes> { x, y }
-        {
-        }
     };
 };
 

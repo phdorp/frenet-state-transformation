@@ -17,16 +17,16 @@ namespace FrenetTransform
         public:
             Circle() = delete;
 
-            Circle(double radius, PointCartes center, double angle0 = 0)
+            Circle(double radius, Point center, double angle0 = 0)
                 : m_radius { radius }
                 , m_center { center }
                 , m_angle0 { angle0 }
             {
             }
 
-            Points<Eigen::Dynamic, PointCartes> operator()(const Eigen::ArrayXd& lengths) const override { return { m_center.x() + m_radius * angle(lengths).cos(), m_center.y() + m_radius * angle(lengths).sin() }; }
+            Points<Eigen::Dynamic> operator()(const Eigen::ArrayXd& lengths) const override { return { m_center.x() + m_radius * angle(lengths).cos(), m_center.y() + m_radius * angle(lengths).sin() }; }
 
-            Eigen::ArrayXd lengths(const Points<Eigen::Dynamic, PointCartes>& points) const override
+            Eigen::ArrayXd lengths(const Points<Eigen::Dynamic>& points) const override
             {
                 const Eigen::ArrayXd dirsx { points.x() - m_center.x() };
                 const Eigen::ArrayXd dirsy { points.y() - m_center.y() };
@@ -39,20 +39,20 @@ namespace FrenetTransform
 
             double radius() const { return m_radius; }
 
-            const PointCartes& center() const { return m_center; }
+            const Point& center() const { return m_center; }
 
             double angleOffset() const { return m_angle0; }
 
         private:
             const double m_radius {};
-            const PointCartes m_center;
+            const Point m_center;
             const double m_angle0 {};
 
-            Points<Eigen::Dynamic, PointCartes> gradient1(const Eigen::ArrayXd& lengths) const override { return { -angle(lengths).sin(), angle(lengths).cos() }; }
+            Points<Eigen::Dynamic> gradient1(const Eigen::ArrayXd& lengths) const override { return { -angle(lengths).sin(), angle(lengths).cos() }; }
 
-            Points<Eigen::Dynamic, PointCartes> gradient2(const Eigen::ArrayXd& lengths) const override { return { -angle(lengths).cos() / m_radius, -angle(lengths).sin() / m_radius }; }
+            Points<Eigen::Dynamic> gradient2(const Eigen::ArrayXd& lengths) const override { return { -angle(lengths).cos() / m_radius, -angle(lengths).sin() / m_radius }; }
 
-            Points<Eigen::Dynamic, PointCartes> gradient3(const Eigen::ArrayXd& lengths) const override { return { angle(lengths).sin() / std::pow(m_radius, 2), -angle(lengths).cos() / std::pow(m_radius, 2) }; }
+            Points<Eigen::Dynamic> gradient3(const Eigen::ArrayXd& lengths) const override { return { angle(lengths).sin() / std::pow(m_radius, 2), -angle(lengths).cos() / std::pow(m_radius, 2) }; }
         };
     };
 };
