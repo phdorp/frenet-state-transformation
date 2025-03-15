@@ -50,15 +50,15 @@ namespace FrenetTransform
                 pos = std::clamp(pos, 0.0, 1.0);
 
             // absolute position along path
-            ArrayQueries x { m_x[0](indicesLengths + 1) * relativePos + m_x[0](indicesLengths) * (1 - relativePos) };
-            ArrayQueries y { m_y[0](indicesLengths + 1) * relativePos + m_y[0](indicesLengths) * (1 - relativePos) };
+            ArrayQueries x { m_points[0].x()(indicesLengths + 1) * relativePos + m_points[0].x()(indicesLengths) * (1 - relativePos) };
+            ArrayQueries y { m_points[0].y()(indicesLengths + 1) * relativePos + m_points[0].y()(indicesLengths) * (1 - relativePos) };
 
             for(int row {}; row < indicesLengths.rows(); ++row)
             {
                 if(indicesLengths(row) >= m_lengths.rows() - 1)
                 {
-                    x(row) = m_x[0](m_lengths.rows() - 1);
-                    y(row) = m_y[0](m_lengths.rows() - 1);
+                    x(row) = m_points[0].x(m_lengths.rows() - 1);
+                    y(row) = m_points[0].y(m_lengths.rows() - 1);
                 }
             }
 
@@ -75,42 +75,44 @@ namespace FrenetTransform
         {
             ArrayQueries lLenghts (points.numPoints());
 
-            for(int cPoints {}; cPoints < points.numPoints(); ++cPoints)
+            for(int cQuery {}; cQuery < points.numPoints(); ++cQuery)
             {
                 double distSq { -1.0 };
-                for(int cThis {1}; cThis < m_lengths.rows(); ++cThis)
+
+                for(int cPoints {1}; cPoints < m_numPoints; ++cPoints)
                 {
-                    const Point pathNext { m_x[0].data()[cThis], m_y[0].data()[cThis] };
-                    const double xDiffPnt { pathNext.x() - points.x(cPoints) };
-                    const double yDiffPnt { pathNext.y() - points.y(cPoints) };
-                    const double param { (xDiffPnt * m_xDiff(cThis) + yDiffPnt * m_yDiff(cThis))
-                        / (std::pow(m_xDiff(cThis), 2) + std::pow(m_yDiff(cThis), 2)) };
+                    const Point pathNext { m_points[0](cPoints) };
+                    const Point diffPoint { pathNext - points(cQuery) };
+                    const double segmentPart { (diffPoint.x() * m_xDiff(cPoints) + diffPoint.y() * m_yDiff(cPoints)) / m_diffSq(cPoints) };
 
                     double distSqCand {};
                     double candLength {};
-                    if(param >= 1.0)
+
+                    if(segmentPart >= 1.0)
                     {
-                        distSqCand = std::pow( m_x[0].data()[cThis - 1] - points.x(cPoints), 2) + std::pow(m_y[0].data()[cThis - 1] - points.y(cPoints), 2);
-                        candLength = m_lengths.data()[cThis - 1];
+                        distSqCand = m_points[0](cPoints - 1).distanceSquare(points(cQuery));
+                        candLength = m_lengths.data()[cPoints - 1];
                     }
-                    else if(param <= 0.0)
+                    else if(segmentPart <= 0.0)
                     {
-                        distSqCand = std::pow( m_x[0].data()[cThis] - points.x(cPoints), 2) + std::pow(m_y[0].data()[cThis] - points.y(cPoints), 2);
-                        candLength = m_lengths.data()[cThis];
+                        distSqCand = m_points[0](cPoints).distanceSquare(points(cQuery));
+                        candLength = m_lengths.data()[cPoints];
                     }
                     else
                     {
-                        const Point pathPrev { m_x[0].data()[cThis - 1], m_y[0].data()[cThis - 1] };
-                        const double xCand { pathPrev.x() * param + (1 - param) * pathNext.x() };
-                        const double yCand { pathPrev.y() * param + (1 - param) * pathNext.y() };
-                        distSqCand = std::pow(xCand - points.x(cPoints), 2) + std::pow(yCand - points.y(cPoints), 2);
-                        candLength = m_lengths(cThis - 1) +  (Point { xCand, yCand }).distance(pathPrev);
+                        const Point pathPrev { m_points[0](cPoints - 1) };
+                        const Point pointCand {
+                            pathPrev.x() * segmentPart + (1 - segmentPart) * pathNext.x(),
+                            pathPrev.y() * segmentPart + (1 - segmentPart) * pathNext.y()
+                        };
+                        distSqCand = points(cQuery).distanceSquare(pointCand);
+                        candLength = m_lengths(cPoints - 1) +  pointCand.distance(pathPrev);
                     }
 
                     if(distSqCand < distSq || distSq < 0)
                     {
                         distSq = distSqCand;
-                        lLenghts(cPoints) = candLength;
+                        lLenghts(cQuery) = candLength;
                     }
                 }
             }
@@ -120,28 +122,33 @@ namespace FrenetTransform
 
         void setPoints(const ArrayPoints& x, const ArrayPoints& y)
         {
-            m_x[0] = x;
-            m_xDiff = FrenetTransform::diffBackward(x);
+            m_numPoints = x.rows();
 
-            m_y[0] = y;
+            m_points[0] = Points<NumPoints> { x, y };
+
+            m_xDiff = FrenetTransform::diffBackward(x);
             m_yDiff = FrenetTransform::diffBackward(y);
 
+            m_diffSq = m_xDiff.pow(2) + m_yDiff.pow(2);
             m_lengths = FrenetTransform::partialLength(x, y);
 
             for(unsigned int orderGrad { 1 }; orderGrad < s_numGrad; ++orderGrad)
-            {
-                m_x[orderGrad] = FrenetTransform::gradient(m_x[orderGrad - 1], m_lengths);
-                m_y[orderGrad] = FrenetTransform::gradient(m_y[orderGrad - 1], m_lengths);
-            }
+                m_points[orderGrad] = Points<NumPoints> {
+                    FrenetTransform::gradient(m_points[orderGrad - 1].x(), m_lengths),
+                    FrenetTransform::gradient(m_points[orderGrad - 1].y(), m_lengths)
+                };
         }
+
+        int numPoints() { return m_numPoints; }
 
     private:
         static constexpr int s_numGrad { 4 };
         ArrayPoints m_xDiff {};
         ArrayPoints m_yDiff {};
-        std::array<ArrayPoints, s_numGrad> m_x {}; /*<< coordinates and gradients in x-direction*/
-        std::array<ArrayPoints, s_numGrad> m_y {}; /*<< coordinates and gradients in y-direction*/
+        ArrayPoints m_diffSq {};
+        std::array<Points<NumPoints>, s_numGrad> m_points {};
         ArrayPoints m_lengths {}; /*<< partial lengths along polychain*/
+        int m_numPoints {};
 
         /**
          * @brief Determines 1st order gradient at the given path lengths.
@@ -154,7 +161,7 @@ namespace FrenetTransform
             auto indicesGrad { indices(lengths) };
             for(int& idx : indicesGrad)
                 idx = idx + 1 > m_lengths.rows() - 1 ? m_lengths.rows() - 2 : idx;
-            return { m_x[1](indicesGrad + 1), m_y[1](indicesGrad + 1) };
+            return { m_points[1].x()(indicesGrad + 1),m_points[1].y()(indicesGrad + 1) };
         }
 
         /**
@@ -168,7 +175,7 @@ namespace FrenetTransform
             auto indicesGrad { indices(lengths) };
             for(int& idx : indicesGrad)
                 idx = idx + 2 > m_lengths.rows() - 1 ? m_lengths.rows() - 3 : idx;
-            return { m_x[2](indicesGrad + 2), m_y[2](indicesGrad + 2) };
+            return { m_points[2].x()(indicesGrad + 1),m_points[2].y()(indicesGrad + 1) };
         }
 
         /**
@@ -182,7 +189,7 @@ namespace FrenetTransform
             auto indicesGrad { indices(lengths) };
             for(int& idx : indicesGrad)
                 idx = idx + 3 > m_lengths.rows() - 1 ? m_lengths.rows() - 4 : idx;
-            return { m_x[3](indicesGrad + 3), m_y[3](indicesGrad + 3) };
+            return { m_points[3].x()(indicesGrad + 1),m_points[3].y()(indicesGrad + 1) };
         }
 
         /**
