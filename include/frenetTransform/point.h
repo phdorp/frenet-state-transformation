@@ -14,7 +14,9 @@ namespace FrenetTransform{
         {
         }
 
-        double distance(const Point& point) const { return std::sqrt(std::pow(point.x() - m_x, 2) + std::pow(point.y() - m_y, 2)); }
+        double distance(const Point& point) const { return std::sqrt(distanceSquare(point)); }
+
+        double distanceSquare(const Point& point) const { return std::pow(point.x() - m_x, 2) + std::pow(point.y() - m_y, 2); }
 
         double x() const { return m_x; }
 
