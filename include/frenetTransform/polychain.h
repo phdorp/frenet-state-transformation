@@ -37,7 +37,7 @@ namespace FrenetTransform
         Polychain(const ArrayPoints& x, const ArrayPoints& y) { setPoints(x, y); }
 
         /**
-         * @brief Construct a new Polychain object from points in Cartesian coordiantes.
+         * @brief Construct a new Polychain object from points in Cartesian coordinates.
          *
          * @param points points along the path.
          */
