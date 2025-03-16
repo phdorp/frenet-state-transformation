@@ -6,6 +6,7 @@
 
 #include "frenetTransform/path.h"
 #include "frenetTransform/points.h"
+#include "frenetTransform/math.h"
 
 namespace FrenetTransform
 {
@@ -120,15 +121,6 @@ namespace FrenetTransform
             return {
                 {normals.x() * curvs * latScale * velFrenet.x() - tangents.x() * latScaleDer, -curvs * tangents.x() * velFrenet.x()},
                 {normals.y() * curvs * latScale * velFrenet.x() - tangents.y() * latScaleDer, -curvs * tangents.y() * velFrenet.x()}
-            };
-        }
-
-        Eigen::Array<ArrayQueries, 2, 2> transformInv(const Eigen::Array<ArrayQueries, 2, 2>& transform) const
-        {
-            const auto normalization { 1 / (transform(0, 0) * transform(1, 1) - transform(1, 0) * transform(0, 1)) };
-            return {
-                { transform(1, 1) * normalization, -transform(0, 1) * normalization},
-                {-transform(1, 0) * normalization,  transform(0, 0) * normalization}
             };
         }
     };

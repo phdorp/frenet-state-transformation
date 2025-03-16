@@ -156,6 +156,16 @@ namespace FrenetTransform
 
         return angles;
     }
+
+    template <int NumTransforms>
+    Eigen::Array<ArrayRows<NumTransforms>, 2, 2> transformInv(const Eigen::Array<ArrayRows<NumTransforms>, 2, 2>& transform)
+    {
+        const auto normalization { 1 / (transform(0, 0) * transform(1, 1) - transform(1, 0) * transform(0, 1)) };
+        return {
+            { transform(1, 1) * normalization, -transform(0, 1) * normalization},
+            {-transform(1, 0) * normalization,  transform(0, 0) * normalization}
+        };
+    }
 };
 
 #endif
