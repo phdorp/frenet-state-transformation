@@ -132,6 +132,14 @@ namespace FrenetTransform
         return result;
     }
 
+    /**
+     * @brief Determines angles of given vector in range -pi to pi
+     *
+     * @tparam ArrayType storing directions.
+     * @param dirxs vector components in x-direction.
+     * @param dirys vector components in y-direction.
+     * @return ArrayType angles of vectors.
+     */
     template <typename ArrayType>
     ArrayType angleDir(const Eigen::ArrayBase<ArrayType>& dirxs, const Eigen::ArrayBase<ArrayType>& dirys)
     {
