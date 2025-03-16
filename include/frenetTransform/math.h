@@ -157,13 +157,20 @@ namespace FrenetTransform
         return angles;
     }
 
-    template <int NumTransforms>
-    Eigen::Array<ArrayRows<NumTransforms>, 2, 2> transformInv(const Eigen::Array<ArrayRows<NumTransforms>, 2, 2>& transform)
+    /**
+     * @brief Inverts "NumArrays" 2x2 arrays.
+     *
+     * @tparam NumArrays number of input arrays.
+     * @param arrays to invert.
+     * @return Eigen::Array<ArrayRows<NumArrays>, 2, 2> inverted arrays.
+     */
+    template <int NumArrays>
+    Eigen::Array<ArrayRows<NumArrays>, 2, 2> transformInv(const Eigen::Array<ArrayRows<NumArrays>, 2, 2>& arrays)
     {
-        const auto normalization { 1 / (transform(0, 0) * transform(1, 1) - transform(1, 0) * transform(0, 1)) };
+        const auto normalization { 1 / (arrays(0, 0) * arrays(1, 1) - arrays(1, 0) * arrays(0, 1)) };
         return {
-            { transform(1, 1) * normalization, -transform(0, 1) * normalization},
-            {-transform(1, 0) * normalization,  transform(0, 0) * normalization}
+            { arrays(1, 1) * normalization, -arrays(0, 1) * normalization},
+            {-arrays(1, 0) * normalization,  arrays(0, 0) * normalization}
         };
     }
 };
