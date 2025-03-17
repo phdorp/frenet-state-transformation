@@ -53,11 +53,15 @@ namespace FrenetTransform
         Points<NumQueries> operator()(const ArrayQueries& lengths) const override
         {
             // indices of corresponding polychain segments
-            const Eigen::Array<int, NumQueries, 1> indicesLengths { indices(lengths) };
+            Eigen::Array<int, NumQueries, 1> indicesLengths { indices(lengths) };
+            for(int& idx : indicesLengths)
+                idx = idx > 0 ? idx - 1 : idx;
 
             // relative position along the linear segment
             const ArrayPoints pathLengthsdiff { diffBackward(m_lengths) };
             ArrayQueries segmentPart { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths + 1) };
+            for(double& part : segmentPart)
+                part = std::clamp(part, 0.0, 1.0);
 
             // absolute position along path
             ArrayQueries x { m_points[0].x()(indicesLengths + 1) * segmentPart + m_points[0].x()(indicesLengths) * (1 - segmentPart) };
@@ -189,9 +193,7 @@ namespace FrenetTransform
         Points<NumQueries> gradient1 (const ArrayQueries& lengths) const override
         {
             auto indicesGrad { indices(lengths) };
-            for(int& idx : indicesGrad)
-                idx = idx + 1 > m_lengths.rows() - 1 ? m_lengths.rows() - 2 : idx;
-            return { m_points[1].x()(indicesGrad + 1),m_points[1].y()(indicesGrad + 1) };
+            return { m_points[1].x()(indicesGrad),m_points[1].y()(indicesGrad) };
         }
 
         /**
@@ -204,8 +206,8 @@ namespace FrenetTransform
         {
             auto indicesGrad { indices(lengths) };
             for(int& idx : indicesGrad)
-                idx = idx + 2 > m_lengths.rows() - 1 ? m_lengths.rows() - 3 : idx;
-            return { m_points[2].x()(indicesGrad + 1),m_points[2].y()(indicesGrad + 1) };
+                idx = std::clamp(idx, 2, m_numPoints);
+            return { m_points[2].x()(indicesGrad),m_points[2].y()(indicesGrad) };
         }
 
         /**
@@ -218,8 +220,8 @@ namespace FrenetTransform
         {
             auto indicesGrad { indices(lengths) };
             for(int& idx : indicesGrad)
-                idx = idx + 3 > m_lengths.rows() - 1 ? m_lengths.rows() - 4 : idx;
-            return { m_points[3].x()(indicesGrad + 1),m_points[3].y()(indicesGrad + 1) };
+                idx = std::clamp(idx, 3, m_numPoints);
+            return { m_points[3].x()(indicesGrad),m_points[3].y()(indicesGrad) };
         }
 
         /**
@@ -234,7 +236,7 @@ namespace FrenetTransform
 
             // get indices of next segments
             for(int row {}; row < lengths.rows(); ++row)
-                result(row) = FrenetTransform::first(m_lengths(Eigen::seqN(0, m_lengths.rows() - 2)) - lengths(row));
+                result(row) = FrenetTransform::first(m_lengths - lengths(row));
 
             return result;
         }
