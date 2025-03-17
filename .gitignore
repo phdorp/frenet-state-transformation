@@ -42,3 +42,6 @@ docs
 
 # log files
 benchmarks/logs
+
+# example outputs
+examples/out
