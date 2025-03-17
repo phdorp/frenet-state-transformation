@@ -1,5 +1,5 @@
-#ifndef POLYLINE_H
-#define POLYLINE_H
+#ifndef polychain_H
+#define polychain_H
 
 #include <math.h>
 
@@ -12,11 +12,12 @@ namespace FrenetTransform
 {
     /**
      * @brief Path representation as polychain.
-     *
      * Represents a 2-dimensional path as a polychain.
      * Provide path properties based on finite differences at query points.
      *
-     * @tparam NumPoints determines the number points along the path.
+     *
+     * @tparam NumPoints number of points along the path with -1 for dynamic point number.
+     * @tparam NumQueries number of query points with -1 for dynamic point number.
      */
     template <int NumPoints, int NumQueries=Eigen::Dynamic>
     class Polychain : public Path<NumQueries>
@@ -30,13 +31,25 @@ namespace FrenetTransform
         /**
          * @brief Construct a new Path object from Cartesian x- and y-positions.
          *
-         * @param x coordinates in x-direction.
-         * @param y coordinates in y-direction.
+         * @param x coordinates in x-direction along the path.
+         * @param y coordinates in y-direction along the path.
          */
         Polychain(const ArrayPoints& x, const ArrayPoints& y) { setPoints(x, y); }
 
+        /**
+         * @brief Construct a new Polychain object from points in Cartesian coordinates.
+         *
+         * @param points points along the path.
+         */
         Polychain(const Points<NumPoints>& points) { setPoints(points.x(), points.y()); }
 
+        /**
+         * @brief Gets points along the polychain at the query lengths.
+         * Lengths exceeding the polychain's domain either resolve to the first or last point.
+         *
+         * @param lengths query lengths along the polychain.
+         * @return Points<NumQueries> at the query lengths.
+         */
         Points<NumQueries> operator()(const ArrayQueries& lengths) const override
         {
             // indices of corresponding polychain segments
@@ -44,94 +57,110 @@ namespace FrenetTransform
 
             // relative position along the linear segment
             const ArrayPoints pathLengthsdiff { diffBackward(m_lengths) };
-            ArrayQueries relativePos { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths + 1) };
-
-            for(double& pos : relativePos)
-                pos = std::clamp(pos, 0.0, 1.0);
+            ArrayQueries segmentPart { (lengths - m_lengths(indicesLengths)) / pathLengthsdiff(indicesLengths + 1) };
 
             // absolute position along path
-            ArrayQueries x { m_points[0].x()(indicesLengths + 1) * relativePos + m_points[0].x()(indicesLengths) * (1 - relativePos) };
-            ArrayQueries y { m_points[0].y()(indicesLengths + 1) * relativePos + m_points[0].y()(indicesLengths) * (1 - relativePos) };
-
-            for(int row {}; row < indicesLengths.rows(); ++row)
-            {
-                if(indicesLengths(row) >= m_lengths.rows() - 1)
-                {
-                    x(row) = m_points[0].x(m_lengths.rows() - 1);
-                    y(row) = m_points[0].y(m_lengths.rows() - 1);
-                }
-            }
+            ArrayQueries x { m_points[0].x()(indicesLengths + 1) * segmentPart + m_points[0].x()(indicesLengths) * (1 - segmentPart) };
+            ArrayQueries y { m_points[0].y()(indicesLengths + 1) * segmentPart + m_points[0].y()(indicesLengths) * (1 - segmentPart) };
 
             return { x, y };
         }
 
         /**
          * @brief Determines next points to the query points.
+         * Performs a linear search over all polychain segments to identify the closest one.
          *
          * @param points query points.
-         * @return Points<NumQueries> next to query points.
+         * @return Points<NumQueries> next points to query points.
          */
         ArrayQueries lengths(const Points<NumQueries>& points) const override
         {
-            ArrayQueries lLenghts (points.numPoints());
+            ArrayQueries lengthsPoints (points.numPoints());
 
+            // determine lengths for all query points
             for(int cQuery {}; cQuery < points.numPoints(); ++cQuery)
             {
-                double distSq { -1.0 };
+                // current minimum squared distance between query point and polychain
+                double distanceSquare { -1.0 };
 
+                // determine distance between query point and path segment
                 for(int cPoints {1}; cPoints < m_numPoints; ++cPoints)
                 {
-                    const Point pathNext { m_points[0](cPoints) };
-                    const Point diffPoint { pathNext - points(cQuery) };
-                    const double segmentPart { (diffPoint.x() * m_xDiff(cPoints) + diffPoint.y() * m_yDiff(cPoints)) / m_diffSq(cPoints) };
+                    // point at end of current segment
+                    const Point nextPoint { m_points[0](cPoints) };
+                    // difference between "nextPoint" and query point
+                    const Point diffPoint { nextPoint - points(cQuery) };
+                    // parameter determining next point along current linear segment
+                    const double segmentPart { (diffPoint.x() * m_xDiff(cPoints) + diffPoint.y() * m_yDiff(cPoints)) / m_diffSquare(cPoints) };
 
-                    double distSqCand {};
-                    double candLength {};
+                    // squared distance between current segment and query point
+                    double distanceSquareCand {};
+                    // length along polychain of shortest distance point on segment to query point
+                    double lengthCand {};
 
+                    // determine squared distance and length if shortest distance point is beyond segment end
                     if(segmentPart >= 1.0)
                     {
-                        distSqCand = m_points[0](cPoints - 1).distanceSquare(points(cQuery));
-                        candLength = m_lengths.data()[cPoints - 1];
+                        distanceSquareCand = m_points[0](cPoints - 1).distanceSquare(points(cQuery));
+                        lengthCand = m_lengths.data()[cPoints - 1];
                     }
+                    // determine squared distance and length if shortest distance point is beyond segment start
                     else if(segmentPart <= 0.0)
                     {
-                        distSqCand = m_points[0](cPoints).distanceSquare(points(cQuery));
-                        candLength = m_lengths.data()[cPoints];
+                        distanceSquareCand = m_points[0](cPoints).distanceSquare(points(cQuery));
+                        lengthCand = m_lengths.data()[cPoints];
                     }
+                    // determine squared distance and length if shortest distance point is on segment
                     else
                     {
-                        const Point pathPrev { m_points[0](cPoints - 1) };
+                        // point at start of current segment
+                        const Point prevPoint { m_points[0](cPoints - 1) };
+                        // shortest distance point on current segment
                         const Point pointCand {
-                            pathPrev.x() * segmentPart + (1 - segmentPart) * pathNext.x(),
-                            pathPrev.y() * segmentPart + (1 - segmentPart) * pathNext.y()
+                            prevPoint.x() * segmentPart + (1 - segmentPart) * nextPoint.x(),
+                            prevPoint.y() * segmentPart + (1 - segmentPart) * nextPoint.y()
                         };
-                        distSqCand = points(cQuery).distanceSquare(pointCand);
-                        candLength = m_lengths(cPoints - 1) +  pointCand.distance(pathPrev);
+                        distanceSquareCand = points(cQuery).distanceSquare(pointCand);
+                        lengthCand = m_lengths(cPoints - 1) +  pointCand.distance(prevPoint);
                     }
 
-                    if(distSqCand < distSq || distSq < 0)
+                    // update length and squared distance if squared distance is smaller than current minimum
+                    if(distanceSquareCand < distanceSquare || distanceSquare < 0)
                     {
-                        distSq = distSqCand;
-                        lLenghts(cQuery) = candLength;
+                        distanceSquare = distanceSquareCand;
+                        lengthsPoints(cQuery) = lengthCand;
                     }
                 }
             }
 
-            return lLenghts;
+            return lengthsPoints;
         }
 
+        /**
+         * @brief Provide new points for the polychain.
+         * Update lengths and gradient information.
+         *
+         * @param x coordinates in x-direction of new points.
+         * @param y coordinates in y-direction of new points.
+         */
         void setPoints(const ArrayPoints& x, const ArrayPoints& y)
         {
+            // number of points along the polychain
             m_numPoints = x.rows();
 
+            // update points along the polychain
             m_points[0] = Points<NumPoints> { x, y };
 
+            // point differences
             m_xDiff = FrenetTransform::diffBackward(x);
             m_yDiff = FrenetTransform::diffBackward(y);
+            // point squared differences
+            m_diffSquare = m_xDiff.pow(2) + m_yDiff.pow(2);
 
-            m_diffSq = m_xDiff.pow(2) + m_yDiff.pow(2);
+            // accumulated lengths along the new points
             m_lengths = FrenetTransform::partialLength(x, y);
 
+            // update gradients
             for(unsigned int orderGrad { 1 }; orderGrad < s_numGrad; ++orderGrad)
                 m_points[orderGrad] = Points<NumPoints> {
                     FrenetTransform::gradient(m_points[orderGrad - 1].x(), m_lengths),
@@ -139,16 +168,17 @@ namespace FrenetTransform
                 };
         }
 
-        int numPoints() { return m_numPoints; }
-
     private:
-        static constexpr int s_numGrad { 4 };
-        ArrayPoints m_xDiff {};
-        ArrayPoints m_yDiff {};
-        ArrayPoints m_diffSq {};
-        std::array<Points<NumPoints>, s_numGrad> m_points {};
+        int m_numPoints {}; /*<< number of points along the polychain*/
+
         ArrayPoints m_lengths {}; /*<< partial lengths along polychain*/
-        int m_numPoints {};
+
+        ArrayPoints m_xDiff {}; /*<< differences between polychain points in x-direction*/
+        ArrayPoints m_yDiff {}; /*<< differences between polychain points in y-direction*/
+        ArrayPoints m_diffSquare {}; /*<< differences between polychain points squared*/
+
+        static constexpr int s_numGrad { 4 }; /*<< number of time derivatives provided*/
+        std::array<Points<NumPoints>, s_numGrad> m_points {}; /*<< points and gradients at polychain points*/
 
         /**
          * @brief Determines 1st order gradient at the given path lengths.

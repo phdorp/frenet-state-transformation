@@ -132,6 +132,14 @@ namespace FrenetTransform
         return result;
     }
 
+    /**
+     * @brief Determines angles of given vector in range -pi to pi
+     *
+     * @tparam ArrayType storing directions.
+     * @param dirxs vector components in x-direction.
+     * @param dirys vector components in y-direction.
+     * @return ArrayType angles of vectors.
+     */
     template <typename ArrayType>
     ArrayType angleDir(const Eigen::ArrayBase<ArrayType>& dirxs, const Eigen::ArrayBase<ArrayType>& dirys)
     {
@@ -155,6 +163,23 @@ namespace FrenetTransform
         }
 
         return angles;
+    }
+
+    /**
+     * @brief Inverts "NumArrays" 2x2 arrays.
+     *
+     * @tparam NumArrays number of input arrays.
+     * @param arrays to invert.
+     * @return Eigen::Array<ArrayRows<NumArrays>, 2, 2> inverted arrays.
+     */
+    template <int NumArrays>
+    Eigen::Array<ArrayRows<NumArrays>, 2, 2> transformInv(const Eigen::Array<ArrayRows<NumArrays>, 2, 2>& arrays)
+    {
+        const auto normalization { 1 / (arrays(0, 0) * arrays(1, 1) - arrays(1, 0) * arrays(0, 1)) };
+        return {
+            { arrays(1, 1) * normalization, -arrays(0, 1) * normalization},
+            {-arrays(1, 0) * normalization,  arrays(0, 0) * normalization}
+        };
     }
 };
 
