@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
     matplot::ylabel("Frenet y-axis/m");
 
     matplot::save(*(argv + 1));
-    // matplot::show();
+    matplot::show();
 
     return 0;
 }

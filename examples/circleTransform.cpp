@@ -83,14 +83,8 @@ int main(int argc, char* argv[])
         0.0
     );
 
-    // show plot if no path provided, other save
-    switch(argc)
-    {
-    case 1:
-        matplot::show();
-    default:
-        matplot::save(*(argv + 1));
-    }
+    matplot::save(*(argv + 1));
+    matplot::show();
 
     return 0;
 }
