@@ -193,6 +193,8 @@ namespace FrenetTransform
         Points<NumQueries> gradient1 (const ArrayQueries& lengths) const override
         {
             auto indicesGrad { indices(lengths) };
+            for(int& idx : indicesGrad)
+                idx = std::clamp(idx, 1, m_numPoints);
             return { m_points[1].x()(indicesGrad),m_points[1].y()(indicesGrad) };
         }
 
