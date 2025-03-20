@@ -73,14 +73,6 @@ int main(int argc, char* argv[])
     const Eigen::ArrayXd lengthsCircle { Eigen::ArrayXd::LinSpaced(101, 0.0, 2 * M_PI) * circle.radius() };
     const FrenetTransform::Points circlePoints { circle(lengthsCircle) };
 
-    matplot::subplot(1, 2, 0);
-    // plot circle
-    matplot::plot(
-        std::vector<double> { circlePoints.x().begin(), circlePoints.x().end() },
-        std::vector<double> { circlePoints.y().begin(), circlePoints.y().end() }
-    );
-    matplot::hold(true);
-
     // create point grit from -15 to 15 in x- and y-direction
     const double bound { 15.0 };
     auto [posMeshX, posMeshY] { matplot::meshgrid(matplot::iota(0.5 - bound, 1, 0.5 + bound), matplot::iota(0.5 - bound, 1, 0.5 + bound)) };
@@ -91,12 +83,44 @@ int main(int argc, char* argv[])
     // instantiate cartesian velocities
     const FrenetTransform::Points<Eigen::Dynamic> cartesVels { Eigen::ArrayXd::Ones(cartesPoints.numPoints()) / 2, Eigen::ArrayXd::Ones(cartesPoints.numPoints()) / 2 };
 
-    // plot vector field in Cartesian coordinates
+    // instantiate cartesian acceleratoins
+    const FrenetTransform::Points<Eigen::Dynamic> cartesAccs { 3 * Eigen::ArrayXd::Ones(cartesPoints.numPoints()) / 4, -3 * Eigen::ArrayXd::Ones(cartesPoints.numPoints()) / 4 };
+
+    // plot velocity vector field in Cartesian coordinates
+    matplot::subplot(2, 2, 0);
+
+    // plot circle
+    matplot::plot(
+        std::vector<double> { circlePoints.x().begin(), circlePoints.x().end() },
+        std::vector<double> { circlePoints.y().begin(), circlePoints.y().end() }
+    );
+    matplot::hold(true);
     matplot::quiver(
         std::vector<double> { cartesPoints.x().begin(), cartesPoints.x().end() },
         std::vector<double> { cartesPoints.y().begin(), cartesPoints.y().end() },
         std::vector<double> { cartesVels.x().begin(), cartesVels.x().end() },
         std::vector<double> { cartesVels.y().begin(), cartesVels.y().end() },
+        0.0
+    );
+    matplot::xlim({-bound, 1.5 + bound});
+    matplot::ylim({-bound, 1.5 + bound});
+    matplot::xlabel("Cartesian x-axis/m");
+    matplot::ylabel("Cartesian y-axis/m");
+    matplot::hold(false);
+
+    // plot acceleration vector field in Cartesian coordinates
+    matplot::subplot(2, 2, 1);
+    // plot circle
+    matplot::plot(
+        std::vector<double> { circlePoints.x().begin(), circlePoints.x().end() },
+        std::vector<double> { circlePoints.y().begin(), circlePoints.y().end() }
+    );
+    matplot::hold(true);
+    matplot::quiver(
+        std::vector<double> { cartesPoints.x().begin(), cartesPoints.x().end() },
+        std::vector<double> { cartesPoints.y().begin(), cartesPoints.y().end() },
+        std::vector<double> { cartesAccs.x().begin(), cartesAccs.x().end() },
+        std::vector<double> { cartesAccs.y().begin(), cartesAccs.y().end() },
         0.0
     );
     matplot::xlim({-bound, 1.5 + bound});
@@ -114,9 +138,10 @@ int main(int argc, char* argv[])
     // transform query points to Frenet frame
     const FrenetTransform::Points<Eigen::Dynamic> frenetPoints { transform.posFrenet(cartesPoints) };
     const FrenetTransform::Points<Eigen::Dynamic> frenetVels { transform.velFrenet(cartesVels, frenetPoints) };
+    const FrenetTransform::Points<Eigen::Dynamic> frenetAccs { transform.accFrenet(cartesAccs, frenetVels, frenetPoints) };
 
-    // draw vector field Frenet coordinates
-    matplot::subplot(1, 2, 1);
+    // draw velocity vector field Frenet coordinates
+    matplot::subplot(2, 2, 2);
     matplot::quiver(
         std::vector<double> { frenetPoints.x().begin(), frenetPoints.x().end() },
         std::vector<double> { frenetPoints.y().begin(), frenetPoints.y().end() },
@@ -128,6 +153,21 @@ int main(int argc, char* argv[])
     matplot::ylim({-std::sqrt(2) * bound + circle.radius(), std::sqrt(2) * bound - circle.radius()});
     matplot::xlabel("Frenet x-axis/m");
     matplot::ylabel("Frenet y-axis/m");
+
+    // draw acceleration field Frenet coordinates
+    matplot::subplot(2, 2, 3);
+    matplot::quiver(
+        std::vector<double> { frenetPoints.x().begin(), frenetPoints.x().end() },
+        std::vector<double> { frenetPoints.y().begin(), frenetPoints.y().end() },
+        std::vector<double> { frenetAccs.x().begin(), frenetAccs.x().end() },
+        std::vector<double> { frenetAccs.y().begin(), frenetAccs.y().end() },
+        0.0
+    );
+    matplot::xlim({-1.0, 2 * M_PI * circle.radius()});
+    matplot::ylim({-std::sqrt(2) * bound + circle.radius(), std::sqrt(2) * bound - circle.radius()});
+    matplot::xlabel("Frenet x-axis/m");
+    matplot::ylabel("Frenet y-axis/m");
+
     matplot::save(*(argv + 1));
     // matplot::show();
 
