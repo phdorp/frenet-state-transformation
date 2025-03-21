@@ -90,12 +90,17 @@ int main(int argc, char* argv[])
     FrenetTransform::Transform<Eigen::Dynamic> transform { circlePoly };
 
     // transform query points to Frenet frame
-    const FrenetTransform::Points<Eigen::Dynamic> frenetPoints { transform.posFrenet(cartesPoints) };
-    const FrenetTransform::Points<Eigen::Dynamic> frenetVels { transform.velFrenet(cartesVels, frenetPoints) };
-    const FrenetTransform::Points<Eigen::Dynamic> frenetAccs { transform.accFrenet(cartesAccs, frenetVels, frenetPoints) };
+    const FrenetTransform::Points<Eigen::Dynamic> frenetPointsTf { transform.posFrenet(cartesPoints) };
+    const FrenetTransform::Points<Eigen::Dynamic> frenetVelsTf { transform.velFrenet(cartesVels, frenetPointsTf) };
+    const FrenetTransform::Points<Eigen::Dynamic> frenetAccsTf { transform.accFrenet(cartesAccs, frenetVelsTf, frenetPointsTf) };
+
+    // transform query points back to Cartesian frame
+    const FrenetTransform::Points<Eigen::Dynamic> cartesPointsTf { transform.posCartes(frenetPointsTf) };
+    const FrenetTransform::Points<Eigen::Dynamic> cartesVelsTf { transform.velCartes(frenetVelsTf, frenetPointsTf) };
+    const FrenetTransform::Points<Eigen::Dynamic> cartesAccsTf { transform.accCartes(frenetAccsTf, frenetVelsTf, frenetPointsTf) };
 
     // plot velocity vector field in Cartesian coordinates
-    matplot::subplot(2, 2, 0);
+    matplot::subplot(3, 2, 0);
     // plot circle
     matplot::plot(
         std::vector<double> { circlePointsX.begin(), circlePointsX.end() },
@@ -116,7 +121,7 @@ int main(int argc, char* argv[])
     matplot::hold(false);
 
     // plot acceleration vector field in Cartesian coordinates
-    matplot::subplot(2, 2, 1);
+    matplot::subplot(3, 2, 1);
     // plot circle
     matplot::plot(
         std::vector<double> { circlePointsX.begin(), circlePointsX.end() },
@@ -137,12 +142,12 @@ int main(int argc, char* argv[])
     matplot::hold(false);
 
     // draw velocity vector field Frenet coordinates
-    matplot::subplot(2, 2, 2);
+    matplot::subplot(3, 2, 2);
     matplot::quiver(
-        std::vector<double> { frenetPoints.x().begin(), frenetPoints.x().end() },
-        std::vector<double> { frenetPoints.y().begin(), frenetPoints.y().end() },
-        std::vector<double> { frenetVels.x().begin(), frenetVels.x().end() },
-        std::vector<double> { frenetVels.y().begin(), frenetVels.y().end() },
+        std::vector<double> { frenetPointsTf.x().begin(), frenetPointsTf.x().end() },
+        std::vector<double> { frenetPointsTf.y().begin(), frenetPointsTf.y().end() },
+        std::vector<double> { frenetVelsTf.x().begin(), frenetVelsTf.x().end() },
+        std::vector<double> { frenetVelsTf.y().begin(), frenetVelsTf.y().end() },
         0.0
     );
     matplot::xlim({-1.0, 2 * M_PI * radius});
@@ -151,18 +156,46 @@ int main(int argc, char* argv[])
     matplot::ylabel("Frenet y-axis/m");
 
     // draw acceleration field Frenet coordinates
-    matplot::subplot(2, 2, 3);
+    matplot::subplot(3, 2, 3);
     matplot::quiver(
-        std::vector<double> { frenetPoints.x().begin(), frenetPoints.x().end() },
-        std::vector<double> { frenetPoints.y().begin(), frenetPoints.y().end() },
-        std::vector<double> { frenetAccs.x().begin(), frenetAccs.x().end() },
-        std::vector<double> { frenetAccs.y().begin(), frenetAccs.y().end() },
+        std::vector<double> { frenetPointsTf.x().begin(), frenetPointsTf.x().end() },
+        std::vector<double> { frenetPointsTf.y().begin(), frenetPointsTf.y().end() },
+        std::vector<double> { frenetAccsTf.x().begin(), frenetAccsTf.x().end() },
+        std::vector<double> { frenetAccsTf.y().begin(), frenetAccsTf.y().end() },
         0.0
     );
     matplot::xlim({-1.0, 2 * M_PI * radius});
     matplot::ylim({-std::sqrt(2) * bound + radius, std::sqrt(2) * bound - radius});
     matplot::xlabel("Frenet x-axis/m");
     matplot::ylabel("Frenet y-axis/m");
+
+    // draw velocity vector field Cartesian coordinates
+    matplot::subplot(3, 2, 4);
+    matplot::quiver(
+        std::vector<double> { cartesPointsTf.x().begin(), cartesPointsTf.x().end() },
+        std::vector<double> { cartesPointsTf.y().begin(), cartesPointsTf.y().end() },
+        std::vector<double> { cartesVelsTf.x().begin(), cartesVelsTf.x().end() },
+        std::vector<double> { cartesVelsTf.y().begin(), cartesVelsTf.y().end() },
+        0.0
+    );
+    matplot::xlim({-bound, 1.5 + bound});
+    matplot::ylim({-bound, 1.5 + bound});
+    matplot::xlabel("Cartesian x-axis/m");
+    matplot::ylabel("Cartesian y-axis/m");
+
+    // draw acceleration field Cartesian coordinates
+    matplot::subplot(3, 2, 5);
+    matplot::quiver(
+        std::vector<double> { cartesPointsTf.x().begin(), cartesPointsTf.x().end() },
+        std::vector<double> { cartesPointsTf.y().begin(), cartesPointsTf.y().end() },
+        std::vector<double> { cartesAccsTf.x().begin(), cartesAccsTf.x().end() },
+        std::vector<double> { cartesAccsTf.y().begin(), cartesAccsTf.y().end() },
+        0.0
+    );
+    matplot::xlim({-bound, 1.5 + bound});
+    matplot::ylim({-bound, 1.5 + bound});
+    matplot::xlabel("Cartesian x-axis/m");
+    matplot::ylabel("Cartesian y-axis/m");
 
     matplot::save(*(argv + 1));
     matplot::show();
