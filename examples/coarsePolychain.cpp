@@ -14,34 +14,20 @@ int main(int argc, char* argv[])
     assert(argc > 1 && "Only one argument possible!");
 
     // create circle with radius 10 m
-    const Testing::Circle circle { 10.0, {0.0, 0.0} };
-
-    // get points around circle
-    const Eigen::ArrayXd lengthsCircle { Eigen::ArrayXd::LinSpaced(101, 0.0, 2 * M_PI) * circle.radius() };
-    const FrenetTransform::Points circlePoints { circle(lengthsCircle) };
-
-    // plot circle
-    matplot::plot(
-        std::vector<double> { circlePoints.x().begin(), circlePoints.x().end() },
-        std::vector<double> { circlePoints.y().begin(), circlePoints.y().end() }
-    );
-    matplot::hold(true);
+    const double radius { 10.0 };
+    const Eigen::ArrayXd lengthsCircle { Eigen::ArrayXd::LinSpaced(101, 0.0, 2 * M_PI) };
+    const Eigen::ArrayXd circlePointsX { radius * lengthsCircle.cos() };
+    const Eigen::ArrayXd circlePointsY { radius * lengthsCircle.sin() };
 
     // generate polyline from 4 points at 90° angles
     const auto idcsSub { Eigen::seqN(0, 5, 25) };
     const auto circlePoly {
-        std::make_shared<FrenetTransform::Polychain<Eigen::Dynamic>>(circlePoints.x()(idcsSub), circlePoints.y()(idcsSub))
+        std::make_shared<FrenetTransform::Polychain<Eigen::Dynamic>>(circlePointsX(idcsSub), circlePointsY(idcsSub))
     };
 
     // get points along the polychain
-    const Eigen::ArrayXd lengthsPoly { Eigen::ArrayXd::LinSpaced(500, 0.0, 2 * M_PI * circle.radius()) };
+    const Eigen::ArrayXd lengthsPoly { Eigen::ArrayXd::LinSpaced(500, 0.0, 2 * M_PI * radius) };
     const auto polyPoints { circlePoly->operator()(lengthsPoly) };
-
-    // plot polychain
-    matplot::plot(
-        std::vector<double> { polyPoints.x().begin(), polyPoints.x().end() },
-        std::vector<double> { polyPoints.y().begin(), polyPoints.y().end() }
-    );
 
     // instantiate transform
     FrenetTransform::Transform<Eigen::Dynamic> transform { circlePoly };
@@ -51,12 +37,6 @@ int main(int argc, char* argv[])
         {{ 5.0, 12.0, -2.5,  0.3}},
         {{ 0.0, 12.0,  3.0, 11.5}}
     };
-
-    // plot query points
-    matplot::scatter(
-        std::vector<double> { cartesPoints.x().begin(), cartesPoints.x().end() },
-        std::vector<double> { cartesPoints.y().begin(), cartesPoints.y().end() }
-    );
 
     // transform query points to Frenet frame
     const FrenetTransform::Points<Eigen::Dynamic> frenetPoints { transform.posFrenet(cartesPoints) };
@@ -73,6 +53,25 @@ int main(int argc, char* argv[])
     // get vectors from next points to query points
     FrenetTransform::Points<Eigen::Dynamic> normals { circlePoly->normal(frenetPoints.x()) };
     normals = normals * frenetPoints.y();
+
+    // plot circle
+    matplot::plot(
+        std::vector<double> { circlePointsX.begin(), circlePointsX.end() },
+        std::vector<double> { circlePointsY.begin(), circlePointsY.end() }
+    );
+    matplot::hold(true);
+
+    // plot polychain
+    matplot::plot(
+        std::vector<double> { polyPoints.x().begin(), polyPoints.x().end() },
+        std::vector<double> { polyPoints.y().begin(), polyPoints.y().end() }
+    );
+
+    // plot query points
+    matplot::scatter(
+        std::vector<double> { cartesPoints.x().begin(), cartesPoints.x().end() },
+        std::vector<double> { cartesPoints.y().begin(), cartesPoints.y().end() }
+    );
 
     // draw vectors
     matplot::quiver(
