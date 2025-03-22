@@ -3,9 +3,9 @@
 #include "frenetTransform/point.h"
 #include "frenetTransform/points.h"
 #include "frenetTransform/polychain.h"
-#include "circle.h"
-#include "transformCircle.h"
-#include "constexprTypes.h"
+#include "frenetTransform/internal/circle.h"
+#include "frenetTransform/internal/transformCircle.h"
+#include "frenetTransform/internal/constexprTypes.h"
 
 namespace FrenetTransform
 {

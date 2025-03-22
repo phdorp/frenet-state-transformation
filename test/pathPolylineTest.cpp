@@ -1,9 +1,9 @@
 #include "frenetTransform/polychain.h"
 #include "frenetTransform/points.h"
 #include "frenetTransform/transform.h"
-#include "circle.h"
-#include "pathCircleTest.h"
-#include "constexprTypes.h"
+#include "frenetTransform/internal/circle.h"
+#include "frenetTransform/test/pathCircleTest.h"
+#include "frenetTransform/internal/constexprTypes.h"
 
 #include <gtest/gtest.h>
 #include <Eigen/Core>

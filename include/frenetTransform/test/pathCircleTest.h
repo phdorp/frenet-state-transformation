@@ -1,7 +1,7 @@
 #include "frenetTransform/points.h"
-#include "circle.h"
-#include "transformCircle.h"
-#include "testBase.h"
+#include "frenetTransform/internal/circle.h"
+#include "frenetTransform/internal/transformCircle.h"
+#include "frenetTransform/test/testBase.h"
 
 #include <gtest/gtest.h>
 #include <Eigen/Core>
