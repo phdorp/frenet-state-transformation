@@ -13,6 +13,9 @@ option(BUILD_TEST "Build tests for transformation." ON)
 option(BUILD_BENCHMARK "Build benchmarks for transformations." ON)
 option(BUILD_EXAMPLES "Build examples." ON)
 
+find_package(Doxygen)
+option(BUILD_DOCS "Build documentation." ON)
+
 if(BUILD_TEST)
     enable_testing()
     add_subdirectory(test/src/tests)
@@ -24,4 +27,17 @@ endif()
 
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
+endif()
+
+if(BUILD_DOCS)
+    set(doxyfile_in ${PROJECT_SOURCE_DIR}/Doxyfile.in)
+    set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/docs/Doxyfile)
+
+    configure_file(${doxyfile_in} ${doxyfile} @ONLY)
+
+    add_custom_target(doc ALL
+        COMMAND doxygen ${doxyfile}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM)
 endif()
