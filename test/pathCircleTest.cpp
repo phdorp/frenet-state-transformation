@@ -1,5 +1,5 @@
-#include "pathCircleTest.h"
-#include "constexprTypes.h"
+#include "frenetTransform/test/pathCircleTest.h"
+#include "frenetTransform/internal/constexprTypes.h"
 
 namespace FrenetTransform
 {

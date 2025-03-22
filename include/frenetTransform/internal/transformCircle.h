@@ -1,7 +1,7 @@
 #ifndef TRANSFORM_CIRCLE_H
 #define TRANSFORM_CRICLE_H
 
-#include "circle.h"
+#include "frenetTransform/internal/circle.h"
 #include "frenetTransform/transform.h"
 #include "frenetTransform/point.h"
 

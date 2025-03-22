@@ -13,16 +13,11 @@ FetchContent_MakeAvailable(eigen)
 # make cache variables for install destinations
 include(GNUInstallDirs)
 
-file(GLOB
-  SOURCE_FILES
-  *.cpp
-)
-
-add_library(transform ${SOURCE_FILES})
-target_link_libraries(transform PUBLIC eigen)
+add_library(transform INTERFACE)
+target_link_libraries(transform INTERFACE eigen)
 
 target_include_directories(transform
-  PUBLIC
+  INTERFACE
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 )
 

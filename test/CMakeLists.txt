@@ -18,7 +18,7 @@ foreach(item ${MAIN_FILES})
         ${item}
     )
 
-    target_include_directories(${LIB_FILE} PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
+    # target_include_directories(${LIB_FILE} PRIVATE "${CMAKE_SOURCE_DIR}/test/include")
 
     target_link_libraries(
         ${LIB_FILE}

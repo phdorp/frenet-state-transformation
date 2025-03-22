@@ -1,8 +1,8 @@
 #include "frenetTransform/polychain.h"
 #include "frenetTransform/points.h"
 #include "frenetTransform/transform.h"
-#include "line.h"
-#include "testBase.h"
+#include "frenetTransform/internal/line.h"
+#include "frenetTransform/test/testBase.h"
 
 #include <gtest/gtest.h>
 #include <Eigen/Core>

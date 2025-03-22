@@ -5,7 +5,7 @@
 
 #include "frenetTransform/transform.h"
 #include "frenetTransform/polychain.h"
-#include "circle.h"
+#include "frenetTransform/internal/circle.h"
 
 namespace Testing = FrenetTransform::Testing;
 
