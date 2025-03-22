@@ -1,6 +1,6 @@
 # Frenet transformation
 
-![Frenet transformation](docs/img/stateTransform.png)
+![dsdfg](docs/media/circlePolychain.png)
 
 This project implements a library to perform transformations from a 2-dimensional Cartesian to a Frenet coordinate system and vice versa.
 Transformations are implemented for states up to the second time derivative.

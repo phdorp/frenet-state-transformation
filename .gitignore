@@ -38,7 +38,7 @@ build/
 .vscode
 
 # documentation
-docs
+docs/build
 
 # log files
 benchmarks/logs
