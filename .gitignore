@@ -38,7 +38,10 @@ build/
 .vscode
 
 # documentation
-docs
+docs/build
 
 # log files
 benchmarks/logs
+
+# example outputs
+examples/out

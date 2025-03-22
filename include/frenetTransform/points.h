@@ -78,6 +78,10 @@ namespace FrenetTransform{
          */
         const ArrayPoints& y() const { return m_y; }
 
+        void setX(const ArrayPoints&x) { m_x = x; }
+
+        void setY(const ArrayPoints&y) { m_y = y; }
+
         /**
          * @brief Squared distance between Points and "point".
          *

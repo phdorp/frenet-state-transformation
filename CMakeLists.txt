@@ -11,6 +11,7 @@ add_subdirectory(src)
 
 option(BUILD_TEST "Build tests for transformation." ON)
 option(BUILD_BENCHMARK "Build benchmarks for transformations." ON)
+option(BUILD_EXAMPLES "Build examples." ON)
 
 if(BUILD_TEST)
     enable_testing()
@@ -19,4 +20,8 @@ endif()
 
 if(BUILD_BENCHMARK)
     add_subdirectory(test/src/benchmarks)
+endif()
+
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()
