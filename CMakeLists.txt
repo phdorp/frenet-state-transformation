@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
+set(CMAKE_CXX_COMPILER "g++-13")
 
 project(FrenetTransform)
 
