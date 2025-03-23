@@ -3,16 +3,15 @@
 
 #include <array>
 
-namespace FrenetTransform
-{
-    namespace Internal
-    {
-        template <int Value>
-        struct Integral { static constexpr int s_val { Value }; };
+namespace FrenetTransform {
+namespace Internal {
+template <int Value> struct Integral { static constexpr int s_val{Value}; };
 
-        template <typename ValType, int NumVals, std::array<ValType, NumVals> Vals>
-        struct ConstVals { static constexpr std::array<ValType, NumVals> s_vals { Vals }; };
-    };
+template <typename ValType, int NumVals, std::array<ValType, NumVals> Vals>
+struct ConstVals {
+  static constexpr std::array<ValType, NumVals> s_vals{Vals};
 };
+}; // namespace Internal
+}; // namespace FrenetTransform
 
 #endif
