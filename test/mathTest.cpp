@@ -1,4 +1,4 @@
-#include "frenetTransform/math.h"
+#include "frenetTransform/internal/math.h"
 
 #include <Eigen/Core>
 #include <gtest/gtest.h>

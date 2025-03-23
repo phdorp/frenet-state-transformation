@@ -6,7 +6,7 @@
 
 #include "frenetTransform/path.h"
 #include "frenetTransform/point.h"
-#include "frenetTransform/math.h"
+#include "frenetTransform/internal/math.h"
 
 namespace FrenetTransform
 {

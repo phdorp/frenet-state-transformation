@@ -4,7 +4,7 @@
 #include <math.h>
 
 #include "frenetTransform/path.h"
-#include "frenetTransform/math.h"
+#include "frenetTransform/internal/math.h"
 #include "frenetTransform/points.h"
 #include "frenetTransform/point.h"
 
