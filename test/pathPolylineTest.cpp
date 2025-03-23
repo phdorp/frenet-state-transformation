@@ -12,7 +12,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
         // template <typename NumPoints, typename NumQueries>
         template <typename Params>

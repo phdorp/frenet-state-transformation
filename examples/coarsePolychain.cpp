@@ -7,7 +7,7 @@
 #include "frenetTransform/polychain.h"
 #include "frenetTransform/internal/circle.h"
 
-namespace Testing = FrenetTransform::Testing;
+namespace Internal = FrenetTransform::Internal;
 
 int main(int argc, char* argv[])
 {

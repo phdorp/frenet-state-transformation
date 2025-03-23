@@ -3,7 +3,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
         // using Queries = testing::Types<Integral<Eigen::Dynamic>, Integral<100>>;
         using Queries = testing::Types<Integral<Eigen::Dynamic>, Integral<100>>;

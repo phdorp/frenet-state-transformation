@@ -10,7 +10,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
         template <typename NumQueries>
         class PathCircleTest : public TestBase

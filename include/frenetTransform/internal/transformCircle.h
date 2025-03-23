@@ -7,7 +7,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
         class PointCircle : public Point
         {

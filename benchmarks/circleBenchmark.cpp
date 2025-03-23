@@ -9,7 +9,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
 
         template <typename Params>

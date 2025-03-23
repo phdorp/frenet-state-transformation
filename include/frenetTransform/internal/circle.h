@@ -10,7 +10,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
         template<int NumQueries=Eigen::Dynamic>
         class Circle : public Path<NumQueries>

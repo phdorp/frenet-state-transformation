@@ -7,7 +7,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
         using limits = std::numeric_limits<double>;
 

@@ -11,7 +11,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
         class PathPolylineLineTest : public TestBase
         {

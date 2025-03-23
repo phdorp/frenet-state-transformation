@@ -7,7 +7,7 @@
 #include "frenetTransform/polychain.h"
 #include "frenetTransform/internal/circle.h"
 
-namespace Testing = FrenetTransform::Testing;
+namespace Internal = FrenetTransform::Internal;
 
 /**
  * @brief Helper function to determine number of elements in 2-dimensional vector.

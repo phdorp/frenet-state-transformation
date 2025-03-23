@@ -5,7 +5,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
         /**
          * @brief Test function diffBackward with vector of length 5.

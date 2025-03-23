@@ -7,7 +7,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
         TEST_F(PathPolylineLineTest, Lengths)
         {

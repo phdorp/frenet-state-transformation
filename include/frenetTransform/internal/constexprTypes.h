@@ -5,7 +5,7 @@
 
 namespace FrenetTransform
 {
-    namespace Testing
+    namespace Internal
     {
         template <int Value>
         struct Integral { static constexpr int s_val { Value }; };
