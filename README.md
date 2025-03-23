@@ -38,6 +38,12 @@ cmake -Bbuild
 cmake --build build
 ```
 
+The following options are avaible for configuration:
+- BUILD_DOCS=ON|OFF: whether to build the [documentation](build/docs/html/index.html)
+- BUILD_TEST=ON|OFF: whether to build the tests
+- BUILD_BENCHMARK=ON|OFF: whether to build the benchmarks
+- BUILD_EXAMPLES=ON|OFF: whether to build the examples
+
 ## Usage
 
 The following example includes snippets from the file [examples/circlePolychain.cpp](examples/circlePolychain.cpp)
