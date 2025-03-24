@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(FrenetTransform)
+project(FrenetTransform VERSION 1.0.0)
 
 include(FetchContent)
 
