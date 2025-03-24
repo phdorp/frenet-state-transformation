@@ -1,6 +1,6 @@
 # Frenet transformation
 
-![dsdfg](docs/media/circlePolychain.png)
+![Frenet transform of position, velocity, and acceleration](docs/media/circlePolychain.png)
 
 This project implements a library to perform transformations from a 2-dimensional Cartesian to a Frenet coordinate system and vice versa.
 Transformations are implemented for states up to the second time derivative.
@@ -33,7 +33,6 @@ target_link_libraries("target" PRIVATE transform)
 Building the project with the benchmark and tests requires enabling the respective CMake configuration flags.
 
 ```bash
-mkdir build
 cmake -Bbuild
 cmake --build build
 ```
@@ -46,7 +45,8 @@ The following options are avaible for configuration:
 
 ## Usage
 
-The following example includes snippets from the file [examples/circlePolychain.cpp](examples/circlePolychain.cpp)
+The following example includes snippets from the file [examples/circlePolychain.cpp](examples/circlePolychain.cpp), where the required imports and helper functions are found.
+Note that the examples require [gnuplot](http://gnuplot.info/).
 First, create a polychain path as a shared pointer.
 In this example, the polychain approximates a circle.
 Coordinates are represented with Eigen arrays.
