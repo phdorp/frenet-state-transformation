@@ -1,6 +1,6 @@
 # Frenet transformation
 
-![dsdfg](docs/media/circlePolychain.png)
+![Frenet transform of position, velocity, and acceleration](docs/media/circlePolychain.png)
 
 This project implements a library to perform transformations from a 2-dimensional Cartesian to a Frenet coordinate system and vice versa.
 Transformations are implemented for states up to the second time derivative.
@@ -14,7 +14,7 @@ Since this is a header-only library it is sufficient to include the required hea
 
 If you desire an integration in a CMake project you may utilize the *FetchContent* module.
 
-```
+```bash
 FetchContent_Declare(
   transform
   GIT_REPOSITORY https://github.com/CoteGoal/frenet-state-transformation
@@ -32,22 +32,28 @@ target_link_libraries("target" PRIVATE transform)
 
 Building the project with the benchmark and tests requires enabling the respective CMake configuration flags.
 
-```
-mkdir build
-cmake -Bbuild -DBUILD_TEST=ON -DBUILD_BENCHMARK=ON
+```bash
+cmake -Bbuild
 cmake --build build
 ```
 
+The following options are avaible for configuration:
+- BUILD_DOCS=ON|OFF: whether to build the [documentation](build/docs/html/index.html)
+- BUILD_TEST=ON|OFF: whether to build the tests
+- BUILD_BENCHMARK=ON|OFF: whether to build the benchmarks
+- BUILD_EXAMPLES=ON|OFF: whether to build the examples
+
 ## Usage
 
-The following example includes snippets from the file [examples/circlePolychain.cpp](examples/circlePolychain.cpp)
+The following example includes snippets from the file [examples/circlePolychain.cpp](examples/circlePolychain.cpp), where the required imports and helper functions are found.
+Note that the examples require [gnuplot](http://gnuplot.info/).
 First, create a polychain path as a shared pointer.
 In this example, the polychain approximates a circle.
 Coordinates are represented with Eigen arrays.
 The example uses dynamic arrays, but static arrays are also supported.
 Create a separate transform object with the polychain.
 
-```
+```cpp
 // create circle with radius 10 m
 const double radius { 10.0 };
 const Eigen::ArrayXd lengthsCircle { Eigen::ArrayXd::LinSpaced(101, 0.0, 2 * M_PI) };
@@ -65,7 +71,7 @@ For the transformation from the Cartesian to the Frenet coordinate frame define 
 In this case, a set of positions is arranged on a grid.
 The velocities and accelerations are the same for each point.
 
-```
+```cpp
 // create point grid from -15 to 15 in x- and y-direction
 const double bound { 15.0 };
 auto [posMeshX, posMeshY] { matplot::meshgrid(matplot::iota(0.5 - bound, 1, 0.5 + bound), matplot::iota(0.5 - bound, 1, 0.5 + bound)) };
@@ -81,7 +87,7 @@ const FrenetTransform::Points<Eigen::Dynamic> cartesAccs { 3 * Eigen::ArrayXd::O
 Finally, query the transform object to perform the transformation to the Frenet coordinates.
 High-order derivatives require the solution from the low-order ones.
 
-```
+```cpp
 // transform query points to Frenet frame
 const FrenetTransform::Points<Eigen::Dynamic> frenetPointsTf { transform.posFrenet(cartesPoints) };
 const FrenetTransform::Points<Eigen::Dynamic> frenetVelsTf { transform.velFrenet(cartesVels, frenetPointsTf) };
@@ -92,7 +98,7 @@ For the transformation back to the Cartesian coordinate system query the transfo
 Note that the tranformation from Cartesian to the Frenet frame is in general surjective when performed with a polyline i.e. there are multiple Cartesian points that map to one Frenet point if the next point on the polychain is a vertex point.
 Thus the last back transformation to the Cartesian frame cannot reproduce the input.
 
-```
+```cpp
 // transform query points back to Cartesian frame
 const FrenetTransform::Points<Eigen::Dynamic> cartesPointsTf { transform.posCartes(frenetPointsTf) };
 const FrenetTransform::Points<Eigen::Dynamic> cartesVelsTf { transform.velCartes(frenetVelsTf, frenetPointsTf) };
