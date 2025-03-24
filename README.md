@@ -46,7 +46,6 @@ The following options are avaible for configuration:
 ## Usage
 
 The following example includes snippets from the file [examples/circlePolychain.cpp](examples/circlePolychain.cpp), where the required imports and helper functions are found.
-Note that the examples require [gnuplot](http://gnuplot.info/).
 First, create a polychain path as a shared pointer.
 In this example, the polychain approximates a circle.
 Coordinates are represented with Eigen arrays.
@@ -104,3 +103,26 @@ const FrenetTransform::Points<Eigen::Dynamic> cartesPointsTf { transform.posCart
 const FrenetTransform::Points<Eigen::Dynamic> cartesVelsTf { transform.velCartes(frenetVelsTf, frenetPointsTf) };
 const FrenetTransform::Points<Eigen::Dynamic> cartesAccsTf { transform.accCartes(frenetAccsTf, frenetVelsTf, frenetPointsTf) };
 ```
+
+## Examples
+
+For running the examples setup the environment variables and invoke the script *examples/examples.bash* from the repository root.
+
+```bash
+source setup.bash
+examples/examples.bash [options] <source-file-names>
+```
+
+Invoke `examples/examples.bash -h` for additional information.
+Note that the examples require [gnuplot](http://gnuplot.info/) to plot the results.
+
+## Benchmarks
+
+For running the benchmarks setup the environment variables and invoke the script *benchmarks/benchmarks.bash* from the repository root.
+
+```bash
+source setup.bash
+benchmarks/benchmarks.bash [options] <source-file-names>
+```
+
+Invoke `benchmarks/benchmarks.bash -h` for additional information.
