@@ -14,8 +14,8 @@ HELP_STRING=$'Usage
 Specify the names of the source files to execute.
 
 Options
-    -h | --help         Help message.
-    -e | --extension    File extension of output image (.jpg or .eps).\n'
+    -h|--help                   Help message.
+    -e|--extension  [jpg|eps]   File extension of output image. Defaults to jpg.\n'
 
 # parse arugments
 while [[ $# -gt 0 ]]; do
