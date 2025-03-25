@@ -9,32 +9,41 @@
 
 namespace FrenetTransform {
 namespace Internal {
-
+/**
+ * @brief Class to benchmark transformations of states along a polychain.
+ *
+ * @tparam Params struct with benchmark parameters.
+ */
 template <typename Params> class PolylineBenchmark : public benchmark::Fixture {
 protected:
-  static constexpr int numPoints{Params::s_vals[0]};
-  static constexpr int numQueries{Params::s_vals[1]};
+  static constexpr int numPoints{Params::s_vals[0]}; /**<< number of polychain points */
+  static constexpr int numQueries{Params::s_vals[1]}; /**<< number of query points */
 
   using ArrayQueries = Eigen::Array<double, Params::s_vals[1], 1>;
   using ArrayPoints = Eigen::Array<double, Params::s_vals[0], 1>;
 
-  const Circle<numQueries> m_circle{5.0, {0.0, 0.0}, -M_PI};
+  const Circle<numQueries> m_circle{5.0, {0.0, 0.0}, -M_PI}; /**<< Circle of radius 5 starting at -PI */
   const TransformCircle<numQueries> m_transform{
-      std::make_shared<Circle<numQueries>>(m_circle)};
+      std::make_shared<Circle<numQueries>>(m_circle)}; /**<< Circle Transform as transformation ground truth */
 
-  const Circle<numPoints> m_circleApprox{5.0, {0.0, 0.0}, -M_PI};
+  const Circle<numPoints> m_circleApprox{5.0, {0.0, 0.0}, -M_PI}; /**<< Circle to approximate by Polychain with "numPoints" points */
 
-  Points<numQueries> m_posFrenet{};
-  Points<numQueries> m_velFrenet{};
-  Points<numQueries> m_accFrenet{};
+  Points<numQueries> m_posFrenet{}; /**<< holds ground truth points in Frenet frame */
+  Points<numQueries> m_velFrenet{}; /**<< holds ground truth velocities in Frenet frame */
+  Points<numQueries> m_accFrenet{}; /**<< holds ground truth acceleratios in Frenet frame */
 
-  Points<numQueries> m_posCartes{};
-  Points<numQueries> m_velCartes{};
-  Points<numQueries> m_accCartes{};
+  Points<numQueries> m_posCartes{}; /**<< holds ground truth points in Cartesian frame */
+  Points<numQueries> m_velCartes{}; /**<< holds ground truth velocities in Cartesian frame */
+  Points<numQueries> m_accCartes{}; /**<< holds ground truth acceleratios in Cartesian frame */
 
-  Polychain<numPoints, numQueries> m_circlePoly{};
-  Transform<numQueries> m_circleTransform{};
+  Polychain<numPoints, numQueries> m_circlePoly{}; /**<< Polychain approximating "m_circleApprox" */
+  Transform<numQueries> m_circleTransform{}; /**<< Transform using "m_circlePoly" */
 
+  /**
+   * @brief Setup randomized query points, the Polychain and the Transform.
+   *
+   * @param state benchmark state containing benchmark parameters.
+   */
   void SetUp(::benchmark::State &state) {
     std::srand(0);
     const ArrayQueries posCircleX{
