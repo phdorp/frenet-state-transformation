@@ -9,11 +9,26 @@ namespace FrenetTransform {
 namespace Internal {
 using limits = std::numeric_limits<double>;
 
+/**
+ * @brief Base class for tests providing commonly used functions and test cases.
+ *
+ */
 class TestBase : public testing::Test {
 protected:
-  template <typename Tarray>
-  void expectAllClose(const Eigen::ArrayBase<Tarray> &estimate,
-                      const Eigen::ArrayBase<Tarray> &groundTruth,
+  /**
+   * @brief Expect that the elements of two arrays are sufficiently close.
+   * Closeness of array elements is defined with an absolute and a relative
+   * error.
+   *
+   * @tparam ValType type of array elements.
+   * @param estimate array with estimations of "groundTruth" values.
+   * @param groundTruth array with ground truth values.
+   * @param errAbs tolerated absolute error between elements.
+   * @param errRel tolerated relative error between elements.
+   */
+  template <typename ValType>
+  void expectAllClose(const Eigen::ArrayBase<ValType> &estimate,
+                      const Eigen::ArrayBase<ValType> &groundTruth,
                       double errAbs = limits::infinity(),
                       double errRel = limits::infinity()) {
     const auto errAbsVals{(estimate - groundTruth).abs()};
