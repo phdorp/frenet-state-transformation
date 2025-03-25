@@ -76,12 +76,12 @@ public:
   }
 
   /**
-   * @brief Determines next points to the query points.
-   * Performs a linear search over all polychain segments to identify the
-   * closest one.
+   * @brief Determines distances along the polychain to next points to the query
+   * points. Performs a linear search over all polychain segments to identify
+   * the closest one.
    *
    * @param points query points.
-   * @return Points<NumQueries> next points to query points.
+   * @return ArrayQueries distances to next points on polychain.
    */
   ArrayQueries lengths(const Points<NumQueries> &points) const override {
     ArrayQueries lengthsPoints(points.numPoints());
