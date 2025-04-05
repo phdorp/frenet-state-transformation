@@ -43,6 +43,12 @@ The following options are avaible for configuration:
 - BUILD_BENCHMARK=ON|OFF: whether to build the benchmarks
 - BUILD_EXAMPLES=ON|OFF: whether to build the examples
 
+### Python bindings
+
+```bash
+pip install -e . --config-settings=cmake.define.CMAKE_CXX_COMPILER=g++-13
+```
+
 ## Usage
 
 The following example includes snippets from the file [examples/circlePolychain.cpp](examples/circlePolychain.cpp), where the required imports and helper functions are found.
