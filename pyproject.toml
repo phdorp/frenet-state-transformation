@@ -1,0 +1,24 @@
+[build-system]
+requires = ["scikit-build-core", "pybind11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "frenetTransform"
+version = "1.0.0"
+dependencies = [
+    "numpy",
+    "pybind11"
+]
+
+[project.optional-dependencies]
+example = ["matplotlib"]
+
+[tool.scikit-build]
+cmake.args = [
+    "-DBUILD_TEST=OFF",
+    "-DBUILD_BENCHMARK=OFF",
+    "-DBUILD_EXAMPLES=OFF",
+    "-DBUILD_DOCS=OFF",
+    "-DBUILD_PYBINDS=ON"
+]
+cmake.build-type = "Release"

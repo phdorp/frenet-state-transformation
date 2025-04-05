@@ -12,6 +12,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/include/frenetTransform)
 option(BUILD_TEST "Build tests for transformation." ON)
 option(BUILD_BENCHMARK "Build benchmarks for transformations." ON)
 option(BUILD_EXAMPLES "Build examples." ON)
+option(BUILD_PYBINDS "Build python bindings." ON)
 
 find_package(Doxygen)
 option(BUILD_DOCS "Build documentation." ON)
@@ -40,4 +41,8 @@ if(BUILD_DOCS)
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM)
+endif()
+
+if(BUILD_PYBINDS)
+    add_subdirectory(bindings/python/frenetTransform)
 endif()
