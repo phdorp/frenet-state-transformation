@@ -45,3 +45,6 @@ benchmarks/logs
 
 # example outputs
 examples/out
+
+# local conda environment
+.conda
