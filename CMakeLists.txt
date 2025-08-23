@@ -13,8 +13,6 @@ option(BUILD_TEST "Build tests for transformation." ON)
 option(BUILD_BENCHMARK "Build benchmarks for transformations." ON)
 option(BUILD_EXAMPLES "Build examples." ON)
 option(BUILD_PYBINDS "Build python bindings." ON)
-
-find_package(Doxygen)
 option(BUILD_DOCS "Build documentation." ON)
 
 if(BUILD_TEST)
@@ -31,6 +29,7 @@ if(BUILD_EXAMPLES)
 endif()
 
 if(BUILD_DOCS)
+    find_package(Doxygen REQUIRED)
     set(doxyfile_in ${PROJECT_SOURCE_DIR}/Doxyfile.in)
     set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/docs/Doxyfile)
 
