@@ -25,7 +25,7 @@ if(BUILD_BENCHMARK)
 endif()
 
 if(BUILD_EXAMPLES)
-    add_subdirectory(examples)
+    add_subdirectory(examples/cpp)
 endif()
 
 if(BUILD_DOCS)
