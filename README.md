@@ -46,7 +46,11 @@ The following options are avaible for configuration:
 ### Python bindings
 
 ```bash
-pip install -e . --config-settings=cmake.define.CMAKE_CXX_COMPILER=g++-13
+pip install -e .
+```
+
+```bash
+python bindings/python/frenetTransform/build_stubs.py
 ```
 
 ## Usage

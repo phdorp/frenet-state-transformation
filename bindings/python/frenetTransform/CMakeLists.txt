@@ -13,4 +13,3 @@ target_link_libraries(
   transform
 )
 install(TARGETS _core DESTINATION frenetTransform)
-install(DIRECTORY stubs/ DESTINATION frenetTransform)

@@ -39,6 +39,7 @@ build/
 
 # documentation
 docs/build
+*.pyi
 
 # log files
 benchmarks/logs
