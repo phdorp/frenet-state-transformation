@@ -113,6 +113,9 @@ int main(int argc, char *argv[]) {
   const FrenetTransform::Points<Eigen::Dynamic> cartesAccsTf{
       transform.accCartes(frenetAccsTf, frenetVelsTf, frenetPointsTf)};
 
+  auto figureHandle {matplot::figure()};
+  figureHandle->size(800, 600);
+
   // plot velocity vector field in Cartesian coordinates
   matplot::subplot(3, 2, 0);
   // plot circle
@@ -130,6 +133,7 @@ int main(int argc, char *argv[]) {
   matplot::xlabel("Cartesian x-axis/m");
   matplot::ylabel("Cartesian y-axis/m");
   matplot::hold(false);
+  matplot::title("velocity transformation");
 
   // plot acceleration vector field in Cartesian coordinates
   matplot::subplot(3, 2, 1);
@@ -148,6 +152,7 @@ int main(int argc, char *argv[]) {
   matplot::xlabel("Cartesian x-axis/m");
   matplot::ylabel("Cartesian y-axis/m");
   matplot::hold(false);
+  matplot::title("acceleration transformation");
 
   // draw velocity vector field Frenet coordinates
   matplot::subplot(3, 2, 2);

@@ -45,10 +45,16 @@ int main(int argc, char *argv[]) {
   const FrenetTransform::Points<Eigen::Dynamic> projPoints{
       circlePoly->operator()(frenetPoints.x())};
 
+  auto figureHandle{matplot::figure()};
+  figureHandle->size(800, 600);
+
+  matplot::axis(matplot::square);
+
   // plot next points
   matplot::scatter(
       std::vector<double>{projPoints.x().begin(), projPoints.x().end()},
-      std::vector<double>{projPoints.y().begin(), projPoints.y().end()});
+      std::vector<double>{projPoints.y().begin(), projPoints.y().end()})
+      ->display_name("projections");
 
   // get vectors from next points to query points
   FrenetTransform::Points<Eigen::Dynamic> normals{
@@ -56,28 +62,36 @@ int main(int argc, char *argv[]) {
   normals = normals * frenetPoints.y();
 
   // plot circle
-  matplot::plot(
-      std::vector<double>{circlePointsX.begin(), circlePointsX.end()},
-      std::vector<double>{circlePointsY.begin(), circlePointsY.end()});
+  matplot::plot(std::vector<double>{circlePointsX.begin(), circlePointsX.end()},
+                std::vector<double>{circlePointsY.begin(), circlePointsY.end()})
+      ->line_width(1.0)
+      .display_name("circle");
   matplot::hold(true);
 
   // plot polychain
   matplot::plot(
       std::vector<double>{polyPoints.x().begin(), polyPoints.x().end()},
-      std::vector<double>{polyPoints.y().begin(), polyPoints.y().end()});
+      std::vector<double>{polyPoints.y().begin(), polyPoints.y().end()})
+      ->line_width(1.0)
+      .display_name("polychain");
 
   // plot query points
   matplot::scatter(
       std::vector<double>{cartesPoints.x().begin(), cartesPoints.x().end()},
-      std::vector<double>{cartesPoints.y().begin(), cartesPoints.y().end()});
+      std::vector<double>{cartesPoints.y().begin(), cartesPoints.y().end()})
+      ->line_width(1.0)
+      .display_name("query points");
 
   // draw vectors
   matplot::quiver(
       std::vector<double>{projPoints.x().begin(), projPoints.x().end()},
       std::vector<double>{projPoints.y().begin(), projPoints.y().end()},
       std::vector<double>{normals.x().begin(), normals.x().end()},
-      std::vector<double>{normals.y().begin(), normals.y().end()}, 0.0);
+      std::vector<double>{normals.y().begin(), normals.y().end()}, 0.0)
+      ->line_width(1.0)
+      .display_name("projections");
 
+  matplot::legend()->location(matplot::legend::general_alignment::topleft);
   matplot::save(*(argv + 1));
   matplot::show();
 
