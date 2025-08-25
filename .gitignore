@@ -39,9 +39,13 @@ build/
 
 # documentation
 docs/build
+*.pyi
 
 # log files
 benchmarks/logs
 
 # example outputs
 examples/out
+
+# local conda environment
+.conda

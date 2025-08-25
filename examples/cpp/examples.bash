@@ -42,9 +42,9 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-OUT_DIRECTORY=$WORKING_DIRECTORY/examples/out
-mkdir -p $OUT_DIRECTORY
+PATH_OUT=$PATH_WORKING_DIR/examples/cpp/out
+mkdir -p $PATH_OUT
 
 for FILE in "${POSITIONAL_ARGS[@]}"; do
-    $EXAMPLE_BINS/$FILE $OUT_DIRECTORY/$FILE.$EXTENSION
+    $PATH_EXAMPLE_BINS/$FILE $PATH_OUT/$FILE.$EXTENSION
 done
