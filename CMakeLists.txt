@@ -12,7 +12,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/include/frenetTransform)
 option(BUILD_TEST "Build tests for transformation." ON)
 option(BUILD_BENCHMARK "Build benchmarks for transformations." ON)
 option(BUILD_EXAMPLES "Build examples." ON)
-option(BUILD_PYBINDS "Build python bindings." ON)
+option(BUILD_PYBINDS "Build python bindings." OFF)
 option(BUILD_DOCS "Build documentation." ON)
 
 if(BUILD_TEST)
