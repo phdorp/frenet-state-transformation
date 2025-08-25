@@ -131,7 +131,7 @@ public:
   friend Points<NumPoints, PointType>
   operator+(const Points<NumPoints, PointType> &points,
             const PointType &point) {
-    return {point.m_x + point.x(), points.m_y + point.y()};
+    return {points.m_x + point.x(), points.m_y + point.y()};
   }
 
   /**
