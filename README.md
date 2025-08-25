@@ -50,7 +50,7 @@ pip install -e .
 ```
 
 ```bash
-python bindings/python/frenetTransform/build_stubs.py
+python bindings/python/frenetTransform/build_stubs.py $PATH_BUILD
 ```
 
 ## Usage

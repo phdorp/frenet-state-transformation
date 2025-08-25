@@ -9,6 +9,7 @@ dependencies = [
     "numpy",
     "pybind11",
     "pybind11-stubgen",
+    "doxypypy",
 ]
 
 [project.optional-dependencies]
