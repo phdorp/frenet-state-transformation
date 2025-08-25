@@ -167,19 +167,103 @@ Returns:
 Returns:
     Points: Points with sum of coordinates of two Points.
 )doc")
+      .def(
+          "__add__",
+          [](const PointsD &points, const Point &point) {
+            return points + point;
+          },
+          py::is_operator(),
+          R"doc(Element-wise sum of Points and Point.
+
+Args:
+    points (Points): Points involved in the sum.
+    point (Point): Point involved in the sum.
+Returns:
+    Points: Points with sum of coordinates in point and points.
+)doc")
+      .def(
+          "__add__",
+          [](const Point &point, const PointsD &points) {
+            return points + point;
+          },
+          py::is_operator(),
+          R"doc(Element-wise sum of Point and Points.
+
+Args:
+    point (Point): Point involved in the sum.
+    points (Points): Points involved in the sum.
+Returns:
+    Points: Points with sum of coordinates in point and points.
+)doc")
       .def(py::self - py::self,
            R"doc(Element-wise difference between two Points.
 
 Returns:
     Points: Points with difference between coordinates of two Points.
 )doc")
+      .def(
+          "__sub__",
+          [](const PointsD &points, const Point &point) {
+            return points - point;
+          },
+          py::is_operator(),
+          R"doc(Element-wise difference between Points and Point.
+
+Args:
+    points (Points): Points involved in the difference.
+    point (Point): Point involved in the difference.
+Returns:
+    Points: Points with difference between coordinates in points and point.
+)doc")
+      .def(
+          "__sub__",
+          [](const Point &point, const PointsD &points) {
+            return point - points;
+          },
+          py::is_operator(),
+          R"doc(Element-wise difference between Point and Points.
+
+Args:
+    point (Point): Point involved in the difference.
+    points (Points): Points involved in the difference.
+Returns:
+    Points: Points with difference between coordinates in point and points.
+)doc")
       .def(py::self * py::self,
            R"doc(Element-wise scalar product of two Points.
 
 Args:
-    other (Points): other Points sequence for scalar product.
+    points (Points): other Points sequence for scalar product.
 Returns:
     np.ndarray: scalar products of Points.
+)doc")
+      .def(
+          "__mul__",
+          [](const PointsD::ArrayPoints &nums, const PointsD &points) {
+            return nums * points;
+          },
+          py::is_operator(),
+          R"doc(Element-wise product of scalars and Points.
+
+Args:
+    nums (np.ndarray): scalars involved in the product.
+    points (Points): Points involved in the product.
+Returns:
+    Points: products of points and nums.
+)doc")
+      .def(
+          "__mul__",
+          [](const PointsD &points, const PointsD::ArrayPoints &nums) {
+            return nums * points;
+          },
+          py::is_operator(),
+          R"doc(Element-wise product of Points and scalars.
+
+Args:
+    points (Points): Points involved in the product.
+    nums (np.ndarray): scalars involved in the product.
+Returns:
+    Points: products of points and nums.
 )doc");
 
   using PathD = Path<Eigen::Dynamic>;
