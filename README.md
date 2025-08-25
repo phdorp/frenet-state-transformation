@@ -55,15 +55,37 @@ python bindings/python/frenetTransform/build_stubs.py $PATH_BUILD
 
 ## Examples
 
-For running the examples setup the environment variables and invoke the script *examples/examples.bash* from the repository root.
+The examples demonstrate the usage of the library.
+Equivalent examples are provided in C++ and Python.
+For running the C++ examples setup the environment variables and invoke the launch script from the repository root:
 
 ```bash
 source setup.bash
-examples/examples.bash [options] <source-file-names>
+examples/cpp/launch.bash [options] <source-file-name>
 ```
 
-Invoke `examples/examples.bash -h` for additional information.
 Note that the examples require [gnuplot](http://gnuplot.info/) to plot the results.
+The Python examples are executed directly:
+
+```bash
+python examples/python/<source-file-name>.py
+```
+
+### Circle polychain
+
+The examples [circlePolychain.cpp](examples/cpp/circlePolychain.cpp) and [circlePolychain.py](examples/cpp/circlePolychain.py) illustrate the transformation of a velocity and acceleration vectorfield from the Cartesian to the Frenet coordinate system and vice versa along a circle.
+
+![Frenet transform of position, velocity, and acceleration](docs/media/circlePolychain.png)
+
+The transformation of query points projected to a polychain vertex is not uniquely defined resulting in a deviation between the initial and final cartesian vectorfields.
+
+### Coarse polychain
+
+The examples [coarsePolychain.cpp](examples/cpp/coarsePolychain.cpp) and [coarsePolychain.py](examples/python/coarsePolychain.py) illustrate the transformation of query points to a coarse square-shaped polychain.
+
+![Projection of query points to a coarse polychain](docs/media/coarsePolychain.png)
+
+The top corner illustrates the discontinuity at vertices, where the distance along the path is not uniquely defined.
 
 ## Benchmarks
 
