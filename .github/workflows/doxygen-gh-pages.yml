@@ -1,10 +1,9 @@
 name: Doxygen GitHub Pages Deploy
 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
-      - main
+      - test_deploy_docs
 
 jobs:
   deploy:
