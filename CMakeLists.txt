@@ -34,6 +34,7 @@ endif()
 
 if(BUILD_DOCS)
     set(PYBIND_BINARY_DIR ${PROJECT_BINARY_DIR}/bindings/python)
+    set(PYBIND_SOURCE_DIR ${PROJECT_SOURCE_DIR}/bindings/python)
 
     find_package(Doxygen REQUIRED)
     set(doxyfile_in ${PROJECT_SOURCE_DIR}/Doxyfile.in)
@@ -42,10 +43,10 @@ if(BUILD_DOCS)
     configure_file(${doxyfile_in} ${doxyfile} @ONLY)
 
     # also build python documentation if stubs are available
-    if(EXISTS $ENV{PATH_PYSTUBS})
+    if(EXISTS ${PYBIND_SOURCE_DIR}/frenetTransformStubs)
         make_directory(${PYBIND_BINARY_DIR}/frenetTransform)
         add_custom_target(process_stubs ALL
-            COMMAND doxypypy -c -a $ENV{PATH_PYSTUBS}/_core.pyi > ${PYBIND_BINARY_DIR}/frenetTransform/_core.py
+            COMMAND doxypypy -c -a ${PYBIND_SOURCE_DIR}/frenetTransformStubs/_core.pyi > ${PYBIND_BINARY_DIR}/frenetTransform/_core.py
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             COMMENT "Processing python stubs with doxypypy")
 
