@@ -45,7 +45,7 @@ docs/build
 benchmarks/logs
 
 # example outputs
-examples/out
+*out
 
 # local conda environment
 .conda
