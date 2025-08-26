@@ -40,6 +40,7 @@ build/
 # documentation
 docs/build
 *.pyi
+py.typed
 
 # log files
 benchmarks/logs

@@ -13,3 +13,8 @@ target_link_libraries(
   transform
 )
 install(TARGETS _core DESTINATION frenetTransform)
+
+# install stubs if available
+if(EXISTS $ENV{PATH_PYSTUBS})
+  install(DIRECTORY $ENV{PATH_PYSTUBS}/ DESTINATION frenetTransform)
+endif()
