@@ -1,19 +1,42 @@
 [build-system]
-requires = ["scikit-build-core", "pybind11"]
+requires = [
+    "scikit-build-core",
+    "pybind11",
+    "setuptools>=42",
+    "wheel",
+    "ninja",
+    "cmake>=3.12",
+]
 build-backend = "scikit_build_core.build"
 
 [project]
 name = "frenetTransform"
-version = "1.0.0"
+version = "1.1.0"
+readme = "docs/README.pypi.md"
+authors = [{ name = "Philip Dorpmüller", email = "philip.dorpmueller@web.de" }]
+description = "Transformation of dynamic state from Cartesian to Frenet coordinates and vice versa."
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Programming Language :: C++",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
 dependencies = [
     "numpy",
     "pybind11",
-    "pybind11-stubgen",
-    "doxypypy",
 ]
 
+[project.urls]
+Github = "https://github.com/phdorp/frenet-state-transformation"
+
 [project.optional-dependencies]
-example = ["matplotlib"]
+EXAMPLES = ["matplotlib"]
+DOCS = ["doxypypy"]
+STUBS = ["pybind11-stubgen"]
 
 [tool.scikit-build]
 cmake.args = [
