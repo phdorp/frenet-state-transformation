@@ -37,3 +37,5 @@ export PATH_WORKING_DIR=$(pwd)
 export PATH_BUILD=$PATH_WORKING_DIR/$PATH_BUILD
 export PATH_BENCHMARK_BINS=$PATH_BUILD/benchmarks
 export PATH_EXAMPLE_BINS=$PATH_BUILD/examples/cpp
+export PATH_PYBINDS=$PATH_WORKING_DIR/bindings/python
+export PATH_PYSTUBS=$PATH_PYBINDS/frenetTransformStubs

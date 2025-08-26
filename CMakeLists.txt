@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(FrenetTransform VERSION 1.0.0)
+project(frenet-state-transformation VERSION 1.1.0)
 
 include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+IF (WIN32)
+    add_compile_definitions(_USE_MATH_DEFINES)
+ENDIF()
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/include/frenetTransform)
 
@@ -38,10 +42,10 @@ if(BUILD_DOCS)
     configure_file(${doxyfile_in} ${doxyfile} @ONLY)
 
     # also build python documentation if stubs are available
-    if(EXISTS ${PYBIND_BINARY_DIR}/frenetTransformStubs)
+    if(EXISTS $ENV{PATH_PYSTUBS})
         make_directory(${PYBIND_BINARY_DIR}/frenetTransform)
         add_custom_target(process_stubs ALL
-            COMMAND doxypypy -c -a ${PYBIND_BINARY_DIR}/frenetTransformStubs/_core.pyi > ${PYBIND_BINARY_DIR}/frenetTransform/_core.py
+            COMMAND doxypypy -c -a $ENV{PATH_PYSTUBS}/_core.pyi > ${PYBIND_BINARY_DIR}/frenetTransform/_core.py
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             COMMENT "Processing python stubs with doxypypy")
 
