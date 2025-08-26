@@ -1,0 +1,5 @@
+<map id="FrenetTransform::Polychain&lt; NumPoints, NumQueries &gt;" name="FrenetTransform::Polychain&lt; NumPoints, NumQueries &gt;">
+<area shape="rect" id="Node000001" title="Path representation as polychain. Represents a 2&#45;dimensional path as a polychain. Provide path proper..." alt="" coords="5,93,217,133"/>
+<area shape="rect" id="Node000002" href="$classFrenetTransform_1_1Path.html" title="Path base class." alt="" coords="29,5,193,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="114,59,114,93,109,93,109,59"/>
+</map>
