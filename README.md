@@ -1,14 +1,12 @@
 # Frenet transformation
 
-![Frenet transform of position, velocity, and acceleration](docs/media/circlePolychain.png)
-
 This project implements a library to perform transformations from a 2-dimensional Cartesian to a Frenet coordinate system and vice versa.
 Transformations are implemented for states up to the second time derivative.
 The reference path defining the Frenet coordinate system is represented by a polychain.
 
 ## Installation
 
-Since this is a header-only library it is sufficient to include the required header files from the directory *include/Transform*.
+Since this is a header-only library it is sufficient to include the required header files from the directory *include/frenetTransform*.
 
 ### Integration in CMake project
 
@@ -21,14 +19,17 @@ FetchContent_Declare(
 )
 set(BUILD_TEST OFF)
 set(BUILD_BENCHMARK OFF)
+set(BUILD_DOCS OFF)
+set(BUILD_EXAMPLES OFF)
+set(BUILD_PYBINDS OFF)
 FetchContent_MakeAvailable(transform)
 
 ...
 
-target_link_libraries("target" PRIVATE transform)
+target_link_libraries(<your-target> PRIVATE transform)
 ```
 
-### Build project
+### Build from source
 
 Building the project with the benchmark and tests requires enabling the respective CMake configuration flags.
 
@@ -38,16 +39,29 @@ cmake --build build
 ```
 
 The following options are avaible for configuration:
-- BUILD_DOCS=ON|OFF: whether to build the [documentation](build/docs/html/index.html)
+
+- BUILD_DOCS=ON|OFF: whether to build the documentation
 - BUILD_TEST=ON|OFF: whether to build the tests
 - BUILD_BENCHMARK=ON|OFF: whether to build the benchmarks
 - BUILD_EXAMPLES=ON|OFF: whether to build the examples
+- BUILD_PYBINDS=ON|OFF: whether to build the python bindings
 
 ### Python bindings
 
+The python bindings are installed locally by invoking
+
 ```bash
-pip install -e .
+pip install .
 ```
+
+in the project root.
+For the execution of the examples additional dependencies are installed by invoking
+
+```bash
+pip install .[examples]
+```
+
+The stubs that document the python bindings are generated after installing the package with
 
 ```bash
 python bindings/python/frenetTransform/build_stubs.py $PATH_BUILD
@@ -73,7 +87,7 @@ python examples/python/<source-file-name>.py
 
 ### Circle polychain
 
-The examples [circlePolychain.cpp](examples/cpp/circlePolychain.cpp) and [circlePolychain.py](examples/cpp/circlePolychain.py) illustrate the transformation of a velocity and acceleration vectorfield from the Cartesian to the Frenet coordinate system and vice versa along a circle.
+The examples [circlePolychain.cpp](examples/cpp/circlePolychain.cpp) and [circlePolychain.py](examples/python/circlePolychain.py) illustrate the transformation of a velocity and acceleration vectorfield from the Cartesian to the Frenet coordinate system and vice versa along a circle.
 
 ![Frenet transform of position, velocity, and acceleration](docs/media/circlePolychain.png)
 
@@ -93,7 +107,7 @@ For running the benchmarks setup the environment variables and invoke the script
 
 ```bash
 source setup.bash
-benchmarks/benchmarks.bash [options] <source-file-names>
+benchmarks/launch.bash [options] <source-file-names>
 ```
 
-Invoke `benchmarks/benchmarks.bash -h` for additional information.
+Invoke `benchmarks/launch.bash -h` for additional information.
