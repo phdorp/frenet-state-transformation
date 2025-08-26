@@ -2,8 +2,8 @@ name: Build and deploy wheels
 
 on:
   push:
-    tags: ['v[0-9].[0-9]+.[0-9]+']
-    branches: [master]
+    branches:
+      - deploy_pypi_test
 
 jobs:
   build_wheels:
@@ -53,7 +53,9 @@ jobs:
   upload_pypi:
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
-    environment: pypi
+    environment:
+      name: pypi
+      url: https://test.pypi.org/project/frenet-state-transformation/
     permissions:
       id-token: write
     steps:
@@ -65,3 +67,5 @@ jobs:
           merge-multiple: true
 
       - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
