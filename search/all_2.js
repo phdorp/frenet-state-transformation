@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['circle_20polychain_0',['Circle polychain',['../index.html#autotoc_md6',1,'']]],
-  ['cmake_20project_1',['Integration in CMake project',['../index.html#autotoc_md2',1,'']]],
-  ['coarse_20polychain_2',['Coarse polychain',['../index.html#autotoc_md7',1,'']]]
+  ['benchmarks_0',['Benchmarks',['../index.html#autotoc_md8',1,'']]],
+  ['bindings_1',['Python bindings',['../index.html#autotoc_md4',1,'']]],
+  ['build_20from_20source_2',['Build from source',['../index.html#autotoc_md3',1,'']]]
 ];

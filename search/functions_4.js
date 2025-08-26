@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['operator_28_29_0',['operator()',['../classFrenetTransform_1_1Path.html#aa1770d9ac732c736bc7947984ea31a2f',1,'FrenetTransform::Path::operator()()'],['../classFrenetTransform_1_1Points.html#a4c23be2549311f6a08e4ebe21d2e1b9b',1,'FrenetTransform::Points::operator()()'],['../classFrenetTransform_1_1Polychain.html#a20c1c674e3fc46e350be94e4a73b7591',1,'FrenetTransform::Polychain::operator()()']]],
-  ['operator_2d_1',['operator-',['../classFrenetTransform_1_1Point.html#acbe686d4357935fde9f70a5109071ae2',1,'FrenetTransform::Point::operator-()'],['../classFrenetTransform_1_1Points.html#ac20be8761abe99d84319afb987b62cf8',1,'FrenetTransform::Points::operator-()']]]
+  ['normal_0',['normal',['../class__core_1_1Path.html#a4e45e305e1a41a9ec9569f8cdde34eb1',1,'_core.Path.normal()'],['../classFrenetTransform_1_1Path.html#a5d803e836f9d6f349d29eeca54276bd1',1,'FrenetTransform::Path::normal()']]],
+  ['numpoints_1',['numpoints',['../class__core_1_1Points.html#a9b44ee112c01f63ada734508db1c14cc',1,'_core.Points.numPoints()'],['../classFrenetTransform_1_1Points.html#a647ed99f72cda27c760007cca44bda05',1,'FrenetTransform::Points::numPoints()']]]
 ];

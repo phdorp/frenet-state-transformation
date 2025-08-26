@@ -134,13 +134,19 @@ Examples</h1>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md6"></a>
 Circle polychain</h2>
 <p>The examples <a href="examples/cpp/circlePolychain.cpp">circlePolychain.cpp</a> and <a href="examples/python/circlePolychain.py">circlePolychain.py</a> illustrate the transformation of a velocity and acceleration vectorfield from the Cartesian to the Frenet coordinate system and vice versa along a circle.</p>
-<p><img src="docs/media/circlePolychain.png" alt="Frenet transform of position, velocity, and acceleration" class="inline"/></p>
-<p>The transformation of query points projected to a polychain vertex is not uniquely defined resulting in a deviation between the initial and final cartesian vectorfields.</p>
+<div class="image">
+<img src="circlePolychain.png" alt=""/>
+<div class="caption">
+Frenet transform of position, velocity, and acceleration</div></div>
+    <p>The transformation of query points projected to a polychain vertex is not uniquely defined resulting in a deviation between the initial and final cartesian vectorfields.</p>
 <h2><a class="anchor" id="autotoc_md7"></a>
 Coarse polychain</h2>
 <p>The examples <a href="examples/cpp/coarsePolychain.cpp">coarsePolychain.cpp</a> and <a href="examples/python/coarsePolychain.py">coarsePolychain.py</a> illustrate the transformation of query points to a coarse square-shaped polychain.</p>
-<p><img src="docs/media/coarsePolychain.png" alt="Projection of query points to a coarse polychain" class="inline"/></p>
-<p>The top corner illustrates the discontinuity at vertices, where the distance along the path is not uniquely defined.</p>
+<div class="image">
+<img src="coarsePolychain.png" alt=""/>
+<div class="caption">
+Projection of query points to a coarse polychain</div></div>
+    <p>The top corner illustrates the discontinuity at vertices, where the distance along the path is not uniquely defined.</p>
 <h1><a class="anchor" id="autotoc_md8"></a>
 Benchmarks</h1>
 <p>For running the benchmarks setup the environment variables and invoke the script <em>benchmarks/benchmarks.bash</em> from the repository root.</p>

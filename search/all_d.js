@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['tangent_0',['tangent',['../classFrenetTransform_1_1Path.html#a93e65b62b65c9378483bf4801854ed70',1,'FrenetTransform::Path']]],
-  ['transform_1',['transform',['../classFrenetTransform_1_1Transform.html',1,'FrenetTransform::Transform&lt; NumQueries &gt;'],['../classFrenetTransform_1_1Transform.html#ad11b5d4cb5f08d8340c3b6497b6c44cc',1,'FrenetTransform::Transform::Transform()']]],
-  ['transformation_2',['Frenet transformation',['../index.html',1,'']]]
+  ['setpoints_0',['setpoints',['../class__core_1_1Polychain.html#af46cc49781e5396dfacd0d27507487b9',1,'_core.Polychain.setPoints()'],['../classFrenetTransform_1_1Polychain.html#a89cdabacb18f48f7b72dd61c298cdab5',1,'FrenetTransform::Polychain::setPoints()']]],
+  ['setx_1',['setX',['../class__core_1_1Points.html#a2a95ab784817c54f22cf2f5807496876',1,'_core::Points']]],
+  ['sety_2',['setY',['../class__core_1_1Points.html#aefa3436fb2bfbb428cf6fa55d5f06130',1,'_core::Points']]],
+  ['source_3',['Build from source',['../index.html#autotoc_md3',1,'']]]
 ];

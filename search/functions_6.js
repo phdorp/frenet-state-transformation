@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['setpoints_0',['setPoints',['../classFrenetTransform_1_1Polychain.html#a89cdabacb18f48f7b72dd61c298cdab5',1,'FrenetTransform::Polychain']]]
+  ['point_0',['Point',['../classFrenetTransform_1_1Point.html#af4d5c513aa82371525e56fb9e6640c4e',1,'FrenetTransform::Point']]],
+  ['points_1',['Points',['../classFrenetTransform_1_1Points.html#a1a43e3799e5c72f9dd0ed17877906627',1,'FrenetTransform::Points']]],
+  ['polychain_2',['polychain',['../classFrenetTransform_1_1Polychain.html#a53046e6fdc58d329932301b5ca74b4b5',1,'FrenetTransform::Polychain::Polychain(const ArrayPoints &amp;x, const ArrayPoints &amp;y)'],['../classFrenetTransform_1_1Polychain.html#af5dcb9dd1076fc29ac2adaf6d3c3515f',1,'FrenetTransform::Polychain::Polychain(const Points&lt; NumPoints &gt; &amp;points)']]],
+  ['poscartes_3',['poscartes',['../class__core_1_1Transform.html#a393e3910dacb73c62f503c2ab8db04da',1,'_core.Transform.posCartes()'],['../classFrenetTransform_1_1Transform.html#a10d4b1a06fc0e4e1e8d047e543d0818f',1,'FrenetTransform::Transform::posCartes()']]],
+  ['posfrenet_4',['posfrenet',['../class__core_1_1Transform.html#aead19521f51ec627fb544d918770d78a',1,'_core.Transform.posFrenet()'],['../classFrenetTransform_1_1Transform.html#ad8a44bd68b871e49a707fce01ccd275b',1,'FrenetTransform::Transform::posFrenet()']]]
 ];

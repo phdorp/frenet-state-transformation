@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['x_0',['x',['../classFrenetTransform_1_1Point.html#ae8f073111fee89f4b3587b2c45626a9c',1,'FrenetTransform::Point::x()'],['../classFrenetTransform_1_1Points.html#a297f3470a97145b17b5bd00527592cba',1,'FrenetTransform::Points::x(const int index) const'],['../classFrenetTransform_1_1Points.html#aa1c14efab1bc1750ec1e490e19d55c43',1,'FrenetTransform::Points::x() const']]]
+  ['velcartes_0',['velcartes',['../class__core_1_1Transform.html#a4bee5898063cb80918c7420757843e9c',1,'_core.Transform.velCartes()'],['../classFrenetTransform_1_1Transform.html#a986241fcb643d94494c9a3e4b76b2dc6',1,'FrenetTransform::Transform::velCartes()']]],
+  ['velfrenet_1',['velfrenet',['../class__core_1_1Transform.html#a3cbc43a72d413353872983ff7ebb2dc5',1,'_core.Transform.velFrenet()'],['../classFrenetTransform_1_1Transform.html#a5a92b3fe06d076f1c1b6d9565c497461',1,'FrenetTransform::Transform::velFrenet()']]]
 ];
