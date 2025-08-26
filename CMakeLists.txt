@@ -7,6 +7,10 @@ include(FetchContent)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
+IF (WIN32)
+    add_compile_definitions(_USE_MATH_DEFINES)
+ENDIF()
+
 add_subdirectory(${PROJECT_SOURCE_DIR}/include/frenetTransform)
 
 option(BUILD_TEST "Build tests for transformation." ON)
